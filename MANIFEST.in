@@ -1,0 +1,7 @@
+include *.py
+include *.json
+include dongtai_agent_python/*
+include dongtai_agent_python/assess/*.py
+include dongtai_agent_python/common/*.py
+include dongtai_agent_python/report/*.py
+include dongtai_agent_python/middlewares/*.py

@@ -1,0 +1,52 @@
+{
+  "debug": false,
+  "iast": {
+    "proxy": {
+      "port": 80,
+      "host": "",
+      "enable": false
+    },
+    "server": {
+      "mode": "remote",
+      "token": "42662f1c621ec6b99b52b98b4fea81a70b11a59a",
+      "url": "http://192.168.2.133:8002"
+    },
+    "service": {
+      "report": {
+        "interval": 600
+      },
+      "replay": {
+        "interval": 300000
+      }
+    },
+    "dump": {
+      "class": {
+        "enable": false,
+        "path": "/tmp/iast-class-dump/"
+      }
+    },
+    "engine": {
+      "delay": {
+        "time": 10
+      }
+    },
+    "allhook": {
+      "enable": true
+    },
+    "name": "lingzhi-Enterprise 1.0.0",
+    "mode": "normal"
+  },
+  "project": {
+    "name": "Python Demo Project"
+  },
+  "engine": {
+    "version": "v1.0",
+    "name": "dongtai-agent-python"
+  },
+  "app": {
+    "name": "IastVulScan"
+  },
+  "log": {
+    "log_path": "./dongtai_py_agent_log.txt"
+  }
+}
