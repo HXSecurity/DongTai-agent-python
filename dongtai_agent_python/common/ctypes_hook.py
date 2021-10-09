@@ -1,4 +1,4 @@
-import ctypes,sys
+import ctypes,sys,os
 from dongtai_agent_python.global_var import _global_dt_dict,dt_set_value,dt_get_value
 from dongtai_agent_python.common.content_tracert import method_pool_data,dt_tracker_get,dt_tracker_set,come_in,deal_args
 import dongtai_agent_python.global_var as dt_global_var
@@ -6,7 +6,7 @@ from dongtai_agent_python.assess.deal_data import wrapData
 import sqlite3
 copyStr = type('str', str.__bases__, dict(str.__dict__))
 
-
+# https://stackoverflow.com/a/24498525
 def magic_get_dict(o):
     # find address of dict whose offset is stored in the type
     dict_addr = id(o) + type(o).__dictoffset__
@@ -16,7 +16,14 @@ def magic_get_dict(o):
 
 
 def magic_flush_mro_cache():
-    ctypes.PyDLL(None).PyType_Modified(ctypes.cast(id(object), ctypes.py_object))
+    if os.name == "nt":
+        pythonapi = ctypes.PyDLL("python dll", None, sys.dllhandle)
+    elif sys.platform == "cygwin":
+        pythonapi = ctypes.PyDLL("libpython%d.%d.dll" % sys.version_info[:2])
+    else:
+        pythonapi = ctypes.PyDLL(None)
+
+    pythonapi.PyType_Modified(ctypes.py_object(object))
 
 
 # 属性方法hook
