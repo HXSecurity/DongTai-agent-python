@@ -1,4 +1,4 @@
-import requests, gzip, json, os, socket, base64, uuid, time, threading
+import requests, gzip, json, os, socket, base64, time, threading, platform
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common.content_tracert import dt_tracker, current_thread_id
 from dongtai_agent_python.common.logger import logger_config
@@ -204,19 +204,13 @@ class AgentUpload(object):
 
         url = "/api/v1/agent/register"
 
-        mac = uuid.UUID(int=uuid.getnode()).hex[-12:]
-        mac_id = ":".join([mac[e:e + 2] for e in range(0, 11, 2)])
-        # print(mac_id)
         server_env = dict(os.environ)
-        agent_name = ""
+        agent_prefix = platform.system() + " " + platform.release() + "-" + socket.gethostname()
         server_env_arr = []
-        project_name = "Demo Project"
+        project_name = self.config_data.get("project", {}).get("name", "Demo Project")
         if isinstance(server_env,dict):
             if server_env.get("projectName", ""):
                 project_name = server_env.get("projectName", "")
-            else:
-                project_name = self.config_data.get("project", {}).get("name", "Demo Project")
-            agent_name = server_env.get("PATH", "/").split("/")[-1] + "-" + server_env.get("USER", "")
 
             for key in server_env.keys():
 
@@ -228,8 +222,10 @@ class AgentUpload(object):
         self.cur_system_info = SystemInfo()
         network_info = self.cur_system_info.PrintNetIfAddr()
         version = self.config_data.get("engine", {}).get("version", "v1.0.0")
+        # engine.name will auto generated when download
+        engine_name = self.config_data.get("engine", {}).get("name", "dongtai-agent-python")
         register_data = {
-            "name": agent_name + "-"+version+"-" + str(mac_id)+"-"+str(id(time.time())),
+            "name": agent_prefix + "-" + version + "-" + engine_name,
             "project_name": project_name,
             "version": version,
             "language": "PYTHON",
