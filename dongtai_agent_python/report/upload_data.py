@@ -211,6 +211,9 @@ class AgentUpload(object):
         if isinstance(server_env,dict):
             if server_env.get("projectName", ""):
                 project_name = server_env.get("projectName", "")
+            elif server_env.get("PROJECTNAME", ""):
+                # windows always upper case env key
+                project_name = server_env.get("PROJECTNAME", "")
 
             for key in server_env.keys():
 
