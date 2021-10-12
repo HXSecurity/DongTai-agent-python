@@ -88,7 +88,13 @@ class FireMiddleware(MiddlewareMixin):
         else:
             http_res_body = ""
         dt_tracker_set("http_res_body", http_res_body)
-        resp_header = dict(response.headers)
+        if hasattr(response, 'headers'):
+            # django >= 3.2
+            # https://docs.djangoproject.com/en/3.2/releases/3.2/#requests-and-responses
+            resp_header = dict(response.headers)
+        else:
+            # django < 3.2
+            resp_header = dict(response._headers)
         resp_header['agent_id'] = dt_global_var.dt_get_value("agent_id")
         http_res_header = self.agent_upload.agent_json_to_str(resp_header)
         dt_tracker_set("http_res_header", http_res_header)
