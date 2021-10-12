@@ -5,7 +5,6 @@ from dongtai_agent_python.common.ctypes_hook import magic_get_dict, magic_flush_
 from dongtai_agent_python.common.ctypes_hook import hookLazyImport, new_func
 from dongtai_agent_python.common.common_hook import proxy_builtin, _InstallFcnHook
 from dongtai_agent_python.report.upload_data import AgentUpload
-from django.db import connection
 
 
 def enable_patches(cur_frame_app="django"):
