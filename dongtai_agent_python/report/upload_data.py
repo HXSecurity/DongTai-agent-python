@@ -155,13 +155,13 @@ class AgentUpload(object):
 
     def base_report(self, url, body):
         url = self.config_data.get("iast", {}).get("server", {}).get("url", "") + url
-        print(body)
+        logger.debug(body)
         stream_data = json.dumps(body)
 
         body_data = gzip.compress(stream_data.encode('utf-8'))
         try:
             res = requests.post(url, data=body_data, timeout=20, headers=self.headers)
-            print(res.content)
+            logger.debug(res.content)
             Resp = res.content.decode("utf-8")
             Resp = json.loads(Resp)
 
