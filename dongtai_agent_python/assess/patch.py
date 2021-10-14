@@ -57,15 +57,16 @@ def enable_patches(cur_frame_app="django"):
                             # print(old_module)
                     except Exception as e:
                         imp_arr = copy.deepcopy(policy_arr)
+                        if imp_arr[0] not in sys.modules:
+                            print(imp_arr[0])
+                            continue
+
                         method_name = imp_arr[-1]
                         class_name = imp_arr[-2]
                         del imp_arr[-1]
                         del imp_arr[-1]
                         policy_str = ".".join(imp_arr)
 
-                        if imp_arr[0] not in sys.modules:
-                            print(imp_arr[0])
-                            continue
                         old_module = hookLazyImport(policy_str, [class_name])
                         old_cls = getattr(old_module, class_name)
 
