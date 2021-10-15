@@ -177,14 +177,14 @@ class AgentUpload(object):
         # 上报心跳数据
         system_info = {
             "detail": {
-                "cpu": json.dumps({"rate": self.cur_system_info.getCpuRate()}),
-                "disk": json.dumps(self.cur_system_info.getDisk()),
+                # "disk": json.dumps(self.cur_system_info.getDisk()),
                 "memory": json.dumps(self.cur_system_info.getMemoryInfo()),
-                "agent_id": self.dt_agent_id,
-                "req_count": dt_global_var.dt_get_value("req_count"),
-                "report_queue": 0,
-                "method_queue": 0,
-                "replay_queue": 0
+                "agentId": self.dt_agent_id,
+                "cpu": json.dumps({"rate": self.cur_system_info.getCpuRate()}),
+                "methodQueue": 0,
+                "replayQueue": 0,
+                "reqCount": dt_global_var.dt_get_value("req_count"),
+                "reportQueue": 0
             },
             "type": 1
         }
@@ -229,17 +229,17 @@ class AgentUpload(object):
         engine_name = self.config_data.get("engine", {}).get("name", "dongtai-agent-python")
         register_data = {
             "name": agent_prefix + "-" + version + "-" + engine_name,
-            "project_name": project_name,
-            "version": version,
             "language": "PYTHON",
+            "version": version,
+            "projectName": project_name,
             "hostname": socket.gethostname(),
             "network": network_info,
-            "container_name": data.get("container_name", ""),
-            "container_version": data.get("container_version", ""),
-            "web_server_addr": "",
-            "web_server_port": "",
-            "web_server_path": "",
-            "server_env": server_env_str.decode('utf-8'),
+            "containerName": data.get("container_name", ""),
+            "containerVersion": data.get("container_version", ""),
+            "serverAddr": "",
+            "serverPort": "",
+            "serverPath": "",
+            "serverEnv": server_env_str.decode('utf-8'),
             "pid": str(os.getpid())
         }
         Resp = self.base_report(url, register_data)
@@ -263,7 +263,7 @@ class AgentUpload(object):
 
     def get_policy_config(self):
 
-        url = "/api/v1/profiles?language_id=2"
+        url = "/api/v1/profiles?language=2"
         Resp = self.base_api_get(url)
 
         return Resp

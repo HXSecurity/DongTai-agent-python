@@ -33,7 +33,7 @@ class FireMiddleware(MiddlewareMixin):
             dt_agent_id = 0
             logger.error("python agent register error ")
 
-        dt_global_var.dt_set_value("agent_id", dt_agent_id)
+        dt_global_var.dt_set_value("agentId", dt_agent_id)
         print("------begin hook-----")
         enable_patches("django")
         logger.info("python agent hook open")
@@ -42,7 +42,7 @@ class FireMiddleware(MiddlewareMixin):
         # '''产生request对象后，url匹配之前调用'''
         func_id = id(request)
         set_current(func_id)
-        reg_agent_id = dt_global_var.dt_get_value("agent_id")
+        reg_agent_id = dt_global_var.dt_get_value("agentId")
         req_count = dt_global_var.dt_get_value("req_count") + 1
         dt_global_var.dt_set_value("req_count", req_count)
         http_url = request.scheme + "://" + request.META.get("HTTP_HOST", "") + request.META.get("PATH_INFO", "")
@@ -56,18 +56,17 @@ class FireMiddleware(MiddlewareMixin):
             reqeust_body = ""
 
         need_to_set = {
-            "agent_id": reg_agent_id,
-            "http_protocol": request.META.get("SERVER_PROTOCOL", "'HTTP/1.1'"),
-            "http_client_ip": request.META.get("REMOTE_ADDR", "127.0.0.1"),
-            "context_path": request.META.get("PATH_INFO", "/"),
-            "http_query_string": request.META.get("QUERY_STRING", ""),
-            "http_uri": request.path,
-            "http_url": http_url,
-            "http_method": request.META.get("REQUEST_METHOD", "None"),
-            "app_name": request.META.get("IDE_PROJECT_ROOTS", ""),
-            "http_req_header": http_req_header,
-            "http_body": reqeust_body,
-            "http_scheme": request.scheme,
+            "agentId": reg_agent_id,
+            "uri": request.path,
+            "url": http_url,
+            "queryString": request.META.get("QUERY_STRING", ""),
+            "protocol": request.META.get("SERVER_PROTOCOL", "'HTTP/1.1'"),
+            "contextPath": request.META.get("PATH_INFO", "/"),
+            "clientIp": request.META.get("REMOTE_ADDR", "127.0.0.1"),
+            "method": request.META.get("REQUEST_METHOD", "None"),
+            "reqHeader": http_req_header,
+            "reqBody": reqeust_body,
+            "scheme": request.scheme,
             "dt_pool_args": [],
             "dt_data_args": [],
             "upload_pool": True,
@@ -87,7 +86,7 @@ class FireMiddleware(MiddlewareMixin):
             http_res_body = str(response.content, encoding="utf-8")
         else:
             http_res_body = ""
-        dt_tracker_set("http_res_body", http_res_body)
+        dt_tracker_set("resBody", http_res_body)
         if hasattr(response, 'headers'):
             # django >= 3.2
             # https://docs.djangoproject.com/en/3.2/releases/3.2/#requests-and-responses
@@ -95,9 +94,9 @@ class FireMiddleware(MiddlewareMixin):
         else:
             # django < 3.2
             resp_header = dict(response._headers)
-        resp_header['agent_id'] = dt_global_var.dt_get_value("agent_id")
+        resp_header['agentId'] = dt_global_var.dt_get_value("agentId")
         http_res_header = self.agent_upload.agent_json_to_str(resp_header)
-        dt_tracker_set("http_res_header", http_res_header)
+        dt_tracker_set("resHeader", http_res_header)
         logger.info("hook api response success")
 
         self.agent_upload.agent_upload_report()

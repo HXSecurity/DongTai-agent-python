@@ -138,25 +138,23 @@ def method_pool_data(module_name,fcn,sourceValues,taint_in,taint_out,layer=-4, s
     # for res in taint_out:
     #     new_out.append(res)
     req_data = {
-
+        "invokeId": 0,
         "interfaces": [],
-        "signature": signature,
-        "methodName": fcn.__name__,
-        "originClassName": module_name,
-        "className": module_name,
-        "text_signature": "fcn.__text_signature__",
-        "callerLineNumber": tracert_arr[1],
-        "callerClass": tracert_arr[0],
-        "args": "",
-        "code": tracert_arr[3],
-        "callerMethod": callerMethod,
-        "source": source,
-        "sourceValues": source_arr,
-        "sourceHash": taint_in,
         "targetHash": [
             id(taint_out)
         ],
         "targetValues": str(taint_out),
+        "signature": signature,
+        "originClassName": module_name,
+        "sourceValues": source_arr,
+        "methodName": fcn.__name__,
+        "className": module_name,
+        "source": source,
+        "callerLineNumber": tracert_arr[1],
+        "callerClass": tracert_arr[0],
+        "args": "",
+        "callerMethod": callerMethod,
+        "sourceHash": taint_in,
         "retClassName": ""
     }
     source_and_target_value = json.dumps({

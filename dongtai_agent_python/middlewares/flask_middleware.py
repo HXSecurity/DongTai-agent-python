@@ -42,7 +42,7 @@ class AgentMiddleware(object):
             dt_agent_id = 0
             logger.error("python agent register error ")
 
-        dt_global_var.dt_set_value("agent_id", dt_agent_id)
+        dt_global_var.dt_set_value("agentId", dt_agent_id)
         print("------begin hook-----")
         enable_patches("flask")
         logger.info("python agent hook open")
@@ -59,7 +59,7 @@ class AgentMiddleware(object):
 
             func_id = id(request)
             set_current(func_id)
-            reg_agent_id = dt_global_var.dt_get_value("agent_id")
+            reg_agent_id = dt_global_var.dt_get_value("agentId")
             req_count = dt_global_var.dt_get_value("req_count") + 1
             dt_global_var.dt_set_value("req_count", req_count)
 
@@ -68,18 +68,17 @@ class AgentMiddleware(object):
             request_body = self.agent_upload.agent_json_to_str(request_body)
 
             need_to_set = {
-                "agent_id": reg_agent_id,
-                "http_protocol": request.environ['SERVER_PROTOCOL'],
-                "http_client_ip": request.remote_addr,
-                "context_path": request.path,
-                "http_query_string": str(request.query_string, encoding="utf-8"),
-                "http_uri": request.environ['REQUEST_URI'],
-                "http_url": request.url,
-                "http_method": request.method,
-                "app_name": request.environ.get("IDE_PROJECT_ROOTS", ""),
-                "http_req_header": http_req_header,
-                "http_body": request_body,
-                "http_scheme": request.scheme,
+                "agentId": reg_agent_id,
+                "uri": request.environ['REQUEST_URI'],
+                "url": request.url,
+                "queryString": str(request.query_string, encoding="utf-8"),
+                "protocol": request.environ['SERVER_PROTOCOL'],
+                "contextPath": request.path,
+                "clientIp": request.remote_addr,
+                "method": request.method,
+                "reqHeader": http_req_header,
+                "reqBody": request_body,
+                "scheme": request.scheme,
                 "dt_pool_args": [],
                 "dt_data_args": [],
                 "upload_pool": True,
@@ -100,11 +99,11 @@ class AgentMiddleware(object):
                 http_res_body = str(response.data, encoding="utf-8")
             else:
                 http_res_body = ""
-            dt_tracker_set("http_res_body", http_res_body)
+            dt_tracker_set("resBody", http_res_body)
             resp_header = dict(response.headers)
-            resp_header['agent_id'] = dt_global_var.dt_get_value("agent_id")
+            resp_header['agentId'] = dt_global_var.dt_get_value("agentId")
             http_res_header = self.agent_upload.agent_json_to_str(resp_header)
-            dt_tracker_set("http_res_header", http_res_header)
+            dt_tracker_set("resHeader", http_res_header)
             logger.info("hook api response success")
 
             self.agent_upload.agent_upload_report()
