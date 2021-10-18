@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: dongtai-agent-python
 Version: 0.2.0
-Summary: 洞态IAST基础服务
+Summary: DongTai IAST Agent for Python
 Home-page: https://iast.huoxian.cn
 Author: songjinghao
 Author-email: jinghaosong@huoxian.cn

@@ -2,7 +2,6 @@ MANIFEST.in
 README.md
 setup.cfg
 setup.py
-dongtai_agent_python/.DS_Store
 dongtai_agent_python/__init__.py
 dongtai_agent_python/config.json
 dongtai_agent_python/global_var.py
@@ -12,10 +11,13 @@ dongtai_agent_python/try_test.py
 dongtai_agent_python.egg-info/PKG-INFO
 dongtai_agent_python.egg-info/SOURCES.txt
 dongtai_agent_python.egg-info/dependency_links.txt
+dongtai_agent_python.egg-info/entry_points.txt
 dongtai_agent_python.egg-info/requires.txt
 dongtai_agent_python.egg-info/top_level.txt
 dongtai_agent_python/assess/deal_data.py
 dongtai_agent_python/assess/patch.py
+dongtai_agent_python/cli/__init__.py
+dongtai_agent_python/cli/run.py
 dongtai_agent_python/common/common_hook.py
 dongtai_agent_python/common/content_tracert.py
 dongtai_agent_python/common/ctypes_hook.py
@@ -24,3 +26,4 @@ dongtai_agent_python/common/logger.py
 dongtai_agent_python/middlewares/django_middleware.py
 dongtai_agent_python/middlewares/flask_middleware.py
 dongtai_agent_python/report/upload_data.py
+scripts/dongtai-cli

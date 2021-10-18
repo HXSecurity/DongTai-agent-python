@@ -1,0 +1,3 @@
+[console_scripts]
+dongtai-cli = dongtai_agent_python.cli:main
+
