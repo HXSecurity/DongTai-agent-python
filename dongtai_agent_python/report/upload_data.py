@@ -117,6 +117,7 @@ class SystemInfo(object):
 class AgentUpload(object):
 
     def __init__(self):
+        self.session = requests.session()
         self.config_data = dt_global_var.dt_get_value("config_data")
         self.dt_agent_id = 0
         self.interval = self.config_data.get("iast", {}).get("service", {}).get("report", {}).get("interval",30)
@@ -160,7 +161,7 @@ class AgentUpload(object):
 
         body_data = gzip.compress(stream_data.encode('utf-8'))
         try:
-            res = requests.post(url, data=body_data, timeout=20, headers=self.headers)
+            res = self.session.post(url, data=body_data, timeout=20, headers=self.headers)
             logger.debug(res.content)
             Resp = res.content.decode("utf-8")
             Resp = json.loads(Resp)
@@ -253,10 +254,8 @@ class AgentUpload(object):
 
         return Resp
 
-    def agent_upload_report(self):
-
+    def agent_upload_report(self, upload_report):
         url = "/api/v1/report/upload"
-        upload_report = dt_tracker[current_thread_id()]
         Resp = self.base_report(url, upload_report)
 
         return Resp
