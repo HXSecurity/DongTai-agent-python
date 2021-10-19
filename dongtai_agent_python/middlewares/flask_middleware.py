@@ -1,9 +1,11 @@
 from flask import request, jsonify
 import dongtai_agent_python.global_var as dt_global_var
-from dongtai_agent_python.common.content_tracert import set_current, delete_current, dt_tracker_set
+from dongtai_agent_python.common.content_tracert import current_thread_id, dt_tracker, set_current, delete_current, \
+    dt_tracker_set
 from dongtai_agent_python.report.upload_data import AgentUpload
 from dongtai_agent_python.assess.patch import enable_patches
 from dongtai_agent_python.common.logger import logger_config
+from concurrent.futures import ThreadPoolExecutor
 import json,flask
 logger = logger_config("python_agent")
 
@@ -25,6 +27,7 @@ class AgentMiddleware(object):
         self.old_wsgi_app = old_app
 
         logger.info("python agent init")
+        self.executor = ThreadPoolExecutor()
         self.agent_upload = AgentUpload()
         # register
         cur_middle = {
@@ -106,7 +109,8 @@ class AgentMiddleware(object):
             dt_tracker_set("resHeader", http_res_header)
             logger.info("hook api response success")
 
-            self.agent_upload.agent_upload_report()
+            upload_report = dt_tracker[current_thread_id()]
+            self.executor.submit(self.agent_upload.agent_upload_report, upload_report)
             # 避免循环嵌套
             dt_tracker_set("upload_pool", False)
             delete_current()
