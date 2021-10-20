@@ -1,6 +1,6 @@
 import requests, gzip, json, os, socket, base64, time, threading, platform
 import dongtai_agent_python.global_var as dt_global_var
-from dongtai_agent_python.common.content_tracert import dt_tracker, current_thread_id
+from dongtai_agent_python.common.content_tracert import dt_tracker_set
 from dongtai_agent_python.common.logger import logger_config
 logger = logger_config("upload_data")
 
@@ -117,6 +117,7 @@ class SystemInfo(object):
 class AgentUpload(object):
 
     def __init__(self):
+        self.pending_report = 0
         self.session = requests.session()
         self.config_data = dt_global_var.dt_get_value("config_data")
         self.dt_agent_id = 0
@@ -174,7 +175,6 @@ class AgentUpload(object):
         return Resp
 
     def thread_heart_report(self):
-
         # 上报心跳数据
         system_info = {
             "detail": {
@@ -185,7 +185,7 @@ class AgentUpload(object):
                 "methodQueue": 0,
                 "replayQueue": 0,
                 "reqCount": dt_global_var.dt_get_value("req_count"),
-                "reportQueue": 0
+                "reportQueue": self.pending_report
             },
             "type": 1
         }
@@ -257,8 +257,13 @@ class AgentUpload(object):
     def agent_upload_report(self, upload_report):
         url = "/api/v1/report/upload"
         Resp = self.base_report(url, upload_report)
+        self.pending_report = self.pending_report -1
 
         return Resp
+
+    def async_agent_upload_report(self, executor, upload_report):
+        self.pending_report = self.pending_report + 1
+        executor.submit(self.agent_upload_report, upload_report)
 
     def get_policy_config(self):
 
