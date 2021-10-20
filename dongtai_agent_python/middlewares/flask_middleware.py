@@ -110,7 +110,7 @@ class AgentMiddleware(object):
             logger.info("hook api response success")
 
             upload_report = dt_tracker[current_thread_id()]
-            self.executor.submit(self.agent_upload.agent_upload_report, upload_report)
+            self.agent_upload.async_agent_upload_report(self.executor, upload_report)
             # 避免循环嵌套
             dt_tracker_set("upload_pool", False)
             delete_current()
