@@ -1,10 +1,6 @@
 import ctypes,sys,os
-from dongtai_agent_python.global_var import _global_dt_dict,dt_set_value,dt_get_value
-from dongtai_agent_python.common.content_tracert import method_pool_data,dt_tracker_get,dt_tracker_set,come_in,deal_args
-import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.assess.deal_data import wrapData
-import sqlite3
-copyStr = type('str', str.__bases__, dict(str.__dict__))
+
 
 # https://stackoverflow.com/a/24498525
 def magic_get_dict(o):
@@ -34,6 +30,9 @@ def new_func(origin_cls, method_name, signature=None, source=False, *args, **kwa
     # print(copyNewStr.__dict__)
 
     def child_func(*args, **kwargs):
+        if "__bypass_dt_agent__" in kwargs:
+            del kwargs["__bypass_dt_agent__"]
+            return _fcn(*args, **kwargs)
         if ( (args == ([],'*.mo') or args == (['*.mo'], '**') ) and method_name=="append" ) or (args == ('**/*.mo', '/') and method_name=="split" ):
             return _fcn(*args, **kwargs)
         result = copyNewClass.__dict__[method_name](*args, **kwargs)
@@ -47,7 +46,7 @@ def new_func(origin_cls, method_name, signature=None, source=False, *args, **kwa
 
 
 class hookLazyImport:
-    def __init__(self, module_name,fromlist=[]):
+    def __init__(self, module_name,fromlist=None):
         self.module_name = module_name
         self.module = None
         if fromlist:

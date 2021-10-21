@@ -6,6 +6,7 @@ from typing import IO
 
 _global_dt_dict = {
     "dt_open_pool": True,
+    "has_patched": {},
     "have_hooked": [],
     "upload_pool": False,
     "hook_exit": False,
