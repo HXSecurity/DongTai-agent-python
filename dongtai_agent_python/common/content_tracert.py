@@ -1,5 +1,6 @@
 import threading, traceback, copy
 import dongtai_agent_python.global_var as dt_global_var
+from dongtai_agent_python.common import origin
 from dongtai_agent_python.common.default_data import defaultApiData
 import sys,os,json
 import hashlib
@@ -30,17 +31,10 @@ def dt_tracker_set(key, value):
 def deal_args(new_args):
     end_args = []
     for item in new_args:
-        id_item = id(item)
+        origin.list_append(end_args, id(item))
 
-        end_args.append(id_item)
-
-        if isinstance(item, list) or isinstance(item,tuple):
+        if isinstance(item, tuple):
             end_args = end_args + deal_args(item)
-        # elif isinstance(item, str) or isinstance(item, dict) or isinstance(item, int):
-        #
-        # else:
-        #     print("other Type====")
-        #     print(type(item))
 
     return end_args
 
@@ -50,7 +44,7 @@ def come_in(val,arr):
     hash_id = id(val)
 
     if hash_id not in arr:
-        arr.append(hash_id)
+        origin.list_append(arr, hash_id)
     return arr
 
 
@@ -94,7 +88,7 @@ def append_method_pool(value):
     value['invokeId'] = dt_gid
     try:
         method_pool = dt_tracker[current_thread_id()].get("detail", {}).get("pool", [])
-        method_pool.append(value)
+        origin.list_append(method_pool, value)
         return True
     except Exception:
         return False
@@ -131,7 +125,7 @@ def method_pool_data(module_name,fcn,sourceValues,taint_in,taint_out,layer=-4, s
     for one in sourceValues:
         try:
             after = json.dumps(one)
-            source_arr.append(one)
+            origin.list_append(source_arr, one)
         except Exception:
             continue
 
@@ -168,7 +162,7 @@ def method_pool_data(module_name,fcn,sourceValues,taint_in,taint_out,layer=-4, s
     if afterMd5Id not in have_hooked:
 
         append_method_pool(req_data)
-        have_hooked.append(afterMd5Id)
+        origin.list_append(have_hooked, afterMd5Id)
         dt_global_var.dt_set_value("have_hooked", have_hooked)
     if cur_type == 4:
 

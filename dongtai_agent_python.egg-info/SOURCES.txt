@@ -23,6 +23,7 @@ dongtai_agent_python/common/content_tracert.py
 dongtai_agent_python/common/ctypes_hook.py
 dongtai_agent_python/common/default_data.py
 dongtai_agent_python/common/logger.py
+dongtai_agent_python/common/origin.py
 dongtai_agent_python/middlewares/django_middleware.py
 dongtai_agent_python/middlewares/flask_middleware.py
 dongtai_agent_python/report/upload_data.py

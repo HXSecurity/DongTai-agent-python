@@ -1,33 +1,9 @@
 import requests, gzip, json, os, socket, base64, time, threading, platform
 import dongtai_agent_python.global_var as dt_global_var
+from dongtai_agent_python.common import origin
 from dongtai_agent_python.common.content_tracert import dt_tracker_set
 from dongtai_agent_python.common.logger import logger_config
 logger = logger_config("upload_data")
-
-
-def PrintNetIfAddr():
-    try:
-        import psutil
-        dic = psutil.net_if_addrs()
-        network_arr = []
-        for adapter in dic:
-            snicList = dic[adapter]
-            mac = '无 mac 地址'
-            ipv4 = '无 ipv4 地址'
-            ipv6 = '无 ipv6 地址'
-            for snic in snicList:
-                if snic.family.name in {'AF_LINK', 'AF_PACKET'}:
-                    mac = snic.address
-                elif snic.family.name == 'AF_INET':
-                    ipv4 = snic.address
-                elif snic.family.name == 'AF_INET6':
-                    ipv6 = snic.address
-            network_arr.append('%s, %s, %s, %s' % (adapter, mac, ipv4, ipv6))
-        logger.info("get network success")
-        return ";".join(network_arr)
-    except Exception as e:
-        logger.error("get network fail" + str(e))
-        return ""
 
 
 # 获取系统信息
@@ -60,9 +36,9 @@ class SystemInfo(object):
                             ipv4 = snic.address
                         elif snic.family.name == 'AF_INET6':
                             ipv6 = snic.address
-                    network_arr.append('%s, %s, %s, %s' % (adapter, mac, ipv4, ipv6))
+                    origin.list_append(network_arr, '%s, %s, %s, %s' % (adapter, mac, ipv4, ipv6))
                 logger.info("get network success")
-                return ";".join(network_arr)
+                return origin.str_join(";", network_arr)
             except Exception as e:
                 logger.error("get network" + str(e))
                 return ""
@@ -103,7 +79,7 @@ class SystemInfo(object):
                 for dev in devs:
                     diskinfo = self.psutil.disk_usage(dev.mountpoint)
                     # 将字节转换成G
-                    disk['info'].append({
+                    origin.list_append(disk['info'], {
                         "name": dev.device,
                         "total": str(round(diskinfo.total/self.unit,2))+"G",
                         "used": str(round(diskinfo.used/self.unit,2))+"G",
@@ -134,8 +110,8 @@ class AgentUpload(object):
         if json_data:
             new_list = []
             for item in json_data.keys():
-                new_list.append(str(item)+"="+str(json_data[item]))
-            json_data = "\n".join(new_list)
+                origin.list_append(new_list, str(item)+"="+str(json_data[item]))
+            json_data = origin.str_join("\n", new_list)
             json_data = base64.b64encode(json_data.encode('utf-8'))
             json_data = json_data.decode('utf-8')
         return json_data
@@ -218,9 +194,9 @@ class AgentUpload(object):
 
             for key in server_env.keys():
 
-                server_env_arr.append(key+"="+str(server_env[key]) )
+                origin.list_append(server_env_arr, key+"="+str(server_env[key]))
 
-        env_str = ",".join(server_env_arr)
+        env_str = origin.str_join(",", server_env_arr)
 
         server_env_str = base64.b64encode(env_str.encode('utf-8'))
         self.cur_system_info = SystemInfo()
