@@ -66,7 +66,7 @@ def update(config_data):
         'content-type': "application/json"
     }
 
-    url = config_data.get("iast", {}).get("server", {}).get("url", "") + "/api/v1/agent/download"
+    url = config_data.get("iast", {}).get("server", {}).get("url", "")
     params = {
         "url": url,
         "language": "python",
@@ -76,7 +76,7 @@ def update(config_data):
     dir = os.path.dirname(__file__)
     rnd = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(8))
     filename = dir + os.sep + "dongtai-agent-python-" + rnd + ".tar.gz"
-    resp = requests.get(url, params, timeout=60, headers=headers)
+    resp = requests.get(url + "/api/v1/agent/download", params, timeout=60, headers=headers)
     with open(filename, "wb") as f:
         f.write(resp.content)
         f.close()
