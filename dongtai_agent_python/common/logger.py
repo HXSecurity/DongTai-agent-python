@@ -13,8 +13,11 @@ def logger_config(logging_name):
 
     # 获取logger对象,取名
     logger = logging.getLogger(logging_name)
-    # 输出DEBUG及以上级别的信息，针对所有输出的第一层过滤
-    logger.setLevel(level=logging.DEBUG)
+    if config_data.get("debug"):
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.INFO)
+
     # 获取文件日志句柄并设置日志级别，第二层过滤
     handler = logging.FileHandler(log_path, encoding='UTF-8')
     handler.setLevel(logging.INFO)
@@ -24,7 +27,11 @@ def logger_config(logging_name):
     logger.addHandler(handler)
     # console相当于控制台输出，handler文件输出。获取流句柄并设置日志级别，第二层过滤
     console = logging.StreamHandler()
-    console.setLevel(logging.DEBUG)
+    if config_data.get("debug"):
+        console.setLevel(logging.DEBUG)
+    else:
+        console.setLevel(logging.INFO)
+
     # 为logger对象添加句柄
 
     logger.addHandler(console)

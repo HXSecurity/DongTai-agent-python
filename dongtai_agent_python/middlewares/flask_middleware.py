@@ -10,20 +10,8 @@ import json,flask
 logger = logger_config("python_agent")
 
 
-class AgentTest(object):
-    def __init__(self, old_app):
-        print("__init__ old content txt")
-        self.old_content = old_app
-
-    def __call__(self, *args, **kwargs):
-
-        obj = self.old_content(*args,**kwargs)
-        return obj
-
-
 class AgentMiddleware(object):
     def __init__(self, old_app,app):
-        print("__init__ app")
         self.old_wsgi_app = old_app
 
         logger.info("python agent init")
@@ -46,7 +34,7 @@ class AgentMiddleware(object):
             logger.error("python agent register error ")
 
         dt_global_var.dt_set_value("agentId", dt_agent_id)
-        print("------begin hook-----")
+        logger.debug("------begin hook-----")
         enable_patches("flask")
         logger.info("python agent hook open")
 
@@ -119,8 +107,7 @@ class AgentMiddleware(object):
 
         @app.before_first_request
         def first():
-            print("before_first_request.....")
-            print("before_first_request.....")
+            logger.info("before_first_request.....")
             pass
 
     def __call__(self, *args, **kwargs):
