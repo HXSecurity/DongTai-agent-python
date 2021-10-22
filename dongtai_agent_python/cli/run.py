@@ -93,6 +93,7 @@ def update(config_data):
     new_config = get_config()
     new_engine_version = new_config.get("engine", {}).get("version", "")
     if old_engine_version == new_engine_version:
+        save_config_data(config_data)
         log_message("agent version is not outdated: " + old_engine_version)
         return
 
