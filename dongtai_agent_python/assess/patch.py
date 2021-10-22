@@ -10,16 +10,17 @@ from dongtai_agent_python.report.upload_data import AgentUpload
 
 def enable_patches(cur_frame_app="django"):
     dt_global_var.dt_set_value("dt_open_pool", False)
+    config_data = dt_global_var.dt_get_value("config_data")
     # 通过api读取策略信息
     agent_req = AgentUpload()
     policy_info = agent_req.get_policy_config()
     policy_global = dt_global_var.dt_get_value("policy")
     frame_app = ["django", "flask", "tornado", "bottle"]
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(base_dir, '../policy_api.json')
     # 测试环境 本地读取
-    with open(file_path, 'r') as load_f:
-        policy_info = json.load(load_f)
+    # base_dir = os.path.dirname(os.path.abspath(__file__))
+    # file_path = os.path.join(base_dir, '../policy_api.json')
+    # with open(file_path, 'r') as load_f:
+    #     policy_info = json.load(load_f)
 
     if policy_info.get("status",0) != 201:
         return
@@ -58,9 +59,6 @@ def enable_patches(cur_frame_app="django"):
                     policy_str = origin.str_join(".", imp_arr)
                     old_module = hookLazyImport(policy_str, [class_name])
                     old_cls = getattr(old_module, class_name)
-                    # print("------")
-                    # print(old_cls)
-                    # print(old_module)
             except Exception as e:
                 imp_arr = copy.deepcopy(policy_arr)
                 if imp_arr[0] not in sys.modules:
@@ -73,16 +71,20 @@ def enable_patches(cur_frame_app="django"):
                 del imp_arr[-1]
                 policy_str = origin.str_join(".", imp_arr)
 
-                old_module = hookLazyImport(policy_str, [class_name])
-                old_cls = getattr(old_module, class_name)
+                try:
+                    old_module = hookLazyImport(policy_str, [class_name])
+                    old_cls = getattr(old_module, class_name)
+                except Exception as e:
+                    continue
 
-                # print(old_func)
+            if policy in has_patched:
+                continue
 
             after_cls = magic_get_dict(old_cls)
-            # try:
 
             if isinstance(old_cls, type):
-                print("------origin_cls_property------ " + policy)
+                if config_data.get("debug"):
+                    print("------origin_cls_property------ " + policy)
                 after_cls[method_name] = new_func(
                     old_cls,
                     method_name,
@@ -90,16 +92,15 @@ def enable_patches(cur_frame_app="django"):
                     source
                 )
             else:
-                # 开始读取内存地址
-                # print(builtins.open)
-                print("------origin_cls_function------ " + policy)
+                if config_data.get("debug"):
+                    print("------origin_cls_function------ " + policy)
                 after_cls[method_name] = _InstallFcnHook(old_cls,old_func, policy, source)
 
-            has_patched[policy] = None
+            has_patched[policy] = True
             dt_global_var.dt_set_value("has_patched", has_patched)
 
     dt_global_var.dt_set_value("dt_open_pool", False)
 
     dt_global_var.dt_set_value("policy",  policy_global)
-    print("hook == success")
+    # print("hook == success")
     magic_flush_mro_cache()

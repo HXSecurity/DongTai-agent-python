@@ -33,7 +33,7 @@ def deal_args(new_args):
     for item in new_args:
         origin.list_append(end_args, id(item))
 
-        if isinstance(item, tuple):
+        if isinstance(item, list) or isinstance(item, tuple):
             end_args = end_args + deal_args(item)
 
     return end_args

@@ -37,7 +37,7 @@ class FireMiddleware(MiddlewareMixin):
             logger.error("python agent register error ")
 
         dt_global_var.dt_set_value("agentId", dt_agent_id)
-        print("------begin hook-----")
+        logger.debug("------begin hook-----")
         enable_patches("django")
         logger.info("python agent hook open")
 

@@ -243,7 +243,7 @@ class AgentUpload(object):
 
     def get_policy_config(self):
 
-        url = "/api/v1/profiles?language=2"
+        url = "/api/v1/profiles?language=PYTHON"
         Resp = self.base_api_get(url)
 
         return Resp
