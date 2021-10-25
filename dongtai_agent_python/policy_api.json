@@ -41,8 +41,6 @@
 			"value": "sqlite3.Cursor.executescript",
 			"inherit": "false"
 		},
-
-
 			{
 			"track": "false",
 			"value": "psycopg2._psycopg.cursor.execute",
