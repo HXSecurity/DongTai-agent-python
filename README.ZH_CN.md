@@ -7,7 +7,7 @@
 - [English document](README.md)
 
 ## 1.项目介绍
-DongTai-agent-python 是**洞态IAST** 针对 Python 应用开发的数据采集端。在添加 iast-agent 代理的 Python 应用中，通过改写类字节码的方式采集所需数据，然后将数据发送至 DongTai-openapi 服务，再由云端引擎处理数据判断是否存在安全漏洞。
+DongTai-agent-python 是 **洞态IAST** 针对 Python 应用开发的数据采集端。在添加 iast-agent 代理的 Python 应用中，通过改写类字节码的方式采集所需数据，然后将数据发送至 DongTai-openapi 服务，再由云端引擎处理数据判断是否存在安全漏洞。
 
 DongTai-agent-python  
 
@@ -48,7 +48,8 @@ DongTai-agent-python
      python3 setup.py sdist
      ```
 
-4. 安装探针，打包后会生成dist目录，再dist目录下找到安装包，将dongtai_agent_python.tar.gz安装包放入WEB服务器（中间件）所在机器上，pip安装
+4. 安装探针<br>
+   打包后会生成dist目录，在dist目录下找到安装包，将dongtai_agent_python.tar.gz安装包放入Web服务器所在机器上，执行pip安装
  
       ```shell
       pip3  install ./dongtai-python-agent.tar.gz 
