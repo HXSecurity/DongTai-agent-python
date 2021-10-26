@@ -1,3 +1,5 @@
+from http.client import responses
+
 from flask import request, jsonify
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common.content_tracert import current_thread_id, dt_tracker, set_current, delete_current, \
@@ -92,8 +94,11 @@ class AgentMiddleware(object):
                 http_res_body = ""
             dt_tracker_set("resBody", http_res_body)
             resp_header = dict(response.headers)
+
+            protocol = request.environ.get("SERVER_PROTOCOL", "'HTTP/1.1'")
+            status_line = protocol + " " + str(response.status_code) + " " + responses[response.status_code]
             resp_header['agentId'] = dt_global_var.dt_get_value("agentId")
-            http_res_header = self.agent_upload.agent_json_to_str(resp_header)
+            http_res_header = self.agent_upload.normalize_response_header(status_line, resp_header)
             dt_tracker_set("resHeader", http_res_header)
             logger.info("hook api response success")
 
