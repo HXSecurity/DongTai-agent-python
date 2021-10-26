@@ -30,7 +30,7 @@ def enable_patches(cur_frame_app="django"):
             continue
 
         has_patched = {}
-        if rules['type'] == 1:
+        if rules['type'] == 2:
             source = True
         else:
             source = False

@@ -1,3 +1,5 @@
+from http.client import responses
+
 import requests, gzip, json, os, socket, base64, time, threading, platform
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin
@@ -106,14 +108,25 @@ class AgentUpload(object):
             'content-type': "application/json"
         }
 
-    def agent_json_to_str(self,json_data):
+    def normalize_response_header(self, status_line, headers):
+        header_str = status_line + "\n" + self.json_to_str(headers)
+        header_str = base64.b64encode(header_str.encode('utf-8'))
+        header_str = header_str.decode('utf-8')
+        return header_str
+
+    def agent_json_to_str(self, json_data):
+        if json_data:
+            json_data = self.json_to_str(json_data)
+            json_data = base64.b64encode(json_data.encode('utf-8'))
+            json_data = json_data.decode('utf-8')
+        return json_data
+
+    def json_to_str(self, json_data):
         if json_data:
             new_list = []
             for item in json_data.keys():
                 origin.list_append(new_list, str(item)+"="+str(json_data[item]))
             json_data = origin.str_join("\n", new_list)
-            json_data = base64.b64encode(json_data.encode('utf-8'))
-            json_data = json_data.decode('utf-8')
         return json_data
 
     # 获取接口信息

@@ -1,6 +1,6 @@
 import django
+from http.client import responses
 import dongtai_agent_python.global_var as dt_global_var
-from django.utils.deprecation import MiddlewareMixin
 from dongtai_agent_python.common.content_tracert import current_thread_id, dt_tracker, set_current, delete_current, \
     dt_tracker_set
 from dongtai_agent_python.report.upload_data import AgentUpload
@@ -10,13 +10,13 @@ from concurrent.futures import ThreadPoolExecutor
 logger = logger_config("python_agent")
 
 
-class FireMiddleware(MiddlewareMixin):
+class FireMiddleware(object):
     # '''中间键类'''
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, get_response=None):
         # '''服务器重启之后，接受第一个请求时调用'''
         logger.info("python agent init")
-        super().__init__(*args, **kwargs)
+        self.get_response = get_response
 
         self.executor = ThreadPoolExecutor()
         self.agent_upload = AgentUpload()
@@ -41,7 +41,7 @@ class FireMiddleware(MiddlewareMixin):
         enable_patches("django")
         logger.info("python agent hook open")
 
-    def process_request(self, request):
+    def __call__(self, request):
         # '''产生request对象后，url匹配之前调用'''
         func_id = id(request)
         set_current(func_id)
@@ -82,23 +82,32 @@ class FireMiddleware(MiddlewareMixin):
         dt_global_var.dt_set_value("hook_exit", False)
         logger.info("hook request api success")
 
-    def process_response(self, request, response):
+        return self.process_response(request)
+
+    def process_response(self, request):
         # '''视图函数调用之后，内容返回浏览器之前'''
+        response = self.get_response(request)
+
         dt_global_var.dt_set_value("dt_open_pool", False)
         if response.content and isinstance(response.content, str):
             http_res_body = str(response.content, encoding="utf-8")
         else:
             http_res_body = ""
         dt_tracker_set("resBody", http_res_body)
+
+        resp_header = {}
         if hasattr(response, 'headers'):
             # django >= 3.2
-            # https://docs.djangoproject.com/en/3.2/releases/3.2/#requests-and-responses
+            # https://docs.djangoproject.com/en/3.2/releases/3.2/#requests-and -responses
             resp_header = dict(response.headers)
         else:
             # django < 3.2
             resp_header = dict(response._headers)
+
+        protocol = request.META.get("SERVER_PROTOCOL", "'HTTP/1.1'")
+        status_line = protocol + " " + str(response.status_code) + " " + responses[response.status_code]
         resp_header['agentId'] = dt_global_var.dt_get_value("agentId")
-        http_res_header = self.agent_upload.agent_json_to_str(resp_header)
+        http_res_header = self.agent_upload.normalize_response_header(status_line, resp_header)
         dt_tracker_set("resHeader", http_res_header)
         logger.info("hook api response success")
 
