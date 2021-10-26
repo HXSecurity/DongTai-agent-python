@@ -1,39 +1,93 @@
 Metadata-Version: 1.2
 Name: dongtai-agent-python
-Version: 0.2.0
+Version: 1.0.6
 Summary: DongTai IAST Agent for Python
 Home-page: https://iast.huoxian.cn
 Author: songjinghao
 Author-email: jinghaosong@huoxian.cn
 License: GPL-3
-Description: ## 1.下载探针
+Description: ## DongTai-agent-python
         
-        登陆 [IAST平台](https://iast.huoxian.cn/login) 在**部署IAST**中下载洞态IAST的Agent，将dongtai_agent_python.tar.gz文件放入WEB服务器（中间件）所在机器上
+        [![django-project](https://img.shields.io/badge/django%20versions-3.2.8-blue)](https://www.djangoproject.com/)
+        [![dongtai-project](https://img.shields.io/badge/dongtai%20versions-beta-green)](https://github.com/huoxianclub/dongtai)
+        [![dongtai--agent--python](https://img.shields.io/badge/dongtai--agent--python-v1.0.6-lightgrey)](https://github.com/huoxianclub/dongtai-web)
         
-        注意，`curl url&projectName=<Demo Project>` 为可更改参数，`<projectName>`与创建的项目名称保持一致，agent将自动关联至项目；
-        若下载时未配置`<projectName>`，可配置系统环境变量projectName，重启项目，同样生效，系统环境变量`<projectName>`优先级高于下载时配置的`<projectName>`；
-        如果不配置该参数，需要进入项目管理中进行手工绑定。
+        - [中文版本(Chinese version)](README.ZH_CN.md)
+        
+        ## Project Introduction
+        
+        Dongtai-agent-python is DongTai Iast's data acquisition tool for Python applications. In a Python application with the iast agent added, the required data is collected by rewriting class bytecode, and then the data is sent to dongtai-OpenAPI service, and then the cloud engine processes the data to determine whether there are security holes.
+        
+        DongTai-agent-python  
+        
+        - `dongtai_agent_python/config.json` For configuration DongTai-openapi Url、Token、Web-ProjectName。
+        - `dongtai_agent_python/cli` Control the hot update of the agent version。
+        - `dongtai_agent_python/middleware/` Used to access different python frameworks, currently supports Django and Flask, both of which are introduced in the form of middleware。
+        - `dongtai_agent_python/assess/` Hook the underlying method of python according to the cloud strategy。
+        - `dongtai_agent_python/report/` Report the collected data of the agent to the DongTai-openapi service。
+        
+        ## Application Scenarios
+        
+        - DevOps
+        - Security test the application before it goes online
+        - Third-party Component Management
+        - Code audit
+        - 0 Day digging
+        
+        ## Quick Start
+        
+        Please refer to the [Quick Start](https://hxsecurity.github.io/DongTai-Doc/#/doc/tutorial/quickstart).
+        
+        ## Quick Development
+        
+        1. Fork the [DongTai-agent-python](https://github.com/HXSecurity/DongTai-agent-python) , clone your fork:
+        
+           ```
+           git clone https://github.com/<your-username>/DongTai-agent-python
+           ```
+        
+        2. Write code to your needs.
+        
+        3. The project is packaged and executed in the root directory of the agent project
+             ```shell
+             python3 setup.py sdist
+             ```
+        
+        4. Install the agent <br>
+           After packaging, the dist directory will be generated, and the installation package will be found in the dist directory, Put the dongtai_agent_python.tar.gz installation package on the machine where the Web-server is located，Execute pip installation 
          
-        ## 2.安装探针
-        - 找到下载的探针文件，直接执行命令 
-          ```shell
-          pip3  install ./dongtai-python-agent.tar.gz 
-          ```
+              ```shell
+              pip3  install ./dongtai-python-agent.tar.gz 
+              ```
           
-        ## 3.配置探针
+        ## 4.Project access Agent
         
-        ### 3.1 Django 
+        #### Django 
         
-        1.进入app的主目录
+        1.Enter the main directory of the app
         
-        2.打开`app/settings.py`文件，找到`MIDDLEWARE`所在行
+        2.Open the `app/settings.py` file and find the line of `MIDDLEWARE`
         
-        3.在该行的下面插入`dongtai_agent_python.middlewares.django_middleware.FireMiddleware`
+        3.Insert below the line `dongtai_agent_python.middlewares.django_middleware.FireMiddleware`
         
-        4.重启app
+        4.Restart app
         
-        
-        
+        #### Flask
+        1.Modify the entry file of the project (such as app.py) and add the following content
+             
+            from dongtai_agent_python.middlewares.flask_middleware import AgentMiddleware
+            
+            app = Flask(__name__)  
+            app.wsgi_app = AgentMiddleware(app.wsgi_app, app) 
+            
+            if __name__ == '__main__':
+                app.run()  
+                
+        2.Restart app
+             
+                
+        Note that the `project.name` in `dongtai_agent_python/config.json` needs to be consistent with the project name created in the iast-web page, The agent will be automatically linked to the project;
+        If `project.name` is not configured, you can configure the system environment variable `projectName`, restart the project, the same will take effect, The priority of the system environment variable `projectName` is higher than the `project.name` in the configuration file;
 Platform: UNKNOWN
 Classifier: Environment :: Web Environment
 Classifier: Framework :: Django
@@ -44,9 +98,6 @@ Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3 :: Only
-Classifier: Programming Language :: Python :: 3.6
-Classifier: Programming Language :: Python :: 3.7
-Classifier: Programming Language :: Python :: 3.8
 Classifier: Topic :: Internet :: WWW/HTTP
 Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
 Requires-Python: >=3.6

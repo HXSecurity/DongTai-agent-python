@@ -5,9 +5,7 @@ setup.py
 dongtai_agent_python/__init__.py
 dongtai_agent_python/config.json
 dongtai_agent_python/global_var.py
-dongtai_agent_python/policy.json
 dongtai_agent_python/policy_api.json
-dongtai_agent_python/try_test.py
 dongtai_agent_python.egg-info/PKG-INFO
 dongtai_agent_python.egg-info/SOURCES.txt
 dongtai_agent_python.egg-info/dependency_links.txt
