@@ -2,7 +2,7 @@ import threading, traceback, copy
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin
 from dongtai_agent_python.common.default_data import defaultApiData
-import sys,os,json
+import sys, os, json
 import hashlib
 
 dt_tracker = {}
@@ -13,7 +13,7 @@ dt_thread_lock = threading.RLock()
 
 def current_thread_id():
     ident = threading.currentThread().ident
-    return str(ident)+str(dt_func_id)
+    return str(ident) + str(dt_func_id)
 
 
 def dt_tracker_get(key, default=None):
@@ -39,8 +39,7 @@ def deal_args(new_args):
     return end_args
 
 
-def come_in(val,arr):
-
+def come_in(val, arr):
     hash_id = id(val)
 
     if hash_id not in arr:
@@ -94,7 +93,7 @@ def append_method_pool(value):
         return False
 
 
-def method_pool_data(module_name,fcn,sourceValues,taint_in,taint_out,layer=-4, source=False, signature=None):
+def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=-4, source=False, signature=None):
     hook_exit = dt_global_var.dt_get_value("hook_exit")
     # 已检测到危险函数，不再往风险池追加数据
     if hook_exit:
@@ -102,9 +101,9 @@ def method_pool_data(module_name,fcn,sourceValues,taint_in,taint_out,layer=-4, s
     tracert = traceback.extract_stack()
     tracert_arr = list(tracert[layer])
     path = sys.path[0]
-    while layer>-20:
+    while layer > -20:
         tracert_arr = list(tracert[layer])
-        if path in tracert_arr[0] and (path+"/dongtai_agent_python") not in tracert_arr[0]:
+        if path in tracert_arr[0] and (path + "/dongtai_agent_python") not in tracert_arr[0]:
             break
         layer = layer - 1
 
@@ -129,8 +128,11 @@ def method_pool_data(module_name,fcn,sourceValues,taint_in,taint_out,layer=-4, s
         except Exception:
             continue
 
-    # for res in taint_out:
-    #     new_out.append(res)
+
+    if signature.endswith("." + fcn.__name__):
+        class_name = signature[:-len(fcn.__name__)-1]
+    else:
+        class_name = module_name
     req_data = {
         "invokeId": 0,
         "interfaces": [],
@@ -139,10 +141,10 @@ def method_pool_data(module_name,fcn,sourceValues,taint_in,taint_out,layer=-4, s
         ],
         "targetValues": str(taint_out),
         "signature": signature,
-        "originClassName": module_name,
+        "originClassName": class_name,
         "sourceValues": source_arr,
         "methodName": fcn.__name__,
-        "className": module_name,
+        "className": class_name,
         "source": source,
         "callerLineNumber": tracert_arr[1],
         "callerClass": tracert_arr[0],
@@ -152,20 +154,17 @@ def method_pool_data(module_name,fcn,sourceValues,taint_in,taint_out,layer=-4, s
         "retClassName": ""
     }
     source_and_target_value = json.dumps({
-        "sourceHash":req_data['sourceHash'],
-        "targetHash":req_data['targetHash']
+        "sourceHash": req_data['sourceHash'],
+        "targetHash": req_data['targetHash']
     })
     hl = hashlib.md5()
     hl.update(source_and_target_value.encode(encoding='utf-8'))
     afterMd5Id = hl.hexdigest()
 
     if afterMd5Id not in have_hooked:
-
         append_method_pool(req_data)
         origin.list_append(have_hooked, afterMd5Id)
         dt_global_var.dt_set_value("have_hooked", have_hooked)
     if cur_type == 4:
-
         dt_global_var.dt_set_value("hook_exit", True)
     # dt_global_var.dt_set_value("dt_open_pool", True)
-
