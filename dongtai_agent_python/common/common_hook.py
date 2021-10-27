@@ -64,7 +64,7 @@ class InstallFcnHook(object):
         self._pre_hook(*args, **kwargs)
 
         retval = self._fcn(*args, **kwargs)
-        if dt_global_var.dt_get_value("dt_pause"):
+        if dt_global_var.is_pause():
             return retval
 
         wrapData(

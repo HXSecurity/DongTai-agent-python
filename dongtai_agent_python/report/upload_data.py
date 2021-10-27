@@ -112,6 +112,7 @@ class AgentUpload(object):
         self.iast_url = self.config_data.get("iast", {}).get("server", {}).get("url", "")
         self.interval = self.config_data.get("iast", {}).get("service", {}).get("report", {}).get("interval", 5)
         self.interval_check_enable = 60
+        self.interval_check_manual_pause = 5
         self.cur_system_info = {}
         self.headers = {
             "Authorization": "Token " + self.config_data.get("iast", {}).get("server", {}).get("token", ""),
@@ -129,10 +130,10 @@ class AgentUpload(object):
         self.cur_system_info = SystemInfo()
 
     # 获取接口信息
-    def base_api_get(self, url):
+    def base_api_get(self, url, params=None):
         url = self.iast_url + url
         try:
-            res = requests.get(url, timeout=20, headers=self.headers)
+            res = requests.get(url, timeout=20, headers=self.headers, params=params)
             resp = res.content.decode("utf-8")
             resp = json.loads(resp)
 
@@ -215,6 +216,21 @@ class AgentUpload(object):
         t1 = threading.Timer(self.interval_check_enable, self.thread_check_enable)
         t1.start()
 
+    def thread_check_manual_pause(self):
+        is_paused = dt_global_var.dt_get_value("dt_manual_pause")
+        resp = self.check_manual_pause()
+        if resp == "stop":
+            if not is_paused:
+                logger.info("agent manual pause")
+                dt_global_var.dt_set_value("dt_manual_pause", True)
+        elif resp == "start":
+            if is_paused:
+                logger.info("agent manual unpause")
+                dt_global_var.dt_set_value("dt_manual_pause", False)
+
+        t1 = threading.Timer(self.interval_check_manual_pause, self.thread_check_manual_pause)
+        t1.start()
+
     def agent_register(self, data):
 
         url = "/api/v1/agent/register"
@@ -261,6 +277,9 @@ class AgentUpload(object):
                 # check enable thread
                 t2 = threading.Timer(self.interval_check_enable, self.thread_check_enable)
                 t2.start()
+                # check manual pause
+                t3 = threading.Timer(self.interval_check_manual_pause, self.thread_check_manual_pause)
+                t3.start()
 
         return resp
 
@@ -302,6 +321,15 @@ class AgentUpload(object):
                     return False
 
         return True
+
+    def check_manual_pause(self):
+        url = "/api/v1/engine/startstop"
+        resp = self.base_api_get(url, {
+            "name": self.agent_name
+        })
+
+        # notcmd: no handling
+        return resp.get("data", "notcmd")
 
     def report_startup_time(self, start_time):
         url = "/api/v1/agent/startuptime"

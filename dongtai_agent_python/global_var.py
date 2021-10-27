@@ -7,6 +7,7 @@ global _global_dt_dict
 _global_dt_dict = {
     "dt_open_pool": True,
     "dt_pause": False,
+    "dt_manual_pause": False,
     "has_patched": {},
     "have_hooked": [],
     "upload_pool": False,
@@ -48,3 +49,10 @@ def get_config_data():
     dt_set_value("config_data", config_data)
     dt_set_value("dt_open_pool", True)
     return config_data
+
+
+def is_pause():
+    global _global_dt_dict
+    if _global_dt_dict["dt_pause"] or _global_dt_dict["dt_manual_pause"]:
+        return True
+    return False
