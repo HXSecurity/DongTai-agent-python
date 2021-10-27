@@ -1,0 +1,35 @@
+name: Update Test Agent
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Package 
+        run: |
+          python setup.py sdist
+
+      - uses: manyuanrong/setup-ossutil@v2.0
+        with:
+          endpoint: "oss-cn-beijing.aliyuncs.com"
+          access-key-id: ${{ secrets.OSS_KEY_ID }}
+          access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+
+      - name: Publish
+        run: |
+          filename=$(python setup.py --fullname)
+          ossutil cp -rf dist/${filename}.tar.gz oss://dongtai/agent_test/python/dongtai-agent-python.tar.gz --meta x-oss-object-acl:public-read
