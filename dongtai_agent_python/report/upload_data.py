@@ -237,6 +237,7 @@ class AgentUpload(object):
 
         server_env = dict(os.environ)
         server_env_arr = []
+        auto_create_project = 0
         project_name = self.config_data.get("project", {}).get("name", "Demo Project")
         if isinstance(server_env, dict):
             if server_env.get("projectName", ""):
@@ -244,6 +245,9 @@ class AgentUpload(object):
             elif server_env.get("PROJECTNAME", ""):
                 # windows always upper case env key
                 project_name = server_env.get("PROJECTNAME", "")
+
+            if server_env.get("AUTO_CREATE_PROJECT", "") == "1":
+                auto_create_project = 1
 
             for key in server_env.keys():
                 origin.list_append(server_env_arr, key + "=" + str(server_env[key]))
@@ -265,7 +269,8 @@ class AgentUpload(object):
             "serverPort": "",
             "serverPath": "",
             "serverEnv": server_env_str.decode('utf-8'),
-            "pid": str(os.getpid())
+            "pid": str(os.getpid()),
+            "autoCreateProject": auto_create_project,
         }
         resp = self.base_report(url, register_data)
         if resp.get("status", 0) == 201:
