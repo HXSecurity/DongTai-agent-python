@@ -1,19 +1,22 @@
+from concurrent.futures import ThreadPoolExecutor
 from http.client import responses
 
-from flask import request, jsonify
+import flask
+from flask import request
+
 import dongtai_agent_python.global_var as dt_global_var
-from dongtai_agent_python.common.content_tracert import current_thread_id, dt_tracker, set_current, delete_current, \
-    dt_tracker_set
-from dongtai_agent_python.report.upload_data import AgentUpload
 from dongtai_agent_python.assess.patch import enable_patches
+from dongtai_agent_python.common import utils
+from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_tracker, dt_tracker_set, \
+    set_current
 from dongtai_agent_python.common.logger import logger_config
-from concurrent.futures import ThreadPoolExecutor
-import json,flask
+from dongtai_agent_python.report.upload_data import AgentUpload
+
 logger = logger_config("python_agent")
 
 
 class AgentMiddleware(object):
-    def __init__(self, old_app,app):
+    def __init__(self, old_app, app):
         self.old_wsgi_app = old_app
 
         logger.info("python agent init")
@@ -57,8 +60,8 @@ class AgentMiddleware(object):
             dt_global_var.dt_set_value("req_count", req_count)
 
             request_header = dict(request.headers)
-            http_req_header = self.agent_upload.agent_json_to_str(request_header)
-            request_body = self.agent_upload.agent_json_to_str(request_body)
+            http_req_header = utils.json_to_base64(request_header)
+            request_body = utils.json_to_base64(request_body)
 
             need_to_set = {
                 "agentId": reg_agent_id,
@@ -88,8 +91,8 @@ class AgentMiddleware(object):
         def process_response_hook(response):
 
             dt_global_var.dt_set_value("dt_open_pool", False)
-            if response.data and isinstance(response.data, str):
-                http_res_body = str(response.data, encoding="utf-8")
+            if response.data and isinstance(response.data, bytes):
+                http_res_body = utils.bytes_to_base64(response.data)
             else:
                 http_res_body = ""
             dt_tracker_set("resBody", http_res_body)
@@ -98,7 +101,7 @@ class AgentMiddleware(object):
             protocol = request.environ.get("SERVER_PROTOCOL", "'HTTP/1.1'")
             status_line = protocol + " " + str(response.status_code) + " " + responses[response.status_code]
             resp_header['agentId'] = dt_global_var.dt_get_value("agentId")
-            http_res_header = self.agent_upload.normalize_response_header(status_line, resp_header)
+            http_res_header = utils.normalize_response_header(status_line, resp_header)
             dt_tracker_set("resHeader", http_res_header)
             logger.info("hook api response success")
 
@@ -117,8 +120,5 @@ class AgentMiddleware(object):
 
     def __call__(self, *args, **kwargs):
 
-        obj = self.old_wsgi_app(*args,**kwargs)
+        obj = self.old_wsgi_app(*args, **kwargs)
         return obj
-
-
-
