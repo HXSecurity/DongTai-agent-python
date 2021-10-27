@@ -44,6 +44,10 @@ class FireMiddleware(object):
         logger.info("python agent hook open")
 
     def __call__(self, request):
+        # agent paused
+        if dt_global_var.dt_get_value("dt_pause"):
+            return self.get_response(request)
+
         # '''产生request对象后，url匹配之前调用'''
         func_id = id(request)
         set_current(func_id)

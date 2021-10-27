@@ -1,8 +1,11 @@
 import base64
+import decimal
 import gzip
 import json
 import os
 import platform
+import random
+
 import requests
 import socket
 import threading
@@ -106,7 +109,8 @@ class AgentUpload(object):
         self.session = requests.session()
         self.config_data = dt_global_var.dt_get_value("config_data")
         self.dt_agent_id = 0
-        self.interval = self.config_data.get("iast", {}).get("service", {}).get("report", {}).get("interval", 30)
+        self.interval = self.config_data.get("iast", {}).get("service", {}).get("report", {}).get("interval", 5)
+        self.interval_check_enable = 60
         self.cur_system_info = {}
         self.headers = {
             "Authorization": "Token " + self.config_data.get("iast", {}).get("server", {}).get("token", ""),
@@ -175,13 +179,25 @@ class AgentUpload(object):
         url = "/api/v1/report/upload"
         heart_resp = self.base_report(url, system_info)
         if heart_resp.get("status", 0) == 201:
-            logger.info("report heart data success")
+            logger.debug("report heart data success")
         else:
             logger.error("report heart data error")
 
-        # 创建并初始化线程
         t1 = threading.Timer(self.interval, self.thread_heart_report)
-        # 启动线程
+        t1.start()
+
+    def thread_check_enable(self):
+        is_paused = dt_global_var.dt_get_value("dt_pause")
+        if not self.check_enable():
+            if not is_paused:
+                logger.info("resource limit: agent pause")
+                dt_global_var.dt_set_value("dt_pause", True)
+        else:
+            if is_paused:
+                logger.info("resource limit: agent unpause")
+                dt_global_var.dt_set_value("dt_pause", False)
+
+        t1 = threading.Timer(self.interval_check_enable, self.thread_check_enable)
         t1.start()
 
     def agent_register(self, data):
@@ -224,10 +240,12 @@ class AgentUpload(object):
         if resp.get("status", 0) == 201:
             self.dt_agent_id = resp.get("data", {}).get("id", 0)
             if self.dt_agent_id:
-                # 创建并初始化线程
+                # heartbeat thread
                 t1 = threading.Timer(self.interval, self.thread_heart_report)
-                # 启动线程
                 t1.start()
+                # check enable thread
+                t2 = threading.Timer(self.interval_check_enable, self.thread_check_enable)
+                t2.start()
 
         return resp
 
@@ -248,3 +266,24 @@ class AgentUpload(object):
         resp = self.base_api_get(url)
 
         return resp
+
+    # check agent should pause when use high system resource
+    def check_enable(self):
+        url = "/api/v1/agent/limit"
+        resp = self.base_api_get(url)
+        if resp.get("status", 0) != 201:
+            return True
+
+        limits = resp.get("data", [])
+        if len(limits) == 0:
+            return True
+        for limit in limits:
+            if limit.get("key", "") == "cpu_limit":
+                cpu_limit = decimal.Decimal(limit.get("value", 0))
+                if cpu_limit <= 0:
+                    return True
+                current_cpu = decimal.Decimal(self.cur_system_info.get_cpu_rate())
+                if current_cpu >= cpu_limit:
+                    return False
+
+        return True
