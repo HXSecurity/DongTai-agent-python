@@ -1,3 +1,4 @@
+import time
 from concurrent.futures import ThreadPoolExecutor
 from http.client import responses
 
@@ -17,9 +18,11 @@ logger = logger_config("python_agent")
 
 class AgentMiddleware(object):
     def __init__(self, old_app, app):
-        self.old_wsgi_app = old_app
+        start_time = time.time_ns()
 
         logger.info("python agent init")
+        self.old_wsgi_app = old_app
+
         self.executor = ThreadPoolExecutor()
         self.agent_upload = AgentUpload()
         # register
@@ -41,6 +44,8 @@ class AgentMiddleware(object):
         dt_global_var.dt_set_value("agentId", dt_agent_id)
         logger.debug("------begin hook-----")
         enable_patches("flask")
+
+        self.agent_upload.report_startup_time((time.time_ns() - start_time) / 1000000)
         logger.info("python agent hook open")
 
         @app.before_request
