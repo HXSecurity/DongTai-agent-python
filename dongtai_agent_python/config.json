@@ -13,16 +13,16 @@
     },
     "service": {
       "report": {
-        "interval": 600
+        "interval": 5
       },
       "replay": {
-        "interval": 300000
+        "interval": 300
       }
     },
     "dump": {
       "class": {
         "enable": false,
-        "path": "/tmp/iast-class-dump/"
+        "path": "./iast-class-dump/"
       }
     },
     "engine": {
@@ -33,20 +33,20 @@
     "allhook": {
       "enable": true
     },
-    "name": "lingzhi-Enterprise 1.0.0",
+    "name": "DongTai 1.0.6",
     "mode": "normal"
   },
   "project": {
     "name": "Python Demo Project"
   },
   "engine": {
-    "version": "v0.2.0",
+    "version": "v1.0.6",
     "name": "dongtai-agent-python"
   },
   "app": {
-    "name": "IastVulScan"
+    "name": "DongTai"
   },
   "log": {
-    "log_path": "./dongtai_py_agent_log.txt"
+    "log_path": "./dongtai_py_agent.log"
   }
 }

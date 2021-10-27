@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-import os, json
-global _global_dt_dict
-from typing import IO
+import json
+import os
 
+global _global_dt_dict
 
 _global_dt_dict = {
     "dt_open_pool": True,
+    "dt_pause": False,
+    "dt_manual_pause": False,
     "has_patched": {},
     "have_hooked": [],
     "upload_pool": False,
@@ -32,13 +34,12 @@ def dt_get_value(key):
     try:
         return _global_dt_dict[key]
     except Exception as e:
-        print('读取'+key+'失败\r\n')
+        print('读取' + key + '失败\r\n')
         return ""
 
 
 def get_config_data():
-    # global dt_global_var
-    dt_set_value("dt_open_pool",False)
+    dt_set_value("dt_open_pool", False)
     base_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_dir, './config.json')
     config_data = {}
@@ -48,3 +49,10 @@ def get_config_data():
     dt_set_value("config_data", config_data)
     dt_set_value("dt_open_pool", True)
     return config_data
+
+
+def is_pause():
+    global _global_dt_dict
+    if _global_dt_dict["dt_pause"] or _global_dt_dict["dt_manual_pause"]:
+        return True
+    return False

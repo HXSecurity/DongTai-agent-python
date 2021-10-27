@@ -1,13 +1,16 @@
-import django
-from http.client import responses
-import dongtai_agent_python.global_var as dt_global_var
-from dongtai_agent_python.common import utils
-from dongtai_agent_python.common.content_tracert import current_thread_id, dt_tracker, set_current, delete_current, \
-    dt_tracker_set
-from dongtai_agent_python.report.upload_data import AgentUpload
-from dongtai_agent_python.assess.patch import enable_patches
-from dongtai_agent_python.common.logger import logger_config
+import time
 from concurrent.futures import ThreadPoolExecutor
+from http.client import responses
+
+import django
+
+import dongtai_agent_python.global_var as dt_global_var
+from dongtai_agent_python.assess.patch import enable_patches
+from dongtai_agent_python.common import utils
+from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_tracker, dt_tracker_set, \
+    set_current
+from dongtai_agent_python.common.logger import logger_config
+from dongtai_agent_python.report.upload_data import AgentUpload
 
 logger = logger_config("python_agent")
 
@@ -17,6 +20,8 @@ class FireMiddleware(object):
 
     def __init__(self, get_response=None):
         # '''服务器重启之后，接受第一个请求时调用'''
+        start_time = time.time_ns()
+
         logger.info("python agent init")
         self.get_response = get_response
 
@@ -41,9 +46,15 @@ class FireMiddleware(object):
         dt_global_var.dt_set_value("agentId", dt_agent_id)
         logger.debug("------begin hook-----")
         enable_patches("django")
+
+        self.agent_upload.report_startup_time((time.time_ns() - start_time) / 1000000)
         logger.info("python agent hook open")
 
     def __call__(self, request):
+        # agent paused
+        if dt_global_var.is_pause():
+            return self.get_response(request)
+
         # '''产生request对象后，url匹配之前调用'''
         func_id = id(request)
         set_current(func_id)

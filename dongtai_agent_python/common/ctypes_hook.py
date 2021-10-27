@@ -1,4 +1,8 @@
-import ctypes,sys,os
+import ctypes
+import os
+import sys
+
+from dongtai_agent_python import global_var as dt_global_var
 from dongtai_agent_python.assess.deal_data import wrapData
 
 
@@ -24,29 +28,31 @@ def magic_flush_mro_cache():
 
 # 属性方法hook
 def new_func(origin_cls, method_name, signature=None, source=False, *args, **kwargs):
-
-    copyNewClass = type(origin_cls.__name__, origin_cls.__bases__, dict(origin_cls.__dict__))
+    copy_new_class = type(origin_cls.__name__, origin_cls.__bases__, dict(origin_cls.__dict__))
     _fcn = getattr(origin_cls, method_name)
-    # print(copyNewStr.__dict__)
 
     def child_func(*args, **kwargs):
         if "__bypass_dt_agent__" in kwargs:
             del kwargs["__bypass_dt_agent__"]
             return _fcn(*args, **kwargs)
-        if ( (args == ([],'*.mo') or args == (['*.mo'], '**') ) and method_name=="append" ) or (args == ('**/*.mo', '/') and method_name=="split" ):
+        if dt_global_var.is_pause():
             return _fcn(*args, **kwargs)
-        result = copyNewClass.__dict__[method_name](*args, **kwargs)
+        if ((args == ([], '*.mo') or args == (['*.mo'], '**')) and method_name == "append") or (
+                args == ('**/*.mo', '/') and method_name == "split"):
+            return _fcn(*args, **kwargs)
+        result = copy_new_class.__dict__[method_name](*args, **kwargs)
 
         result = wrapData(
             result, origin_cls.__name__, _fcn,
-            signature=signature,source=source, comeData=args)
+            signature=signature, source=source, comeData=args)
 
         return result
+
     return child_func
 
 
-class hookLazyImport:
-    def __init__(self, module_name,fromlist=None):
+class HookLazyImport:
+    def __init__(self, module_name, fromlist=None):
         self.module_name = module_name
         self.module = None
         if fromlist:
@@ -56,7 +62,6 @@ class hookLazyImport:
 
     def __getattr__(self, name):
         if self.module is None:
-
             self.module = __import__(self.module_name, globals(), locals(), self.fromlist, 0)
 
         return getattr(self.module, name)

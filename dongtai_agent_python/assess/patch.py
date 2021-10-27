@@ -1,10 +1,10 @@
-import json, builtins, ctypes, copy,sys,os
+import copy
+import sys
+
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin
-from dongtai_agent_python.common.content_tracert import method_pool_data
-from dongtai_agent_python.common.ctypes_hook import magic_get_dict, magic_flush_mro_cache
-from dongtai_agent_python.common.ctypes_hook import hookLazyImport, new_func
-from dongtai_agent_python.common.common_hook import proxy_builtin, _InstallFcnHook
+from dongtai_agent_python.common.common_hook import InstallFcnHook
+from dongtai_agent_python.common.ctypes_hook import HookLazyImport, magic_flush_mro_cache, magic_get_dict, new_func
 from dongtai_agent_python.report.upload_data import AgentUpload
 
 
@@ -22,7 +22,7 @@ def enable_patches(cur_frame_app="django"):
     # with open(file_path, 'r') as load_f:
     #     policy_info = json.load(load_f)
 
-    if policy_info.get("status",0) != 201:
+    if policy_info.get("status", 0) != 201:
         return
 
     for rules in policy_info['data']:
@@ -47,7 +47,7 @@ def enable_patches(cur_frame_app="django"):
                 # 存储到全局变量
                 del imp_arr[-1]
                 policy_str = origin.str_join(".", imp_arr)
-                old_module = hookLazyImport(policy_str, [method_name])
+                old_module = HookLazyImport(policy_str, [method_name])
                 old_func = getattr(old_module, method_name)
                 old_cls = old_module.origin_module()
                 if old_cls is None:
@@ -57,7 +57,7 @@ def enable_patches(cur_frame_app="django"):
                     del imp_arr[-1]
                     del imp_arr[-1]
                     policy_str = origin.str_join(".", imp_arr)
-                    old_module = hookLazyImport(policy_str, [class_name])
+                    old_module = HookLazyImport(policy_str, [class_name])
                     old_cls = getattr(old_module, class_name)
             except Exception as e:
                 imp_arr = copy.deepcopy(policy_arr)
@@ -72,7 +72,7 @@ def enable_patches(cur_frame_app="django"):
                 policy_str = origin.str_join(".", imp_arr)
 
                 try:
-                    old_module = hookLazyImport(policy_str, [class_name])
+                    old_module = HookLazyImport(policy_str, [class_name])
                     old_cls = getattr(old_module, class_name)
                 except Exception as e:
                     continue
@@ -94,13 +94,13 @@ def enable_patches(cur_frame_app="django"):
             else:
                 if config_data.get("debug"):
                     print("------origin_cls_function------ " + policy)
-                after_cls[method_name] = _InstallFcnHook(old_cls,old_func, policy, source)
+                after_cls[method_name] = InstallFcnHook(old_cls, old_func, policy, source)
 
             has_patched[policy] = True
             dt_global_var.dt_set_value("has_patched", has_patched)
 
     dt_global_var.dt_set_value("dt_open_pool", False)
 
-    dt_global_var.dt_set_value("policy",  policy_global)
+    dt_global_var.dt_set_value("policy", policy_global)
     # print("hook == success")
     magic_flush_mro_cache()
