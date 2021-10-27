@@ -1,12 +1,14 @@
 import django
 from http.client import responses
 import dongtai_agent_python.global_var as dt_global_var
+from dongtai_agent_python.common import utils
 from dongtai_agent_python.common.content_tracert import current_thread_id, dt_tracker, set_current, delete_current, \
     dt_tracker_set
 from dongtai_agent_python.report.upload_data import AgentUpload
 from dongtai_agent_python.assess.patch import enable_patches
 from dongtai_agent_python.common.logger import logger_config
 from concurrent.futures import ThreadPoolExecutor
+
 logger = logger_config("python_agent")
 
 
@@ -51,12 +53,12 @@ class FireMiddleware(object):
         http_url = request.scheme + "://" + request.META.get("HTTP_HOST", "") + request.META.get("PATH_INFO", "")
         if request.META.get("QUERY_STRING", ""):
             http_url += "?" + request.META.get("QUERY_STRING", "")
-        http_req_header = self.agent_upload.agent_json_to_str(dict(request.headers))
+        http_req_header = utils.json_to_base64(dict(request.headers))
 
-        if request.body and isinstance(request.body, str):
-            reqeust_body = str(request.body, encoding="utf-8")
+        if request.body and isinstance(request.body, bytes):
+            request_body = utils.bytes_to_base64(request.body)
         else:
-            reqeust_body = ""
+            request_body = ""
 
         need_to_set = {
             "agentId": reg_agent_id,
@@ -68,7 +70,7 @@ class FireMiddleware(object):
             "clientIp": request.META.get("REMOTE_ADDR", "127.0.0.1"),
             "method": request.META.get("REQUEST_METHOD", "None"),
             "reqHeader": http_req_header,
-            "reqBody": reqeust_body,
+            "reqBody": request_body,
             "scheme": request.scheme,
             "dt_pool_args": [],
             "dt_data_args": [],
@@ -89,13 +91,12 @@ class FireMiddleware(object):
         response = self.get_response(request)
 
         dt_global_var.dt_set_value("dt_open_pool", False)
-        if response.content and isinstance(response.content, str):
-            http_res_body = str(response.content, encoding="utf-8")
+        if response.content and isinstance(response.content, bytes):
+            http_res_body = utils.bytes_to_base64(response.content)
         else:
             http_res_body = ""
         dt_tracker_set("resBody", http_res_body)
 
-        resp_header = {}
         if hasattr(response, 'headers'):
             # django >= 3.2
             # https://docs.djangoproject.com/en/3.2/releases/3.2/#requests-and -responses
@@ -107,7 +108,7 @@ class FireMiddleware(object):
         protocol = request.META.get("SERVER_PROTOCOL", "'HTTP/1.1'")
         status_line = protocol + " " + str(response.status_code) + " " + responses[response.status_code]
         resp_header['agentId'] = dt_global_var.dt_get_value("agentId")
-        http_res_header = self.agent_upload.normalize_response_header(status_line, resp_header)
+        http_res_header = utils.normalize_response_header(status_line, resp_header)
         dt_tracker_set("resHeader", http_res_header)
         logger.info("hook api response success")
 

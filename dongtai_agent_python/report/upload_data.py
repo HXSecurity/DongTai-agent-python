@@ -1,10 +1,17 @@
-from http.client import responses
+import base64
+import gzip
+import json
+import os
+import platform
+import requests
+import socket
+import threading
+import traceback
 
-import requests, gzip, json, os, socket, base64, time, threading, platform
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin
-from dongtai_agent_python.common.content_tracert import dt_tracker_set
 from dongtai_agent_python.common.logger import logger_config
+
 logger = logger_config("upload_data")
 
 
@@ -21,17 +28,17 @@ class SystemInfo(object):
             logger.error("psutil import error, please pip3 install psutil")
 
     # 获取网络信息
-    def PrintNetIfAddr(self):
+    def print_net_if_addr(self):
         if self.psutil is not None:
             try:
                 dic = self.psutil.net_if_addrs()
                 network_arr = []
                 for adapter in dic:
-                    snicList = dic[adapter]
+                    snic_list = dic[adapter]
                     mac = '无 mac 地址'
                     ipv4 = '无 ipv4 地址'
                     ipv6 = '无 ipv6 地址'
-                    for snic in snicList:
+                    for snic in snic_list:
                         if snic.family.name in {'AF_LINK', 'AF_PACKET'}:
                             mac = snic.address
                         elif snic.family.name == 'AF_INET':
@@ -48,7 +55,7 @@ class SystemInfo(object):
             return ""
 
     # 获取cpu信息
-    def getCpuRate(self):
+    def get_cpu_rate(self):
         if self.psutil is not None:
             # print(self.psutil.cpu_percent())
             percent = self.psutil.cpu_percent()
@@ -57,7 +64,7 @@ class SystemInfo(object):
             return 0
 
     # 获取系统内存使用情况
-    def getMemoryInfo(self):
+    def get_memory_info(self):
         if self.psutil is not None:
             memory_info = self.psutil.virtual_memory()
             return {
@@ -73,7 +80,7 @@ class SystemInfo(object):
             }
 
     # 获取磁盘信息
-    def getDisk(self):
+    def get_disk(self):
         disk = {"info": []}
         if self.psutil is not None:
             devs = self.psutil.disk_partitions()
@@ -83,10 +90,10 @@ class SystemInfo(object):
                     # 将字节转换成G
                     origin.list_append(disk['info'], {
                         "name": dev.device,
-                        "total": str(round(diskinfo.total/self.unit,2))+"G",
-                        "used": str(round(diskinfo.used/self.unit,2))+"G",
-                        "free": str(round(diskinfo.free/self.unit,2))+"G",
-                        "rate": str(diskinfo.percent)+"%",
+                        "total": str(round(diskinfo.total / self.unit, 2)) + "G",
+                        "used": str(round(diskinfo.used / self.unit, 2)) + "G",
+                        "free": str(round(diskinfo.free / self.unit, 2)) + "G",
+                        "rate": str(diskinfo.percent) + "%",
                         "fstype": dev.fstype
                     })
         return disk
@@ -99,7 +106,7 @@ class AgentUpload(object):
         self.session = requests.session()
         self.config_data = dt_global_var.dt_get_value("config_data")
         self.dt_agent_id = 0
-        self.interval = self.config_data.get("iast", {}).get("service", {}).get("report", {}).get("interval",30)
+        self.interval = self.config_data.get("iast", {}).get("service", {}).get("report", {}).get("interval", 30)
         self.cur_system_info = {}
         self.headers = {
             "Authorization": "Token " + self.config_data.get("iast", {}).get("server", {}).get("token", ""),
@@ -108,41 +115,28 @@ class AgentUpload(object):
             'content-type': "application/json"
         }
 
-    def normalize_response_header(self, status_line, headers):
-        header_str = status_line + "\n" + self.json_to_str(headers)
-        header_str = base64.b64encode(header_str.encode('utf-8'))
-        header_str = header_str.decode('utf-8')
-        return header_str
+        agent_prefix = platform.system() + " " + platform.release() + "-" + socket.gethostname()
+        self.agent_version = self.config_data.get("engine", {}).get("version", "v1.0.0")
+        # engine.name will auto generated when download
+        engine_name = self.config_data.get("engine", {}).get("name", "dongtai-agent-python")
+        self.agent_name = agent_prefix + "-" + self.agent_version + "-" + engine_name
 
-    def agent_json_to_str(self, json_data):
-        if json_data:
-            json_data = self.json_to_str(json_data)
-            json_data = base64.b64encode(json_data.encode('utf-8'))
-            json_data = json_data.decode('utf-8')
-        return json_data
-
-    def json_to_str(self, json_data):
-        if json_data:
-            new_list = []
-            for item in json_data.keys():
-                origin.list_append(new_list, str(item)+"="+str(json_data[item]))
-            json_data = origin.str_join("\n", new_list)
-        return json_data
+        self.cur_system_info = SystemInfo()
 
     # 获取接口信息
     def base_api_get(self, url):
         url = self.config_data.get("iast", {}).get("server", {}).get("url", "") + url
         try:
             res = requests.get(url, timeout=20, headers=self.headers)
-            Resp = res.content.decode("utf-8")
-            Resp = json.loads(Resp)
+            resp = res.content.decode("utf-8")
+            resp = json.loads(resp)
 
             # logger.info("report base data")
         except Exception as e:
-            logger.error("report data error" + str(e))
-            Resp = {}
+            logger.error("get data error: " + str(e) + traceback.format_exc())
+            resp = {}
 
-        return Resp
+        return resp
 
     def base_report(self, url, body):
         url = self.config_data.get("iast", {}).get("server", {}).get("url", "") + url
@@ -153,24 +147,24 @@ class AgentUpload(object):
         try:
             res = self.session.post(url, data=body_data, timeout=20, headers=self.headers)
             logger.debug(res.content)
-            Resp = res.content.decode("utf-8")
-            Resp = json.loads(Resp)
+            resp = res.content.decode("utf-8")
+            resp = json.loads(resp)
 
             # logger.info("report base data")
         except Exception as e:
-            logger.error("report data error" + str(e))
-            Resp = {}
+            logger.error("post data error: " + str(e) + traceback.format_exc())
+            resp = {}
 
-        return Resp
+        return resp
 
     def thread_heart_report(self):
         # 上报心跳数据
         system_info = {
             "detail": {
-                # "disk": json.dumps(self.cur_system_info.getDisk()),
-                "memory": json.dumps(self.cur_system_info.getMemoryInfo()),
+                # "disk": json.dumps(self.cur_system_info.get_disk()),
+                "memory": json.dumps(self.cur_system_info.get_memory_info()),
                 "agentId": self.dt_agent_id,
-                "cpu": json.dumps({"rate": self.cur_system_info.getCpuRate()}),
+                "cpu": json.dumps({"rate": self.cur_system_info.get_cpu_rate()}),
                 "methodQueue": 0,
                 "replayQueue": 0,
                 "reqCount": dt_global_var.dt_get_value("req_count"),
@@ -179,8 +173,8 @@ class AgentUpload(object):
             "type": 1
         }
         url = "/api/v1/report/upload"
-        heartResp = self.base_report(url, system_info)
-        if heartResp.get("status", 0) == 201:
+        heart_resp = self.base_report(url, system_info)
+        if heart_resp.get("status", 0) == 201:
             logger.info("report heart data success")
         else:
             logger.error("report heart data error")
@@ -195,10 +189,9 @@ class AgentUpload(object):
         url = "/api/v1/agent/register"
 
         server_env = dict(os.environ)
-        agent_prefix = platform.system() + " " + platform.release() + "-" + socket.gethostname()
         server_env_arr = []
         project_name = self.config_data.get("project", {}).get("name", "Demo Project")
-        if isinstance(server_env,dict):
+        if isinstance(server_env, dict):
             if server_env.get("projectName", ""):
                 project_name = server_env.get("projectName", "")
             elif server_env.get("PROJECTNAME", ""):
@@ -206,21 +199,16 @@ class AgentUpload(object):
                 project_name = server_env.get("PROJECTNAME", "")
 
             for key in server_env.keys():
-
-                origin.list_append(server_env_arr, key+"="+str(server_env[key]))
+                origin.list_append(server_env_arr, key + "=" + str(server_env[key]))
 
         env_str = origin.str_join(",", server_env_arr)
 
         server_env_str = base64.b64encode(env_str.encode('utf-8'))
-        self.cur_system_info = SystemInfo()
-        network_info = self.cur_system_info.PrintNetIfAddr()
-        version = self.config_data.get("engine", {}).get("version", "v1.0.0")
-        # engine.name will auto generated when download
-        engine_name = self.config_data.get("engine", {}).get("name", "dongtai-agent-python")
+        network_info = self.cur_system_info.print_net_if_addr()
         register_data = {
-            "name": agent_prefix + "-" + version + "-" + engine_name,
+            "name": self.agent_name,
             "language": "PYTHON",
-            "version": version,
+            "version": self.agent_version,
             "projectName": project_name,
             "hostname": socket.gethostname(),
             "network": network_info,
@@ -232,23 +220,23 @@ class AgentUpload(object):
             "serverEnv": server_env_str.decode('utf-8'),
             "pid": str(os.getpid())
         }
-        Resp = self.base_report(url, register_data)
-        if Resp.get("status", 0) == 201:
-            self.dt_agent_id = Resp.get("data", {}).get("id", 0)
+        resp = self.base_report(url, register_data)
+        if resp.get("status", 0) == 201:
+            self.dt_agent_id = resp.get("data", {}).get("id", 0)
             if self.dt_agent_id:
                 # 创建并初始化线程
                 t1 = threading.Timer(self.interval, self.thread_heart_report)
                 # 启动线程
                 t1.start()
 
-        return Resp
+        return resp
 
     def agent_upload_report(self, upload_report):
         url = "/api/v1/report/upload"
-        Resp = self.base_report(url, upload_report)
-        self.pending_report = self.pending_report -1
+        resp = self.base_report(url, upload_report)
+        self.pending_report = self.pending_report - 1
 
-        return Resp
+        return resp
 
     def async_agent_upload_report(self, executor, upload_report):
         self.pending_report = self.pending_report + 1
@@ -257,6 +245,6 @@ class AgentUpload(object):
     def get_policy_config(self):
 
         url = "/api/v1/profiles?language=PYTHON"
-        Resp = self.base_api_get(url)
+        resp = self.base_api_get(url)
 
-        return Resp
+        return resp
