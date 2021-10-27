@@ -98,6 +98,9 @@ def update(config_data):
         return
 
     config_data["engine"]["version"] = new_engine_version
+    new_report_interval = new_config.get("service", {}).get("report", {}).get("interval", 0)
+    if new_report_interval > 0:
+        config_data["service"]["report"]["interval"] = new_report_interval
     save_config_data(config_data)
     log_message("upgrade agent from %s to %s success" % (old_engine_version, new_engine_version))
 
