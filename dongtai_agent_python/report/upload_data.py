@@ -4,8 +4,6 @@ import gzip
 import json
 import os
 import platform
-import random
-
 import requests
 import socket
 import threading
