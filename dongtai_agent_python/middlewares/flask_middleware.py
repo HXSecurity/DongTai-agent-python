@@ -51,7 +51,7 @@ class AgentMiddleware(object):
         @app.before_request
         def process_request_hook(*args, **kwargs):
             # agent paused
-            if dt_global_var.dt_get_value("dt_pause"):
+            if dt_global_var.is_pause():
                 return
 
             request_body = {}
@@ -98,7 +98,7 @@ class AgentMiddleware(object):
         @app.after_request
         def process_response_hook(response):
             # agent paused
-            if dt_global_var.dt_get_value("dt_pause"):
+            if dt_global_var.is_pause():
                 return response
 
             dt_global_var.dt_set_value("dt_open_pool", False)

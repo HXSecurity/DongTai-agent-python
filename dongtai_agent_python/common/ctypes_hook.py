@@ -35,7 +35,7 @@ def new_func(origin_cls, method_name, signature=None, source=False, *args, **kwa
         if "__bypass_dt_agent__" in kwargs:
             del kwargs["__bypass_dt_agent__"]
             return _fcn(*args, **kwargs)
-        if dt_global_var.dt_get_value("dt_pause"):
+        if dt_global_var.is_pause():
             return _fcn(*args, **kwargs)
         if ((args == ([], '*.mo') or args == (['*.mo'], '**')) and method_name == "append") or (
                 args == ('**/*.mo', '/') and method_name == "split"):

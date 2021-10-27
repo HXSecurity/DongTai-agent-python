@@ -52,7 +52,7 @@ class FireMiddleware(object):
 
     def __call__(self, request):
         # agent paused
-        if dt_global_var.dt_get_value("dt_pause"):
+        if dt_global_var.is_pause():
             return self.get_response(request)
 
         # '''产生request对象后，url匹配之前调用'''
