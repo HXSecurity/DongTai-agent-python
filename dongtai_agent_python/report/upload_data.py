@@ -109,6 +109,7 @@ class AgentUpload(object):
         self.session = requests.session()
         self.config_data = dt_global_var.dt_get_value("config_data")
         self.dt_agent_id = 0
+        self.iast_url = self.config_data.get("iast", {}).get("server", {}).get("url", "")
         self.interval = self.config_data.get("iast", {}).get("service", {}).get("report", {}).get("interval", 5)
         self.interval_check_enable = 60
         self.cur_system_info = {}
@@ -129,7 +130,7 @@ class AgentUpload(object):
 
     # 获取接口信息
     def base_api_get(self, url):
-        url = self.config_data.get("iast", {}).get("server", {}).get("url", "") + url
+        url = self.iast_url + url
         try:
             res = requests.get(url, timeout=20, headers=self.headers)
             resp = res.content.decode("utf-8")
@@ -142,8 +143,23 @@ class AgentUpload(object):
 
         return resp
 
+    def base_api_post(self, url, body_data):
+        url = self.iast_url + url
+        try:
+            body_data = json.dumps(body_data)
+            res = requests.post(url, timeout=20, headers=self.headers, data=body_data)
+            resp = res.content.decode("utf-8")
+            resp = json.loads(resp)
+
+            # logger.info("report base data")
+        except Exception as e:
+            logger.error("post data error: " + str(e) + traceback.format_exc())
+            resp = {}
+
+        return resp
+
     def base_report(self, url, body):
-        url = self.config_data.get("iast", {}).get("server", {}).get("url", "") + url
+        url = self.iast_url + url
         logger.debug(body)
         stream_data = json.dumps(body)
 
@@ -154,9 +170,8 @@ class AgentUpload(object):
             resp = res.content.decode("utf-8")
             resp = json.loads(resp)
 
-            # logger.info("report base data")
         except Exception as e:
-            logger.error("post data error: " + str(e) + traceback.format_exc())
+            logger.error("report data error: " + str(e) + traceback.format_exc())
             resp = {}
 
         return resp
@@ -287,3 +302,16 @@ class AgentUpload(object):
                     return False
 
         return True
+
+    def report_startup_time(self, start_time):
+        url = "/api/v1/agent/startuptime"
+        data = {
+            "agentId": self.dt_agent_id,
+            "startupTime": int(start_time)
+        }
+        resp = self.base_api_post(url, data)
+        if resp.get("status", 0) == 201:
+            logger.info("startup time: " + str(start_time) + "ms")
+        else:
+            logger.info("startup time: " + str(start_time) + "ms report failed")
+        return resp
