@@ -102,7 +102,7 @@ class AgentMiddleware(object):
                 return response
 
             dt_global_var.dt_set_value("dt_open_pool", False)
-            if response.data and isinstance(response.data, bytes):
+            if not response.is_streamed and response.data and isinstance(response.data, bytes):
                 http_res_body = utils.bytes_to_base64(response.data)
             else:
                 http_res_body = ""
