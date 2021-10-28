@@ -10,6 +10,7 @@
 * BUGFIXES
   * Fix report data parameter`className` to fully named class name
   * Fix report data request/response body format
+  * Fix streaming response parse
 * BUILD
   * Auto upload package to Aliyun OSS by Github actions
 
