@@ -102,7 +102,7 @@ class FireMiddleware(object):
         response = self.get_response(request)
 
         dt_global_var.dt_set_value("dt_open_pool", False)
-        if response.content and isinstance(response.content, bytes):
+        if not response.streaming and response.content and isinstance(response.content, bytes):
             http_res_body = utils.bytes_to_base64(response.content)
         else:
             http_res_body = ""
