@@ -8,4 +8,4 @@ if [ -z ${HOST} ]; then
   exit 1
 fi
 
-curl "${HOST}/get_open?name=Data"
+curl "${HOST}/api/demo/get_open?name=Data"
