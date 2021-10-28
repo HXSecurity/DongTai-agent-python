@@ -18,7 +18,7 @@ logger = logger_config("python_agent")
 
 class AgentMiddleware(object):
     def __init__(self, old_app, app):
-        start_time = time.time_ns()
+        start_time = time.time()
 
         logger.info("python agent init")
         self.old_wsgi_app = old_app
@@ -45,7 +45,7 @@ class AgentMiddleware(object):
         logger.debug("------begin hook-----")
         enable_patches("flask")
 
-        self.agent_upload.report_startup_time((time.time_ns() - start_time) / 1000000)
+        self.agent_upload.report_startup_time((time.time() - start_time) * 1000)
         logger.info("python agent hook open")
 
         @app.before_request
