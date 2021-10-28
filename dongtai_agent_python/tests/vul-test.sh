@@ -23,7 +23,7 @@ echo
 curl "${HOST}/api/demo/yaml_post_e" -X POST --data-raw 'code=whoami'
 echo
 # path-traversal
-curl "${HOST}/api/demo/get_open?name=Data"
+curl "${HOST}/api/demo/get_open?name=Data**"
 echo
 curl "${HOST}/api/demo/post_open" -X POST --data-raw 'name=.%2Ffile%2Fdata.json'
 echo
