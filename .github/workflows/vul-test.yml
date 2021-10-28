@@ -1,0 +1,64 @@
+name: Vul Test
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+        with:
+          path: DongTai-agent-python
+      - name: Clone Vul Repository
+        uses: actions/checkout@v2
+        with:
+          repository: jinghao1/DockerVulspace
+          token: ${{ secrets.VUL_REPO_ACCESS_TOKEN }}
+          ref: main
+          path: DockerVulspace
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Prepare Agent code
+        run: |
+          cd ${{ github.workspace }}/DockerVulspace
+          rm -rf src/dongtai_agent_python
+          cp -r ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python src/dongtai_agent_python
+          cp -f src/dongtai_agent_python/config.json config.json
+
+      - name: Prepare Agent Config
+        shell: python
+        run: |
+          import json
+          filename = '${{ github.workspace }}/DockerVulspace/config.json'
+          with open(filename) as f:
+              data = json.load(f)
+          data['iast']['server']['token'] = '${{ secrets.IAST_SERVER_TOKEN }}'
+          data['iast']['server']['url'] = '${{ secrets.IAST_SERVER_URL }}'
+          data['project']['name'] = 'agent-python-vul-test'
+          with open(filename, 'w') as f:
+              json.dump(data, f)
+
+      - name: Run Vul Container
+        run: |
+          cd ${{ github.workspace }}/DockerVulspace
+          docker-compose up -d
+
+      - name: Run test
+        run: |
+          curl -I --fail --retry-delay 10 --retry 30 --retry-connrefused http://127.0.0.1:8003
+          bash ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python/tests/vul-test.sh http://127.0.0.1:8003
