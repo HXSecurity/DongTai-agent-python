@@ -24,7 +24,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: jinghao1/DockerVulspace
-          token: ${{ secrets.VUL_REPO_ACCESS_TOKEN }}
           ref: main
           path: DockerVulspace
 
@@ -47,9 +46,11 @@ jobs:
           filename = '${{ github.workspace }}/DockerVulspace/config.json'
           with open(filename) as f:
               data = json.load(f)
-          data['iast']['server']['token'] = '${{ secrets.IAST_SERVER_TOKEN }}'
-          data['iast']['server']['url'] = '${{ secrets.IAST_SERVER_URL }}'
-          data['project']['name'] = 'agent-python-vul-test'
+          data['debug'] = True
+          data['iast']['server']['token'] = '0f0025dff8311467f6da5b5109a469f1831aa782'
+          data['iast']['server']['url'] = 'http://a28754cd66991441d8d682808caecead-626172336.cn-north-1.elb.amazonaws.com.cn:8000'
+          data['project']['name'] = 'Python-DockerVulspace'
+          data['engine']['name'] = 'github-${{ github.run_id }}'
           with open(filename, 'w') as f:
               json.dump(data, f)
 
@@ -61,4 +62,6 @@ jobs:
       - name: Run test
         run: |
           curl -I --fail --retry-delay 10 --retry 30 --retry-connrefused http://127.0.0.1:8003
+          cd ${{ github.workspace }}/DockerVulspace
+          docker-compose logs web
           bash ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python/tests/vul-test.sh http://127.0.0.1:8003
