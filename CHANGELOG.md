@@ -13,6 +13,7 @@
   * Fix streaming response parse
 * BUILD
   * Auto upload package to Aliyun OSS by Github actions
+  * Add vulnerability testing Github actions
 
 ## [1.0.6](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.0.6) - 2021-10-26
 
