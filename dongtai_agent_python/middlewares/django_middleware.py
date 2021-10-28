@@ -20,7 +20,7 @@ class FireMiddleware(object):
 
     def __init__(self, get_response=None):
         # '''服务器重启之后，接受第一个请求时调用'''
-        start_time = time.time_ns()
+        start_time = time.time()
 
         logger.info("python agent init")
         self.get_response = get_response
@@ -47,7 +47,7 @@ class FireMiddleware(object):
         logger.debug("------begin hook-----")
         enable_patches("django")
 
-        self.agent_upload.report_startup_time((time.time_ns() - start_time) / 1000000)
+        self.agent_upload.report_startup_time((time.time() - start_time) * 1000)
         logger.info("python agent hook open")
 
     def __call__(self, request):
