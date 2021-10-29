@@ -1,19 +1,24 @@
-import threading, traceback, copy
+import copy
+import hashlib
+import json
+import os
+import sys
+import threading
+import traceback
+
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin
 from dongtai_agent_python.common.default_data import defaultApiData
-import sys, os, json
-import hashlib
 
 dt_tracker = {}
-dt_func_id = 0
+dt_request_id = 0
 dt_gid = 0
 dt_thread_lock = threading.RLock()
 
 
 def current_thread_id():
     ident = threading.currentThread().ident
-    return str(ident) + str(dt_func_id)
+    return str(ident) + str(dt_request_id)
 
 
 def dt_tracker_get(key, default=None):
@@ -28,13 +33,14 @@ def dt_tracker_set(key, value):
 
 
 # 将入参格式化
-def deal_args(new_args):
-    end_args = []
+def deal_args(new_args, end_args=None):
+    if end_args is None:
+        end_args = []
     for item in new_args:
         origin.list_append(end_args, id(item))
 
-        if isinstance(item, list) or isinstance(item, tuple):
-            end_args = end_args + deal_args(item)
+        if isinstance(item, tuple):
+            end_args = deal_args(item, end_args)
 
     return end_args
 
@@ -59,19 +65,18 @@ def delete(key):
         del dt_tracker[thread_id]
 
 
-def set_current(func_id):
-    global dt_func_id, dt_thread_lock
+def set_current(request_id):
+    global dt_request_id, dt_thread_lock
     dt_thread_lock.acquire()
-    dt_func_id = func_id
+    dt_request_id = request_id
     dt_tracker[current_thread_id()] = copy.deepcopy(defaultApiData)
 
 
 def delete_current():
     global dt_thread_lock
     dt_thread_lock.release()
-    curid = current_thread_id()
     try:
-        del dt_tracker[curid]
+        del dt_tracker[current_thread_id()]
     except Exception:
         pass
 
@@ -103,7 +108,7 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
     path = sys.path[0]
     while layer > -20:
         tracert_arr = list(tracert[layer])
-        if path in tracert_arr[0] and (path + "/dongtai_agent_python") not in tracert_arr[0]:
+        if path in tracert_arr[0] and (path + os.sep + "dongtai_agent_python") not in tracert_arr[0]:
             break
         layer = layer - 1
 
@@ -118,19 +123,16 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
 
     if (method_type == 2 or method_type == 3) and cur_type != 4:
         return False
-    # print(sourceValues)
-    # print(type(sourceValues))
+
     source_arr = []
     for one in sourceValues:
         try:
-            after = json.dumps(one)
-            origin.list_append(source_arr, one)
+            origin.list_append(source_arr, str(one))
         except Exception:
             continue
 
-
     if signature.endswith("." + fcn.__name__):
-        class_name = signature[:-len(fcn.__name__)-1]
+        class_name = signature[:-len(fcn.__name__) - 1]
     else:
         class_name = module_name
     req_data = {
@@ -142,7 +144,7 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         "targetValues": str(taint_out),
         "signature": signature,
         "originClassName": class_name,
-        "sourceValues": source_arr,
+        "sourceValues": str(sourceValues),
         "methodName": fcn.__name__,
         "className": class_name,
         "source": source,
@@ -167,4 +169,3 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         dt_global_var.dt_set_value("have_hooked", have_hooked)
     if cur_type == 4:
         dt_global_var.dt_set_value("hook_exit", True)
-    # dt_global_var.dt_set_value("dt_open_pool", True)
