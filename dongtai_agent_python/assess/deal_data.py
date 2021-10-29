@@ -7,19 +7,18 @@ from dongtai_agent_python.common.content_tracert import method_pool_data, dt_tra
 
 
 def wrapData(result, origin_cls, _fcn, signature=None, source=False, comeData=None):
+    dt_open_pool = _global_dt_dict.get("dt_open_pool")
+    if not dt_open_pool:
+        return result
+
+    dt_global_var.dt_set_value("dt_open_pool", False)
+
     dt_data_args = dt_tracker_get("dt_data_args")
     if dt_data_args is None:
         return result
 
     if comeData is None:
         comeData = []
-
-    dt_open_pool = _global_dt_dict.get("dt_open_pool")
-    if not dt_open_pool:
-        return result
-
-    # 污点池
-    dt_global_var.dt_set_value("dt_open_pool", False)
 
     # 获取source点
     taint_in = []
@@ -33,6 +32,7 @@ def wrapData(result, origin_cls, _fcn, signature=None, source=False, comeData=No
     else:
         can_upload = 0
 
+        # source is not empty
         if len(dt_data_args) != 0:
             # 入参入池 id
             end_args = deal_args(comeData)
@@ -46,9 +46,10 @@ def wrapData(result, origin_cls, _fcn, signature=None, source=False, comeData=No
     if can_upload == 1:
         # 当前方法type为2、3， callerMethod not in 2、3类其他方法中
 
-        dt_data_args = come_in(result, dt_data_args)
-        dt_tracker_set("dt_data_args", dt_data_args)
-        method_pool_data(origin_cls, _fcn, comeData, taint_in, result, source=source, signature=signature)
+        if len(dt_data_args) != 0:
+            dt_data_args = come_in(result, dt_data_args)
+            dt_tracker_set("dt_data_args", dt_data_args)
+            method_pool_data(origin_cls, _fcn, comeData, taint_in, result, source=source, signature=signature)
 
     dt_global_var.dt_set_value("dt_open_pool", True)
 
