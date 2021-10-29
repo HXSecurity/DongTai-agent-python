@@ -39,9 +39,6 @@ def deal_args(new_args, end_args=None):
     for item in new_args:
         origin.list_append(end_args, id(item))
 
-        if isinstance(item, tuple):
-            end_args = deal_args(item, end_args)
-
     return end_args
 
 
