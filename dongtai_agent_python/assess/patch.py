@@ -9,7 +9,6 @@ from dongtai_agent_python.report.upload_data import AgentUpload
 
 
 def enable_patches(cur_frame_app="django"):
-    dt_global_var.dt_set_value("dt_open_pool", False)
     config_data = dt_global_var.dt_get_value("config_data")
     # 通过api读取策略信息
     agent_req = AgentUpload()
@@ -98,8 +97,6 @@ def enable_patches(cur_frame_app="django"):
 
             has_patched[policy] = True
             dt_global_var.dt_set_value("has_patched", has_patched)
-
-    dt_global_var.dt_set_value("dt_open_pool", False)
 
     dt_global_var.dt_set_value("policy", policy_global)
     # print("hook == success")
