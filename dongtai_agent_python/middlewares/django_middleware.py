@@ -1,63 +1,39 @@
-import time
-from concurrent.futures import ThreadPoolExecutor
 from http.client import responses
 
 import django
 
 import dongtai_agent_python.global_var as dt_global_var
-from dongtai_agent_python.assess.patch import enable_patches
 from dongtai_agent_python.common import utils
 from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_tracker, dt_tracker_set, \
     set_current
 from dongtai_agent_python.common.logger import logger_config
-from dongtai_agent_python.report.upload_data import AgentUpload
+from dongtai_agent_python.middlewares.base_middleware import BaseMiddleware
 
 logger = logger_config("python_agent")
 
 
-class FireMiddleware(object):
+class FireMiddleware(BaseMiddleware):
     # '''中间键类'''
 
     def __init__(self, get_response=None):
-        # '''服务器重启之后，接受第一个请求时调用'''
-        start_time = time.time()
-
-        logger.info("python agent init")
         self.get_response = get_response
 
-        self.executor = ThreadPoolExecutor()
-        self.agent_upload = AgentUpload()
-        # register
-        cur_middle = {
+        super(FireMiddleware, self).__init__({
+            "module_name": "django",
             "container_name": "Django",
             "container_version": django.get_version()
-        }
-        dt_global_var.dt_set_value("dt_open_pool", False)
-        register_resp = self.agent_upload.agent_register(cur_middle)
-        dt_global_var.dt_set_value("dt_open_pool", False)
-        if register_resp.get("status", 0) == 201:
-            dt_agent_id = register_resp.get("data", {}).get("id", 0)
-            logger.info("python agent register success ")
-            # 上报心跳数据
-        else:
-            dt_agent_id = 0
-            logger.error("python agent register error ")
-
-        dt_global_var.dt_set_value("agentId", dt_agent_id)
-        logger.debug("------begin hook-----")
-        enable_patches("django")
-
-        self.agent_upload.report_startup_time((time.time() - start_time) * 1000)
-        logger.info("python agent hook open")
+        })
 
     def __call__(self, request):
+        dt_global_var.dt_set_value("dt_open_pool", False)
         # agent paused
         if dt_global_var.is_pause():
+            dt_global_var.dt_set_value("dt_open_pool", True)
             return self.get_response(request)
 
         # '''产生request对象后，url匹配之前调用'''
-        func_id = id(request)
-        set_current(func_id)
+        request_id = id(request)
+        set_current(request_id)
         reg_agent_id = dt_global_var.dt_get_value("agentId")
         req_count = dt_global_var.dt_get_value("req_count") + 1
         dt_global_var.dt_set_value("req_count", req_count)
@@ -90,18 +66,19 @@ class FireMiddleware(object):
         for key in need_to_set.keys():
             dt_tracker_set(key, need_to_set[key])
 
-        dt_global_var.dt_set_value("dt_open_pool", True)
         dt_global_var.dt_set_value("have_hooked", [])
         dt_global_var.dt_set_value("hook_exit", False)
         logger.info("hook request api success")
 
+        dt_global_var.dt_set_value("dt_open_pool", True)
         return self.process_response(request)
 
     def process_response(self, request):
         # '''视图函数调用之后，内容返回浏览器之前'''
+        dt_global_var.dt_set_value("dt_open_pool", True)
         response = self.get_response(request)
-
         dt_global_var.dt_set_value("dt_open_pool", False)
+
         if not response.streaming and response.content and isinstance(response.content, bytes):
             http_res_body = utils.bytes_to_base64(response.content)
         else:
@@ -129,4 +106,5 @@ class FireMiddleware(object):
         dt_tracker_set("upload_pool", False)
         delete_current()
 
+        dt_global_var.dt_set_value("dt_open_pool", True)
         return response
