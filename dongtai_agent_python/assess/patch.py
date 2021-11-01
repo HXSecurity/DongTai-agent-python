@@ -29,10 +29,6 @@ def enable_patches(cur_frame_app="django"):
             continue
 
         has_patched = {}
-        if rules['type'] == 2:
-            source = True
-        else:
-            source = False
         for item in rules['details']:
             policy = item['value']
             policy_arr = policy.split(".")
@@ -88,16 +84,15 @@ def enable_patches(cur_frame_app="django"):
                     old_cls,
                     method_name,
                     policy,
-                    source
+                    rules['type']
                 )
             else:
                 if config_data.get("debug"):
                     print("------origin_cls_function------ " + policy)
-                after_cls[method_name] = InstallFcnHook(old_cls, old_func, policy, source)
+                after_cls[method_name] = InstallFcnHook(old_cls, old_func, policy, rules['type'])
 
             has_patched[policy] = True
             dt_global_var.dt_set_value("has_patched", has_patched)
 
     dt_global_var.dt_set_value("policy", policy_global)
-    # print("hook == success")
     magic_flush_mro_cache()

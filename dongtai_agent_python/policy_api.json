@@ -129,7 +129,7 @@
 		 },
 
       {
-		"type": 1,
+		"type": 2,
 		"enable": 1,
 		"value": "path-traversal",
 		"details": [{
@@ -145,8 +145,31 @@
 			"value": "django.utils.datastructures.MultiValueDict.__getitem__",
 			"inherit": "false"
 		}]
-	}, {
-		"type": 2,
+	},
+		{
+		  "type": 2,
+		  "enable": 1,
+		  "value": "common",
+		  "details": [
+			     {
+		   "track": "false",
+		   "value": "werkzeug.datastructures.getlist",
+		   "inherit": "false"
+		  },
+			     {
+		   "track": "false",
+		   "value": "werkzeug.datastructures.TypeConversionDict.get",
+		   "inherit": "false"
+		  },
+		   {
+
+		   "track": "false",
+		   "value": "werkzeug.datastructures.MultiDict.__getitem__",
+		   "inherit": "false"
+		  }]
+		 },
+		{
+		"type": 1,
 		"enable": 1,
 		"value": "path-traversal",
 		"details": [{
@@ -200,7 +223,7 @@
 			"inherit": "false"
 		}]
 	}, {
-		"type": 3,
+		"type": 1,
 		"enable": 1,
 		"value": "path-traversal",
 		"details": [{
