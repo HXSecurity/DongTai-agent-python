@@ -115,15 +115,9 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
 
     if path not in tracert_arr[0]:
         return False
-    policy_global = dt_global_var.dt_get_value("policy")
 
     have_hooked = dt_global_var.dt_get_value("have_hooked")
     callerMethod = tracert_arr[2]
-    method_type = policy_global.get(callerMethod, 0)
-    cur_type = policy_global.get(fcn.__name__, 0)
-
-    if (method_type == 2 or method_type == 3) and cur_type != 4:
-        return False
 
     source_arr = []
     for one in sourceValues:
@@ -168,5 +162,5 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         append_method_pool(req_data)
         origin.list_append(have_hooked, afterMd5Id)
         dt_global_var.dt_set_value("have_hooked", have_hooked)
-    if cur_type == 4:
+    if node_type == utils.NODE_TYPE_SINK:
         dt_global_var.dt_set_value("hook_exit", True)
