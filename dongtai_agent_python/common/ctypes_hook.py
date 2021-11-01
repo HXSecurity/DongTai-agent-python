@@ -27,7 +27,7 @@ def magic_flush_mro_cache():
 
 
 # 属性方法hook
-def new_func(origin_cls, method_name, signature=None, source=False, *args, **kwargs):
+def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **kwargs):
     copy_new_class = type(origin_cls.__name__, origin_cls.__bases__, dict(origin_cls.__dict__))
     _fcn = getattr(origin_cls, method_name)
 
@@ -44,7 +44,7 @@ def new_func(origin_cls, method_name, signature=None, source=False, *args, **kwa
 
         result = wrapData(
             result, origin_cls.__name__, _fcn,
-            signature=signature, source=source, comeData=args)
+            signature=signature, node_type=node_type, comeData=args)
 
         return result
 

@@ -2,6 +2,11 @@ import base64
 
 from dongtai_agent_python.common import origin
 
+NODE_TYPE_PROPAGATOR = 1
+NODE_TYPE_SOURCE = 2
+NODE_TYPE_FILTER = 3
+NODE_TYPE_SINK = 4
+
 
 def normalize_response_header(status_line, headers):
     header_str = status_line + "\n" + json_to_str(headers)
@@ -30,3 +35,12 @@ def json_to_str(json_data):
         json_data = origin.str_join("\n", new_list)
     return json_data
 
+
+def is_empty(value):
+    if isinstance(value, (tuple, list, dict, str, bytes, bytearray)):
+        return not value
+    return False
+
+
+def is_not_allowed_type(value):
+    return type(value) == int or type(value) == bool

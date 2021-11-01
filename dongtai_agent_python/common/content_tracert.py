@@ -7,7 +7,7 @@ import threading
 import traceback
 
 import dongtai_agent_python.global_var as dt_global_var
-from dongtai_agent_python.common import origin
+from dongtai_agent_python.common import origin, utils
 from dongtai_agent_python.common.default_data import defaultApiData
 
 dt_tracker = {}
@@ -33,10 +33,14 @@ def dt_tracker_set(key, value):
 
 
 # 将入参格式化
-def deal_args(new_args, end_args=None):
+def deal_args(new_args, node_type, end_args=None):
     if end_args is None:
         end_args = []
     for item in new_args:
+        if (node_type == utils.NODE_TYPE_SOURCE or
+            node_type == utils.NODE_TYPE_PROPAGATOR) and \
+                utils.is_empty(item):
+            continue
         origin.list_append(end_args, id(item))
 
     return end_args
@@ -95,7 +99,7 @@ def append_method_pool(value):
         return False
 
 
-def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=-4, source=False, signature=None):
+def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=-4, node_type=None, signature=None):
     hook_exit = dt_global_var.dt_get_value("hook_exit")
     # 已检测到危险函数，不再往风险池追加数据
     if hook_exit:
@@ -144,7 +148,7 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         "sourceValues": str(sourceValues),
         "methodName": fcn.__name__,
         "className": class_name,
-        "source": source,
+        "source": node_type == utils.NODE_TYPE_SOURCE,
         "callerLineNumber": tracert_arr[1],
         "callerClass": tracert_arr[0],
         "args": "",
