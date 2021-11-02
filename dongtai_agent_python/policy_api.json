@@ -1,285 +1,279 @@
 {
-	"status": 201,
-	"msg": "success",
-	"data": [
-      {
-		"type": 4,
-		"enable": 1,
-		"value": "path-traversal",
-		"details": [{
-
-			"track": "false",
-
-			"value": "builtins.open",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "typing.BinaryIO.readline",
-			"inherit": "false"
-		}]
-	},
-      {
-		"type": 4,
-		"enable": 1,
-		"value": "sql-injection",
-		"details": [
-          {
-			"track": "false",
-			"value": "sqlite3.Cursor.execute",
-			"inherit": "false"
-		},
-
-           {
-			"track": "false",
-			"value": "sqlite3.Cursor.executemany",
-			"inherit": "false"
-		},
-           {
-			"track": "false",
-			"value": "sqlite3.Cursor.executescript",
-			"inherit": "false"
-		},
-			{
-			"track": "false",
-			"value": "psycopg2._psycopg.cursor.execute",
-			"inherit": "false"
-		},
-			{
-			"track": "false",
-			"value": "psycopg2._psycopg.cursor.executemany",
-			"inherit": "false"
-		},
-			{
-			"track": "false",
-			"value": "mysql.connector.cursor.CursorBase.execute",
-			"inherit": "false"
-		},
-			{
-			"track": "false",
-			"value": "mysql.connector.cursor.CursorBase.executemany",
-			"inherit": "false"
-		},
-			{
-			"track": "false",
-			"value": "MySQLdb.cursors.BaseCursor.execute",
-			"inherit": "false"
-		},
-			{
-			"track": "false",
-			"value": "MySQLdb.cursors.BaseCursor.executemany",
-			"inherit": "false"
-		},
-			{
-			"track": "false",
-			"value": "pymysql.cursors.Cursor.execute",
-			"inherit": "false"
-		},
-			{
-			"track": "false",
-			"value": "pymysql.cursors.Cursor.executemany",
-			"inherit": "false"
-		}
-		]
-	},
-		 {
-		"type": 4,
-		"enable": 1,
-		"value": "exec-code",
-		"details": [
-			{
-				"track": "false",
-				"value": "builtins.eval",
-				"inherit": "false"
-			},
-			{
-				"track": "false",
-				"value": "yaml.unsafe_load",
-				"inherit": "false"
-			},
-			{
-				"track": "false",
-				"value": "yaml.load",
-				"inherit": "false"
-			}
-		]
-		 },
-		 {
-		"type": 4,
-		"enable": 1,
-		"value": "exec-command",
-		"details": [
-			{
-				"track": "false",
-				"value": "os.system",
-				"inherit": "false"
-			},
-			{
-				"track": "false",
-				"value": "os.popen",
-				"inherit": "false"
-			},
-			{
-				"track": "false",
-				"value": "subprocess.Popen",
-				"inherit": "false"
-			}
-		]
-		 },
-
-      {
-		"type": 2,
-		"enable": 1,
-		"value": "path-traversal",
-		"details": [{
-			
-			"track": "false",
-			
-			"value": "django.utils.datastructures.MultiValueDict.get",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "django.utils.datastructures.MultiValueDict.__getitem__",
-			"inherit": "false"
-		}]
-	},
-		{
-		  "type": 2,
-		  "enable": 1,
-		  "value": "common",
-		  "details": [
-			     {
-		   "track": "false",
-		   "value": "werkzeug.datastructures.getlist",
-		   "inherit": "false"
-		  },
-			     {
-		   "track": "false",
-		   "value": "werkzeug.datastructures.TypeConversionDict.get",
-		   "inherit": "false"
-		  },
-		   {
-
-		   "track": "false",
-		   "value": "werkzeug.datastructures.MultiDict.__getitem__",
-		   "inherit": "false"
-		  }]
-		 },
-		{
-		"type": 1,
-		"enable": 1,
-		"value": "path-traversal",
-		"details": [{
-
-			"track": "false",
-
-			"value": "builtins.str.__format__",
-			"inherit": "false"
-		}, {
-
-			"track": "false",
-
-			"value": "builtins.list.__new__",
-			"inherit": "false"
-		},
-			{
-			
-			"track": "false",
-			
-			"value": "builtins.str.format",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.str.join",
-			"inherit": "false"
-		},  {
-			
-			"track": "false",
-			
-			"value": "builtins.str.lower",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.str.ljust",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.str.rjust",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.str.index",
-			"inherit": "false"
-		}]
-	}, {
-		"type": 1,
-		"enable": 1,
-		"value": "path-traversal",
-		"details": [{
-			
-			"track": "false",
-			
-			"value": "builtins.str.split",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.str.rjust",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.str.translate",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.list.append",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.list.insert",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "builtins.list.__add__",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "json.loads",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "json.dumps",
-			"inherit": "false"
-		}, {
-			
-			"track": "false",
-			
-			"value": "os.path.join",
-			"inherit": "false"
-		}]
-	}]
+  "status": 201,
+  "msg": "success",
+  "data": [
+    {
+      "type": 4,
+      "enable": 1,
+      "value": "path-traversal",
+      "details": [
+        {
+          "track": "false",
+          "value": "builtins.open",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "typing.BinaryIO.readline",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 4,
+      "enable": 1,
+      "value": "sql-injection",
+      "details": [
+        {
+          "track": "false",
+          "value": "sqlite3.Cursor.execute",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "sqlite3.Cursor.executemany",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "sqlite3.Cursor.executescript",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "psycopg2._psycopg.cursor.execute",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "psycopg2._psycopg.cursor.executemany",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "mysql.connector.cursor.CursorBase.execute",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "mysql.connector.cursor.CursorBase.executemany",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "MySQLdb.cursors.BaseCursor.execute",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "MySQLdb.cursors.BaseCursor.executemany",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "pymysql.cursors.Cursor.execute",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "pymysql.cursors.Cursor.executemany",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 4,
+      "enable": 1,
+      "value": "exec-code",
+      "details": [
+        {
+          "track": "false",
+          "value": "builtins.eval",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.unsafe_load",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.load",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 4,
+      "enable": 1,
+      "value": "exec-command",
+      "details": [
+        {
+          "track": "false",
+          "value": "os.system",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "os.popen",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "subprocess.Popen",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 4,
+      "enable": 1,
+      "value": "xss",
+      "details": [
+        {
+          "track": "false",
+          "value": "flask.app.Flask.make_response",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "enable": 1,
+      "value": "path-traversal",
+      "details": [
+        {
+          "track": "false",
+          "value": "django.utils.datastructures.MultiValueDict.get",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "django.utils.datastructures.MultiValueDict.__getitem__",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 2,
+      "enable": 1,
+      "value": "common",
+      "details": [
+        {
+          "track": "false",
+          "value": "werkzeug.datastructures.getlist",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "werkzeug.datastructures.TypeConversionDict.get",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "werkzeug.datastructures.MultiDict.__getitem__",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "enable": 1,
+      "value": "path-traversal",
+      "details": [
+        {
+          "track": "false",
+          "value": "builtins.str.__format__",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.list.__new__",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.format",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.join",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.lower",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.ljust",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.rjust",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.index",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "enable": 1,
+      "value": "path-traversal",
+      "details": [
+        {
+          "track": "false",
+          "value": "builtins.str.split",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.rjust",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.translate",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.list.append",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.list.insert",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.list.__add__",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "json.loads",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "json.dumps",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "os.path.join",
+          "inherit": "false"
+        }
+      ]
+    }
+  ]
 }

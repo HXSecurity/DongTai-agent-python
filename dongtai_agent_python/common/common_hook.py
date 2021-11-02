@@ -45,6 +45,7 @@ class InstallFcnHook(object):
     def __init__(self, old_cls, fcn, signature=None, node_type=None):
         self.signature = signature
         self._fcn = fcn
+        self.__name__ = fcn.__name__
 
         self.old_cls = old_cls
         self.node_type = node_type
