@@ -98,7 +98,6 @@ class AgentMiddleware(BaseMiddleware):
             self.agent_upload.async_agent_upload_report(self.executor, upload_report)
             # 避免循环嵌套
             dt_tracker_set("upload_pool", False)
-            delete_current()
 
             dt_global_var.dt_set_value("dt_open_pool", True)
             return response
@@ -111,4 +110,5 @@ class AgentMiddleware(BaseMiddleware):
     def __call__(self, *args, **kwargs):
 
         obj = self.old_wsgi_app(*args, **kwargs)
+        delete_current()
         return obj
