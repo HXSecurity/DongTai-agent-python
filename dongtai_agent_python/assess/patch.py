@@ -16,6 +16,7 @@ def enable_patches(cur_frame_app="django"):
     policy_global = dt_global_var.dt_get_value("policy")
     frame_app = ["django", "flask", "tornado", "bottle"]
     # 测试环境 本地读取
+    # import os, json
     # base_dir = os.path.dirname(os.path.abspath(__file__))
     # file_path = os.path.join(base_dir, '../policy_api.json')
     # with open(file_path, 'r') as load_f:

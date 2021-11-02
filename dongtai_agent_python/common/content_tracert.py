@@ -107,13 +107,18 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
     tracert = traceback.extract_stack()
     tracert_arr = list(tracert[layer])
     path = sys.path[0]
+
     while layer > -20:
         tracert_arr = list(tracert[layer])
+        if signature == "flask.app.Flask.make_response":
+            break
+
         if path in tracert_arr[0] and (path + os.sep + "dongtai_agent_python") not in tracert_arr[0]:
             break
         layer = layer - 1
 
-    if path not in tracert_arr[0]:
+    # bypass flask response for indirect call stack
+    if signature != "flask.app.Flask.make_response" and path not in tracert_arr[0]:
         return False
 
     have_hooked = dt_global_var.dt_get_value("have_hooked")
