@@ -37,6 +37,8 @@ def json_to_str(json_data):
 
 
 def is_empty(value):
+    if value is None:
+        return True
     if isinstance(value, (tuple, list, dict, str, bytes, bytearray)):
         return not value
     return False

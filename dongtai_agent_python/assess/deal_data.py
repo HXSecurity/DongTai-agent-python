@@ -6,8 +6,8 @@ from dongtai_agent_python.common.content_tracert import method_pool_data, dt_tra
     deal_args
 
 
-def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=None):
-    if utils.is_empty(result):
+def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=None, comeKwArgs=None):
+    if node_type != utils.NODE_TYPE_SINK and utils.is_empty(result):
         return result
 
     if node_type == utils.NODE_TYPE_SOURCE:
@@ -24,15 +24,20 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
     if dt_data_args is None:
         return result
 
-    if comeData is None:
-        comeData = []
+    invokeArgs = []
+    if comeData is not None:
+        for v in comeData:
+            origin.list_append(invokeArgs, v)
+    if comeKwArgs is not None:
+        for k in comeKwArgs:
+            origin.list_append(invokeArgs, comeKwArgs[k])
 
     # 获取source点
     taint_in = []
     if node_type == utils.NODE_TYPE_SOURCE:
         can_upload = 1
         # 入参入池 id
-        end_args = deal_args(comeData, node_type)
+        end_args = deal_args(invokeArgs, node_type)
         for one in end_args:
             dt_data_args = come_in(one, dt_data_args)
             origin.list_append(taint_in, one)
@@ -42,7 +47,7 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
         # source is not empty
         if len(dt_data_args) != 0:
             # 入参入池 id
-            end_args = deal_args(comeData, node_type)
+            end_args = deal_args(invokeArgs, node_type)
             for two in end_args:
                 if two in dt_data_args:
                     # hook 当前方法 且 将结果值存入污点池
@@ -54,7 +59,7 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
         if len(dt_data_args) != 0:
             dt_data_args = come_in(result, dt_data_args)
             dt_tracker_set("dt_data_args", dt_data_args)
-            method_pool_data(origin_cls, _fcn, comeData, taint_in, result, node_type=node_type, signature=signature)
+            method_pool_data(origin_cls, _fcn, invokeArgs, taint_in, result, node_type=node_type, signature=signature)
 
     dt_global_var.dt_set_value("dt_open_pool", True)
 
