@@ -3,6 +3,7 @@ from http.client import responses
 import django
 
 import dongtai_agent_python.global_var as dt_global_var
+from common import origin
 from dongtai_agent_python.common import utils
 from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_tracker, dt_tracker_set, \
     set_current
@@ -42,11 +43,6 @@ class FireMiddleware(BaseMiddleware):
             http_url += "?" + request.META.get("QUERY_STRING", "")
         http_req_header = utils.json_to_base64(dict(request.headers))
 
-        if request.body and isinstance(request.body, bytes):
-            request_body = utils.bytes_to_base64(request.body)
-        else:
-            request_body = ""
-
         need_to_set = {
             "agentId": reg_agent_id,
             "uri": request.path,
@@ -57,7 +53,6 @@ class FireMiddleware(BaseMiddleware):
             "clientIp": request.META.get("REMOTE_ADDR", "127.0.0.1"),
             "method": request.META.get("REQUEST_METHOD", "None"),
             "reqHeader": http_req_header,
-            "reqBody": request_body,
             "scheme": request.scheme,
             "dt_pool_args": [],
             "dt_data_args": [],
@@ -79,8 +74,23 @@ class FireMiddleware(BaseMiddleware):
         response = self.get_response(request)
         dt_global_var.dt_set_value("dt_open_pool", False)
 
+        request_body = ""
+        if request.POST:
+            forms = []
+            for key in request.POST:
+                origin.list_append(forms, key + "=" + request.POST[key])
+            request_body = origin.str_join("&", forms)
+        else:
+            try:
+                # request.body has cache, need invoke after `django.http.request.HttpRequest.read` is hooked
+                if request.body and isinstance(request.body, bytes):
+                    request_body = request.body.decode("utf-8", errors="ignore")
+            except Exception:
+                pass
+        dt_tracker_set("reqBody", request_body)
+
         if not response.streaming and response.content and isinstance(response.content, bytes):
-            http_res_body = utils.bytes_to_base64(response.content)
+            http_res_body = response.content.decode("utf-8", errors="ignore")
         else:
             http_res_body = ""
         dt_tracker_set("resBody", http_res_body)
