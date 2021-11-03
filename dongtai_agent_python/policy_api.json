@@ -128,7 +128,7 @@
     {
       "type": 4,
       "enable": 1,
-      "value": "xss",
+      "value": "reflected-xss",
       "details": [
         {
           "track": "false",
@@ -150,6 +150,11 @@
         {
           "track": "false",
           "value": "lxml.etree.fromstring",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "lxml.etree.parse",
           "inherit": "false"
         }
       ]
@@ -174,7 +179,7 @@
     {
       "type": 2,
       "enable": 1,
-      "value": "common",
+      "value": "general-rules",
       "details": [
         {
           "track": "false",
@@ -196,7 +201,7 @@
     {
       "type": 2,
       "enable": 1,
-      "value": "common",
+      "value": "general-rules",
       "details": [
         {
           "track": "false",
@@ -223,16 +228,11 @@
     {
       "type": 1,
       "enable": 1,
-      "value": "path-traversal",
+      "value": "general-rules",
       "details": [
         {
           "track": "false",
           "value": "builtins.str.__format__",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "builtins.list.__new__",
           "inherit": "false"
         },
         {
@@ -264,14 +264,7 @@
           "track": "false",
           "value": "builtins.str.index",
           "inherit": "false"
-        }
-      ]
-    },
-    {
-      "type": 1,
-      "enable": 1,
-      "value": "path-traversal",
-      "details": [
+        },
         {
           "track": "false",
           "value": "builtins.str.split",
@@ -279,12 +272,12 @@
         },
         {
           "track": "false",
-          "value": "builtins.str.rjust",
+          "value": "builtins.str.translate",
           "inherit": "false"
         },
         {
           "track": "false",
-          "value": "builtins.str.translate",
+          "value": "builtins.list.__new__",
           "inherit": "false"
         },
         {
