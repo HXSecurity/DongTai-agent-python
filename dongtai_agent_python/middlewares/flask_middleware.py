@@ -5,13 +5,11 @@ import flask
 from flask import request
 
 import dongtai_agent_python.global_var as dt_global_var
-from dongtai_agent_python.common import utils
+from dongtai_agent_python.common import origin, utils
 from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_tracker, dt_tracker_set, \
     set_current
 from dongtai_agent_python.common.logger import logger_config
 from dongtai_agent_python.middlewares.base_middleware import BaseMiddleware
-
-from common import origin
 
 logger = logger_config("python_agent")
 
