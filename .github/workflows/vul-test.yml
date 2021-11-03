@@ -35,15 +35,13 @@ jobs:
       - name: Prepare Agent code
         run: |
           cd ${{ github.workspace }}/DockerVulspace
-          rm -rf src/dongtai_agent_python
-          cp -r ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python src/dongtai_agent_python
-          cp -f src/dongtai_agent_python/config.json config.json
+          cp -r ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python ./dongtai_agent_python
 
       - name: Prepare Agent Config
         shell: python
         run: |
           import json
-          filename = '${{ github.workspace }}/DockerVulspace/config.json'
+          filename = '${{ github.workspace }}/DockerVulspace/dongtai_agent_python/config.json'
           with open(filename) as f:
               data = json.load(f)
           data['debug'] = True
@@ -64,4 +62,4 @@ jobs:
           curl --fail --retry-delay 10 --retry 30 --retry-connrefused http://127.0.0.1:8003/api/demo/get_open?name=Data
           cd ${{ github.workspace }}/DockerVulspace
           docker-compose logs web
-          bash ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python/tests/vul-test.sh http://127.0.0.1 ${{ github.run_id }}
+          bash ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python/tests/vul-test.sh http://127.0.0.1:8003 ${{ github.run_id }}
