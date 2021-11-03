@@ -157,7 +157,7 @@
     {
       "type": 2,
       "enable": 1,
-      "value": "path-traversal",
+      "value": "common",
       "details": [
         {
           "track": "false",
@@ -167,6 +167,11 @@
         {
           "track": "false",
           "value": "django.utils.datastructures.MultiValueDict.__getitem__",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "django.http.request.HttpRequest.read",
           "inherit": "false"
         }
       ]
