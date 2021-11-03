@@ -43,6 +43,11 @@ def deal_args(new_args, node_type, end_args=None):
             continue
         origin.list_append(end_args, id(item))
 
+        if isinstance(item, (tuple, list)):
+            end_args = deal_args(item, node_type, end_args)
+        elif isinstance(item, dict):
+            end_args = deal_args(list(item.values()), node_type, end_args)
+
     return end_args
 
 

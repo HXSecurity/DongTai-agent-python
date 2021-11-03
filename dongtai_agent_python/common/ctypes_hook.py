@@ -44,7 +44,7 @@ def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **k
 
         result = wrapData(
             result, origin_cls.__name__, _fcn,
-            signature=signature, node_type=node_type, comeData=args)
+            signature=signature, node_type=node_type, comeData=args, comeKwArgs=kwargs)
 
         return result
 
