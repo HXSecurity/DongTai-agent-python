@@ -160,7 +160,7 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         "sourceHash": taint_in,
         "retClassName": ""
     }
-    source_and_target_value = json.dumps({
+    source_and_target_value = origin.json_dumps({
         "sourceHash": req_data['sourceHash'],
         "targetHash": req_data['targetHash']
     })
