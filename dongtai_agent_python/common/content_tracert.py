@@ -2,6 +2,7 @@ import copy
 import hashlib
 import json
 import os
+import re
 import sys
 import threading
 import traceback
@@ -125,6 +126,11 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
     # bypass flask response for indirect call stack
     if signature != "flask.app.Flask.make_response" and path not in tracert_arr[0]:
         return False
+
+    # verify xml parser for xxe
+    if signature == "lxml.etree.fromstring" and tracert_arr[3]:
+        if re.search('''XMLParser\\([^)]*resolve_entities\\s*=\\s*False[^)]*\\)''', tracert_arr[3]):
+            return False
 
     have_hooked = dt_global_var.dt_get_value("have_hooked")
     callerMethod = tracert_arr[2]
