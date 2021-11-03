@@ -134,6 +134,23 @@
           "track": "false",
           "value": "flask.app.Flask.make_response",
           "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "django.http.response.HttpResponse.__init__",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 4,
+      "enable": 1,
+      "value": "xxe",
+      "details": [
+        {
+          "track": "false",
+          "value": "lxml.etree.fromstring",
+          "inherit": "false"
         }
       ]
     },
@@ -172,6 +189,11 @@
         {
           "track": "false",
           "value": "werkzeug.datastructures.MultiDict.__getitem__",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "werkzeug.wrappers.request.Request.get_data",
           "inherit": "false"
         }
       ]
