@@ -155,6 +155,23 @@
       ]
     },
     {
+      "type": 4,
+      "enable": 1,
+      "value": "ssrf",
+      "details": [
+        {
+          "track": "false",
+          "value": "urllib.request.urlopen",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "requests.sessions.Session.request",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
       "type": 2,
       "enable": 1,
       "value": "common",
