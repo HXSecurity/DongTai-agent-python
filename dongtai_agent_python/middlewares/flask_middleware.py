@@ -1,3 +1,4 @@
+import json
 from http.client import responses
 
 import flask
@@ -9,6 +10,8 @@ from dongtai_agent_python.common.content_tracert import current_thread_id, delet
     set_current
 from dongtai_agent_python.common.logger import logger_config
 from dongtai_agent_python.middlewares.base_middleware import BaseMiddleware
+
+from common import origin
 
 logger = logger_config("python_agent")
 
@@ -31,12 +34,16 @@ class AgentMiddleware(BaseMiddleware):
                 dt_global_var.dt_set_value("dt_open_pool", True)
                 return
 
-            request_body = {}
+            request_body = ""
             if request.is_json and request.json:
-                request_body = request.json
+                request_body = origin.json_dumps(request.json)
             elif request.form:
-                for item in request.form:
-                    request_body[item] = request.form[item]
+                forms = []
+                for key in request.form:
+                    origin.list_append(forms, key + "=" + request.form[key])
+                request_body = origin.str_join("&", forms)
+            elif request.get_data():
+                request_body = request.get_data().decode("utf-8", errors="ignore")
 
             request_id = id(request)
             set_current(request_id)
@@ -46,7 +53,6 @@ class AgentMiddleware(BaseMiddleware):
 
             request_header = dict(request.headers)
             http_req_header = utils.json_to_base64(request_header)
-            request_body = utils.json_to_base64(request_body)
 
             need_to_set = {
                 "agentId": reg_agent_id,
@@ -81,7 +87,7 @@ class AgentMiddleware(BaseMiddleware):
                 return response
 
             if not response.is_streamed and response.data and isinstance(response.data, bytes):
-                http_res_body = utils.bytes_to_base64(response.data)
+                http_res_body = response.data.decode("utf-8", errors="ignore")
             else:
                 http_res_body = ""
             dt_tracker_set("resBody", http_res_body)
