@@ -145,7 +145,7 @@ class AgentUpload(object):
     def base_api_post(self, url, body_data):
         url = self.iast_url + url
         try:
-            body_data = json.dumps(body_data)
+            body_data = origin.json_dumps(body_data)
             res = requests.post(url, timeout=20, headers=self.headers, data=body_data)
             resp = res.content.decode("utf-8")
             resp = json.loads(resp)
@@ -160,7 +160,7 @@ class AgentUpload(object):
     def base_report(self, url, body):
         url = self.iast_url + url
         logger.debug(body)
-        stream_data = json.dumps(body)
+        stream_data = origin.json_dumps(body)
 
         body_data = gzip.compress(stream_data.encode('utf-8'))
         try:
@@ -179,10 +179,10 @@ class AgentUpload(object):
         # 上报心跳数据
         system_info = {
             "detail": {
-                # "disk": json.dumps(self.cur_system_info.get_disk()),
-                "memory": json.dumps(self.cur_system_info.get_memory_info()),
+                # "disk": origin.json_dumps(self.cur_system_info.get_disk()),
+                "memory": origin.json_dumps(self.cur_system_info.get_memory_info()),
                 "agentId": self.dt_agent_id,
-                "cpu": json.dumps({"rate": self.cur_system_info.get_cpu_rate()}),
+                "cpu": origin.json_dumps({"rate": self.cur_system_info.get_cpu_rate()}),
                 "methodQueue": 0,
                 "replayQueue": 0,
                 "reqCount": dt_global_var.dt_get_value("req_count"),
