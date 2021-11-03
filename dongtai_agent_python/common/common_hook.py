@@ -64,6 +64,10 @@ class InstallFcnHook(object):
 
         self._pre_hook(*args, **kwargs)
 
+        if "__bypass_dt_agent__" in kwargs:
+            del kwargs["__bypass_dt_agent__"]
+            return self._fcn(*args, **kwargs)
+
         retval = self._fcn(*args, **kwargs)
         if dt_global_var.is_pause():
             return retval
