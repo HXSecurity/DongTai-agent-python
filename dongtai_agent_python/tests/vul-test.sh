@@ -8,56 +8,82 @@ if [ -z ${HOST} ]; then
   exit 1
 fi
 
-# port
-# django: 8003
-# flask: 5000
+FRAMEWORKS=(django flask)
 
-# exec-command
-curl "${HOST}:8003/api/demo/exec_post_popen?_r=${RUN_ID}" -X POST --data-raw 'code=ls'
-curl "${HOST}:5000/api/demo/exec_post_popen?_r=${RUN_ID}" -X POST --data-raw 'code=ls'
-echo
-curl "${HOST}:8003/api/demo/exec_post_subprocess?_r=${RUN_ID}" -X POST --data-raw 'cmd=cat&name=%2Fetc%2Fpasswd'
-curl "${HOST}:5000/api/demo/exec_post_subprocess?_r=${RUN_ID}" -X POST --data-raw 'cmd=cat&name=%2Fetc%2Fpasswd'
-echo
-curl "${HOST}:8003/api/demo/cmd_exec?_r=${RUN_ID}" -X POST --data-raw 'cmd=whoami'
-curl "${HOST}:5000/api/demo/cmd_exec?_r=${RUN_ID}" -X POST --data-raw 'cmd=whoami'
-echo
-curl "${HOST}:8003/api/demo/exec_post_e?_r=${RUN_ID}" -X POST --data-raw 'code=whoami'
-curl "${HOST}:5000/api/demo/exec_post_e?_r=${RUN_ID}" -X POST --data-raw 'code=whoami'
-echo
-# exec-code
-curl "${HOST}:8003/api/demo/eval_post_e?_r=${RUN_ID}" -X POST --data-raw 'code=__import__%28%27os%27%29.system%28%27whoami%27%29'
-curl "${HOST}:5000/api/demo/eval_post_e?_r=${RUN_ID}" -X POST --data-raw 'code=__import__%28%27os%27%29.system%28%27whoami%27%29'
-echo
-curl "${HOST}:8003/api/demo/yaml_post_e?_r=${RUN_ID}" -X POST --data-raw 'code=whoami'
-curl "${HOST}:5000/api/demo/yaml_post_e?_r=${RUN_ID}" -X POST --data-raw 'code=whoami'
-echo
-# path-traversal
-curl "${HOST}:8003/api/demo/get_open?name=Data**&_r=${RUN_ID}"
-curl "${HOST}:5000/api/demo/get_open?name=Data**&_r=${RUN_ID}"
-echo
-curl "${HOST}:8003/api/demo/post_open?_r=${RUN_ID}" -X POST --data-raw 'name=.%2Ffile%2Fdata.json'
-curl "${HOST}:5000/api/demo/post_open?_r=${RUN_ID}" -X POST --data-raw 'name=.%2Ffile%2Fdata.json'
-echo
-# sql-injection
-curl "${HOST}:8003/api/demo/postgresql_post_many?_r=${RUN_ID}" -X POST --data-raw 'id=100&name=song&phone1=13300000000'
-curl "${HOST}:5000/api/demo/postgresql_post_many?_r=${RUN_ID}" -X POST --data-raw 'id=100&name=song&phone1=13300000000'
-echo
-curl "${HOST}:8003/api/demo/postgresql_post_excute?_r=${RUN_ID}" -X POST --data-raw 'name=song'
-curl "${HOST}:5000/api/demo/postgresql_post_excute?_r=${RUN_ID}" -X POST --data-raw 'name=song'
-echo
-curl "${HOST}:8003/api/demo/mysql_post_many?_r=${RUN_ID}" -X POST --data-raw 'name=song&phone1=13300000000'
-curl "${HOST}:5000/api/demo/mysql_post_many?_r=${RUN_ID}" -X POST --data-raw 'name=song&phone1=13300000000'
-echo
-curl "${HOST}:8003/api/demo/mysql_post_exec?_r=${RUN_ID}" -X POST --data-raw 'name=song'
-curl "${HOST}:5000/api/demo/mysql_post_exec?_r=${RUN_ID}" -X POST --data-raw 'name=song'
-echo
-curl "${HOST}:8003/api/demo/sqlite3_post_executemany_sql?_r=${RUN_ID}" -X POST --data-raw 'phone1=13300000000'
-curl "${HOST}:5000/api/demo/sqlite3_post_executemany_sql?_r=${RUN_ID}" -X POST --data-raw 'phone1=13300000000'
-echo
-curl "${HOST}:8003/api/demo/sqlite3_post_executescript?_r=${RUN_ID}" -X POST --data-raw 'name=song&phone1=13300000000'
-curl "${HOST}:5000/api/demo/sqlite3_post_executescript?_r=${RUN_ID}" -X POST --data-raw 'name=song&phone1=13300000000'
-echo
-curl "${HOST}:8003/api/demo/sqlite3_post?_r=${RUN_ID}" -X POST --data-raw 'name=song'
-curl "${HOST}:5000/api/demo/sqlite3_post?_r=${RUN_ID}" -X POST --data-raw 'name=song'
-echo
+headline() {
+  TITLE=$1
+  echo
+  echo "########################### ${TITLE} ###########################"
+  echo
+}
+
+api_get() {
+  API_PATH=$1
+  QUERY=$2
+
+  echo "=========================== GET $API_PATH ==========================="
+  echo
+  for FRAMEWORK in "${FRAMEWORKS[@]}"; do
+    curl "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
+  done
+  echo
+}
+
+api_post() {
+  API_PATH=$1
+  DATA=$2
+
+  echo "=========================== POST $API_PATH ==========================="
+  echo
+  for FRAMEWORK in "${FRAMEWORKS[@]}"; do
+    curl "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw $DATA
+  done
+  echo
+}
+
+headline "exec-command"
+api_post "demo/exec_post_popen" "code=ls"
+api_post "demo/exec_post_subprocess" "cmd=cat&name=%2Fetc%2Fpasswd"
+api_post "demo/cmd_exec" "cmd=whoami"
+api_post "demo/exec_post_e" "code=whoami"
+
+headline "exec-code"
+api_post "demo/eval_post_e" "code=__import__%28%27os%27%29.system%28%27whoami%27%29"
+api_post "demo/yaml_post_e" "code=whoami"
+
+headline "path-traversal"
+api_get "demo/get_open" "name=Data**"
+api_post "demo/post_open" "name=.%2Ffile%2Fdata.json"
+
+headline "sql-injection"
+api_post "demo/postgresql_post_many" "id=100&name=song&phone1=13300000000"
+api_post "demo/postgresql_post_excute" "name=song"
+api_post "demo/mysql_post_many" "name=song&phone1=13300000000"
+api_post "demo/mysql_post_exec" "name=song"
+api_post "demo/sqlite3_post_executemany_sql" "phone1=13300000000"
+api_post "demo/sqlite3_post_executescript" "name=song&phone1=13300000000"
+api_post "demo/sqlite3_post" "phone1=13300000000"
+
+headline "xss"
+api_get "demo/xss_return" "content=alert"
+api_get "demo/xss_template" "content=alert"
+api_get "demo/xss_template_string" "content=alert"
+
+headline "xxe"
+cat > $XXE_PAYLOAD <<- EOM
+<?xml version="1.0" encoding="utf-8"?>
+ <!DOCTYPE Anything [
+ <!ENTITY xxe SYSTEM "file:///etc/passwd">
+ ]>
+ <user>
+  <username>&xxe;</username>
+  <password>
+    yzx
+  </password>
+ </user>
+EOM
+api_post "demo/xxe_login" '$XXE_PAYLOAD'
+
+headline "ssrf"
+api_get "demo/urllib_ssrf" "url=https://www.huoxian.cn/"
+api_get "demo/request_ssrf" "url=https://www.huoxian.cn/"
