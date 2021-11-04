@@ -11,34 +11,60 @@ fi
 FRAMEWORKS=(django flask)
 
 headline() {
-  TITLE=$1
+  local TITLE=$1
   echo
-  echo "########################### ${TITLE} ###########################"
+  echo "########################## ${TITLE} ##########################"
+  echo
+}
+
+failed() {
+  local MSG=$1
+  echo -e "\e[0;31m${MSG}\e[0m"
+}
+
+curl_with_code() {
+  code=0
+  # Run curl in a separate command, capturing output of -w "%{http_code}" into statuscode
+  # and sending the content to a file with -o >(cat >/tmp/curl_body)
+  status_code=$(curl --no-progress-meter -w "%{http_code}" \
+      -o >(cat >/tmp/curl_body) \
+      "$@"
+  ) || code="$?"
+  body="$(cat /tmp/curl_body)"
+
+  if [[ $code -ne 0 ]]; then
+    failed "request failed"
+  fi
+  if [[ $status_code -ne "200" ]]; then
+    failed "response error"
+  fi
+  echo $body
   echo
 }
 
 api_get() {
-  API_PATH=$1
-  QUERY=$2
+  local API_PATH=$1
+  local QUERY=$2
 
-  echo "=========================== GET $API_PATH ==========================="
-  echo
   for FRAMEWORK in "${FRAMEWORKS[@]}"; do
-    curl "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
+    echo "=========================== GET /api/${FRAMEWORK}/$API_PATH"
+    echo
+    curl_with_code  "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
+    echo
   done
-  echo
 }
 
 api_post() {
-  API_PATH=$1
-  DATA=$2
+  local API_PATH=$1
+  local DATA=$2
 
-  echo "=========================== POST $API_PATH ==========================="
   echo
   for FRAMEWORK in "${FRAMEWORKS[@]}"; do
-    curl "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw $DATA
+    echo "=========================== POST /api/${FRAMEWORK}/$API_PATH"
+    echo
+    curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw $DATA
+    echo
   done
-  echo
 }
 
 headline "exec-command"
