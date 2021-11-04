@@ -59,7 +59,7 @@ jobs:
 
       - name: Run Vul test
         run: |
-          curl --fail --retry-delay 10 --retry 30 --retry-connrefused http://127.0.0.1:8003/api/demo/get_open?name=Data
+          curl --fail --retry-delay 10 --retry 30 --retry-connrefused http://127.0.0.1:8003/api/django/demo/get_open?name=Data
           cd ${{ github.workspace }}/DockerVulspace
           docker-compose logs web
           bash ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python/tests/vul-test.sh http://127.0.0.1:8003 ${{ github.run_id }}
