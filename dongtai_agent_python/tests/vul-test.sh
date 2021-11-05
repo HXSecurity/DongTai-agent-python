@@ -45,26 +45,42 @@ curl_with_code() {
 api_get() {
   local API_PATH=$1
   local QUERY=$2
+  local FW=$3
 
-  for FRAMEWORK in "${FRAMEWORKS[@]}"; do
+  # shellcheck disable=SC2154
+  if [[ "${FW}z" -eq "z" ]]; then
     echo "=========================== GET /api/${FRAMEWORK}/$API_PATH"
     echo
-    curl_with_code  "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
+    curl_with_code  "${HOST}/api/${FW}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
     echo
-  done
+  else
+    for FRAMEWORK in "${FRAMEWORKS[@]}"; do
+      echo "=========================== GET /api/${FRAMEWORK}/$API_PATH"
+      echo
+      curl_with_code  "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
+      echo
+    done
+  fi
 }
 
 api_post() {
   local API_PATH=$1
   local DATA=$2
+  local FW=$3
 
-  echo
-  for FRAMEWORK in "${FRAMEWORKS[@]}"; do
+  if [[ "${FW}z" -eq "z" ]]; then
     echo "=========================== POST /api/${FRAMEWORK}/$API_PATH"
     echo
     curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw $DATA
     echo
-  done
+  else
+    for FRAMEWORK in "${FRAMEWORKS[@]}"; do
+      echo "=========================== POST /api/${FRAMEWORK}/$API_PATH"
+      echo
+      curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw $DATA
+      echo
+    done
+  fi
 }
 
 headline "exec-command"
@@ -82,13 +98,14 @@ api_get "demo/get_open" "name=Data**"
 api_post "demo/post_open" "name=.%2Ffile%2Fdata.json"
 
 headline "sql-injection"
-api_post "demo/postgresql_post_many" "id=100&name=song&phone1=13300000000"
+api_post "demo/postgresql_post_many" "id=1000&name=song&phone1=13300000000" django
+api_post "demo/postgresql_post_many" "id=2000&name=song&phone1=13300000000" flask
 api_post "demo/postgresql_post_excute" "name=song"
 api_post "demo/mysql_post_many" "name=song&phone1=13300000000"
 api_post "demo/mysql_post_exec" "name=song"
 api_post "demo/sqlite3_post_executemany_sql" "phone1=13300000000"
 api_post "demo/sqlite3_post_executescript" "name=song&phone1=13300000000"
-api_post "demo/sqlite3_post" "phone1=13300000000"
+api_post "demo/sqlite3_post" "name=song"
 
 headline "xss"
 api_get "demo/xss_return" "content=alert"
