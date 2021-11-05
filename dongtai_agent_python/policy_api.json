@@ -307,6 +307,11 @@
         },
         {
           "track": "false",
+          "value": "flask.jsonify",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "os.path.join",
           "inherit": "false"
         }
