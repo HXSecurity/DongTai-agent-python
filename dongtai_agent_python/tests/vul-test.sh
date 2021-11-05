@@ -104,7 +104,8 @@ api_get "demo/xss_template" "content=alert"
 api_get "demo/xss_template_string" "content=alert"
 
 headline "xxe"
-api_post "demo/xxe_login" '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Anything [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><username>&xxe;</username><password>yzx</password></user>'
+curl_with_code -H "Content-Type: text/plain" "${HOST}/api/django/demo/xxe_login?_r=${RUN_ID}" -X POST --data-raw '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Anything [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><username>&xxe;</username><password>yzx</password></user>'
+curl_with_code -H "Content-Type: text/plain" "${HOST}/api/flask/demo/xxe_login?_r=${RUN_ID}" -X POST --data-raw '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Anything [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><username>&xxe;</username><password>yzx</password></user>'
 
 headline "ssrf"
 api_get "demo/urllib_ssrf" "url=https://www.huoxian.cn/"
