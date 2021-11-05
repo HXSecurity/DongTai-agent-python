@@ -36,7 +36,7 @@ curl_with_code() {
     failed "request failed"
   fi
   if [[ $status_code -ne "200" ]]; then
-    failed "response error"
+    failed "response error: $status_code"
   fi
   echo $body
   echo
@@ -45,42 +45,33 @@ curl_with_code() {
 api_get() {
   local API_PATH=$1
   local QUERY=$2
-  local FW=$3
 
-  # shellcheck disable=SC2154
-  if [[ "${FW}z" -eq "z" ]]; then
-    echo "=========================== GET /api/${FRAMEWORK}/$API_PATH"
+  for FRAMEWORK in "${FRAMEWORKS[@]}"; do
+    echo "=========================== GET /api/${FRAMEWORK}/${API_PATH}"
     echo
-    curl_with_code  "${HOST}/api/${FW}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
+    curl_with_code  "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
     echo
-  else
-    for FRAMEWORK in "${FRAMEWORKS[@]}"; do
-      echo "=========================== GET /api/${FRAMEWORK}/$API_PATH"
-      echo
-      curl_with_code  "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
-      echo
-    done
-  fi
+  done
 }
 
 api_post() {
   local API_PATH=$1
   local DATA=$2
-  local FW=$3
 
-  if [[ "${FW}z" -eq "z" ]]; then
-    echo "=========================== POST /api/${FRAMEWORK}/$API_PATH"
-    echo
-    curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw $DATA
-    echo
-  else
-    for FRAMEWORK in "${FRAMEWORKS[@]}"; do
-      echo "=========================== POST /api/${FRAMEWORK}/$API_PATH"
-      echo
-      curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw $DATA
-      echo
-    done
-  fi
+  for FRAMEWORK in "${FRAMEWORKS[@]}"; do
+    api_post_single ${FRAMEWORK} ${API_PATH} ${DATA}
+  done
+}
+
+api_post_single() {
+  local FRAMEWORK=$1
+  local API_PATH=$2
+  local DATA=$3
+
+  echo "=========================== POST /api/${FRAMEWORK}/${API_PATH}"
+  echo
+  curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw ${DATA}
+  echo
 }
 
 headline "exec-command"
@@ -98,8 +89,8 @@ api_get "demo/get_open" "name=Data**"
 api_post "demo/post_open" "name=.%2Ffile%2Fdata.json"
 
 headline "sql-injection"
-api_post "demo/postgresql_post_many" "id=1000&name=song&phone1=13300000000" django
-api_post "demo/postgresql_post_many" "id=2000&name=song&phone1=13300000000" flask
+api_post_single django "demo/postgresql_post_many" "id=100000&name=song&phone1=13300000000"
+api_post_single flask "demo/postgresql_post_many" "id=200000&name=song&phone1=13300000000"
 api_post "demo/postgresql_post_excute" "name=song"
 api_post "demo/mysql_post_many" "name=song&phone1=13300000000"
 api_post "demo/mysql_post_exec" "name=song"
@@ -113,19 +104,16 @@ api_get "demo/xss_template" "content=alert"
 api_get "demo/xss_template_string" "content=alert"
 
 headline "xxe"
-cat > $XXE_PAYLOAD <<- EOM
-<?xml version="1.0" encoding="utf-8"?>
- <!DOCTYPE Anything [
- <!ENTITY xxe SYSTEM "file:///etc/passwd">
- ]>
- <user>
-  <username>&xxe;</username>
-  <password>
-    yzx
-  </password>
- </user>
-EOM
-api_post "demo/xxe_login" '$XXE_PAYLOAD'
+api_post "demo/xxe_login" '<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Anything [
+<!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<user>
+ <username>&xxe;</username>
+ <password>
+   yzx
+ </password>
+</user>'
 
 headline "ssrf"
 api_get "demo/urllib_ssrf" "url=https://www.huoxian.cn/"
