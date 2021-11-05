@@ -33,14 +33,14 @@
     "allhook": {
       "enable": true
     },
-    "name": "DongTai 1.0.6",
+    "name": "DongTai 1.1.0",
     "mode": "normal"
   },
   "project": {
     "name": "Python Demo Project"
   },
   "engine": {
-    "version": "v1.0.6",
+    "version": "v1.1.0",
     "name": "dongtai-agent-python"
   },
   "app": {
