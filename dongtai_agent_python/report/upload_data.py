@@ -133,7 +133,7 @@ class AgentUpload(object):
         try:
             res = requests.get(url, timeout=20, headers=self.headers, params=params)
             resp = res.content.decode("utf-8")
-            resp = json.loads(resp)
+            resp = origin.json_loads(resp)
 
             # logger.info("report base data")
         except Exception as e:
@@ -148,8 +148,7 @@ class AgentUpload(object):
             body_data = origin.json_dumps(body_data)
             res = requests.post(url, timeout=20, headers=self.headers, data=body_data)
             resp = res.content.decode("utf-8")
-            resp = json.loads(resp)
-
+            resp = origin.json_loads(resp)
             # logger.info("report base data")
         except Exception as e:
             logger.error("post data error: " + str(e) + traceback.format_exc())
@@ -167,7 +166,7 @@ class AgentUpload(object):
             res = self.session.post(url, data=body_data, timeout=20, headers=self.headers)
             logger.debug(res.content)
             resp = res.content.decode("utf-8")
-            resp = json.loads(resp)
+            resp = origin.json_loads(resp)
 
         except Exception as e:
             logger.error("report data error: " + str(e) + traceback.format_exc())

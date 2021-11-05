@@ -19,3 +19,9 @@ def json_dumps(value):
     if "json.dumps" in dt_global_var.dt_get_value("has_patched"):
         return json.dumps(value, __bypass_dt_agent__=True)
     return json.dumps(value)
+
+
+def json_loads(value):
+    if "json.loads" in dt_global_var.dt_get_value("has_patched"):
+        return json.loads(value, __bypass_dt_agent__=True)
+    return json.loads(value)
