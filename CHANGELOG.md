@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+* BUGFIXES
+  * Fix SQL injection sink arguments processing
+
 ## [1.1.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.0) - 2021-11-05
 
 * FEATURES
