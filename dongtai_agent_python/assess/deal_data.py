@@ -69,17 +69,17 @@ def filter_result(result, node_type=None):
 
 def processing_invoke_args(signature=None, comeData=None, comeKwArgs=None):
     sink_args = {
-        'sqlite3.Cursor.execute': {'args': [0]},
-        'sqlite3.Cursor.executemany': {'args': [0]},
-        'sqlite3.Cursor.executescript': {'args': [0]},
-        'psycopg2._psycopg.cursor.execute': {'args': [0], 'kwargs': ['query']},
-        'psycopg2._psycopg.cursor.executemany': {'args': [0], 'kwargs': ['query']},
-        'MySQLdb.cursors.BaseCursor.execute': {'args': [0], 'kwargs': ['query']},
-        'MySQLdb.cursors.BaseCursor.executemany': {'args': [0], 'kwargs': ['query']},
-        'pymysql.cursors.Cursor.execute': {'args': [0], 'kwargs': ['query']},
-        'pymysql.cursors.Cursor.executemany': {'args': [0], 'kwargs': ['query']},
-        'mysql.connector.cursor.CursorBase.execute': {'args': [0], 'kwargs': ['operation']},
-        'mysql.connector.cursor.CursorBase.executemany': {'args': [0], 'kwargs': ['operation']},
+        'sqlite3.Cursor.execute': {'args': [1]},
+        'sqlite3.Cursor.executemany': {'args': [1]},
+        'sqlite3.Cursor.executescript': {'args': [1]},
+        'psycopg2._psycopg.cursor.execute': {'args': [1], 'kwargs': ['query']},
+        'psycopg2._psycopg.cursor.executemany': {'args': [1], 'kwargs': ['query']},
+        'MySQLdb.cursors.BaseCursor.execute': {'args': [1], 'kwargs': ['query']},
+        'MySQLdb.cursors.BaseCursor.executemany': {'args': [1], 'kwargs': ['query']},
+        'pymysql.cursors.Cursor.execute': {'args': [1], 'kwargs': ['query']},
+        'pymysql.cursors.Cursor.executemany': {'args': [1], 'kwargs': ['query']},
+        'mysql.connector.cursor.CursorBase.execute': {'args': [1], 'kwargs': ['operation']},
+        'mysql.connector.cursor.CursorBase.executemany': {'args': [1], 'kwargs': ['operation']},
     }
 
     invokeArgs = []
@@ -95,12 +95,12 @@ def processing_invoke_args(signature=None, comeData=None, comeKwArgs=None):
 
     if comeData and len(comeData) > 0 and 'args' in sink_args[signature]:
         args_size = len(comeData)
-        for arg in sink_args[signature]:
+        for arg in sink_args[signature]['args']:
             if args_size > arg:
                 origin.list_append(invokeArgs, comeData[arg])
 
     if comeKwArgs and len(comeKwArgs) > 0 and 'kwargs' in sink_args[signature]:
-        for key in sink_args[signature]:
+        for key in sink_args[signature]['kwargs']:
             if key in comeKwArgs:
                 origin.list_append(invokeArgs, comeKwArgs[key])
 
