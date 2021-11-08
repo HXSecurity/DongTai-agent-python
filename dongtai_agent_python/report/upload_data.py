@@ -102,7 +102,8 @@ class SystemInfo(object):
 
 class AgentUpload(object):
 
-    def __init__(self):
+    def __init__(self, current_middleware):
+        self.current_middleware = current_middleware
         self.pending_report = 0
         self.session = requests.session()
         self.config_data = dt_global_var.dt_get_value("config_data")
@@ -123,7 +124,8 @@ class AgentUpload(object):
         self.agent_version = self.config_data.get("engine", {}).get("version", "v1.0.0")
         # engine.name will auto generated when download
         engine_name = self.config_data.get("engine", {}).get("name", "dongtai-agent-python")
-        self.agent_name = agent_prefix + "-" + self.agent_version + "-" + engine_name
+        self.agent_name = agent_prefix + "-" + self.agent_version + "-" + engine_name + "-" + \
+                          self.current_middleware.get("container_name", "")
 
         self.cur_system_info = SystemInfo()
 
@@ -228,9 +230,10 @@ class AgentUpload(object):
         t1 = threading.Timer(self.interval_check_manual_pause, self.thread_check_manual_pause)
         t1.start()
 
-    def agent_register(self, data):
+    def agent_register(self):
 
         url = "/api/v1/agent/register"
+        data = self.current_middleware
 
         server_env = dict(os.environ)
         server_env_arr = []

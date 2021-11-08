@@ -17,10 +17,8 @@ class BaseMiddleware(object):
             return
 
         dt_global_var.dt_set_value("dt_open_pool", False)
-
         self.current_middleware = current_middleware
-        module_name = current_middleware.get("module_name", "")
-        if not module_name:
+        if not current_middleware.get("module_name", ""):
             dt_global_var.dt_set_value("dt_open_pool", True)
             return
 
@@ -28,9 +26,9 @@ class BaseMiddleware(object):
         start_time = time.time()
 
         self.executor = ThreadPoolExecutor()
-        self.agent_upload = AgentUpload()
+        self.agent_upload = AgentUpload(self.current_middleware)
         # register agent
-        register_resp = self.agent_upload.agent_register(self.current_middleware)
+        register_resp = self.agent_upload.agent_register()
         if register_resp.get("status", 0) == 201:
             dt_agent_id = register_resp.get("data", {}).get("id", 0)
             logger.info("python agent register success ")
@@ -40,7 +38,7 @@ class BaseMiddleware(object):
 
         dt_global_var.dt_set_value("agentId", dt_agent_id)
         logger.debug("------begin hook-----")
-        enable_patches(module_name)
+        enable_patches(self.current_middleware)
 
         self.agent_upload.report_startup_time((time.time() - start_time) * 1000)
         logger.info("python agent hook open")

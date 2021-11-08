@@ -8,10 +8,12 @@ from dongtai_agent_python.common.ctypes_hook import HookLazyImport, magic_flush_
 from dongtai_agent_python.report.upload_data import AgentUpload
 
 
-def enable_patches(cur_frame_app="django"):
+def enable_patches(current_middleware):
+    cur_frame_app = current_middleware.get("module_name", "")
+
     config_data = dt_global_var.dt_get_value("config_data")
     # 通过api读取策略信息
-    agent_req = AgentUpload()
+    agent_req = AgentUpload(current_middleware)
     policy_info = agent_req.get_policy_config()
     policy_global = dt_global_var.dt_get_value("policy")
     frame_app = ["django", "flask", "tornado", "bottle"]
