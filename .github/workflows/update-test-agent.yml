@@ -3,7 +3,7 @@ name: Update Test Agent
 on:
   push:
     branches:
-      - develop
+      - master
 
 jobs:
   build:
