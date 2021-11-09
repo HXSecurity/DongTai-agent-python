@@ -1,4 +1,5 @@
 from http.client import responses
+from io import BytesIO
 
 import django
 
@@ -42,6 +43,22 @@ class FireMiddleware(BaseMiddleware):
             http_url += "?" + request.META.get("QUERY_STRING", "")
         http_req_header = utils.json_to_base64(dict(request.headers))
 
+        request_body = ""
+        if request.POST:
+            forms = []
+            for key in request.POST:
+                origin.list_append(forms, key + "=" + request.POST[key])
+            request_body = origin.str_join("&", forms)
+        if request_body == "":
+            try:
+                req_body = request.META['wsgi.input'].read()
+                request._stream.stream = BytesIO(req_body)
+                if req_body and isinstance(req_body, bytes):
+                    request_body = req_body.decode("utf-8", errors="ignore")
+            except Exception as e:
+                pass
+        dt_tracker_set("reqBody", request_body)
+
         need_to_set = {
             "agentId": reg_agent_id,
             "uri": request.path,
@@ -72,21 +89,6 @@ class FireMiddleware(BaseMiddleware):
         dt_global_var.dt_set_value("dt_open_pool", True)
         response = self.get_response(request)
         dt_global_var.dt_set_value("dt_open_pool", False)
-
-        request_body = ""
-        if request.POST:
-            forms = []
-            for key in request.POST:
-                origin.list_append(forms, key + "=" + request.POST[key])
-            request_body = origin.str_join("&", forms)
-        else:
-            try:
-                # request.body has cache, need invoke after `django.http.request.HttpRequest.read` is hooked
-                if request.body and isinstance(request.body, bytes):
-                    request_body = request.body.decode("utf-8", errors="ignore")
-            except Exception:
-                pass
-        dt_tracker_set("reqBody", request_body)
 
         if not response.streaming and response.content and isinstance(response.content, bytes):
             http_res_body = response.content.decode("utf-8", errors="ignore")
