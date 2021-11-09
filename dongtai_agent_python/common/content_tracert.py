@@ -1,6 +1,5 @@
 import copy
 import hashlib
-import json
 import os
 import re
 import sys
@@ -42,7 +41,8 @@ def deal_args(new_args, node_type, end_args=None):
             node_type == utils.NODE_TYPE_PROPAGATOR) and \
                 utils.is_empty(item):
             continue
-        origin.list_append(end_args, id(item))
+
+        origin.list_append(end_args, utils.get_hash(item))
 
         if isinstance(item, (tuple, list)):
             end_args = deal_args(item, node_type, end_args)
@@ -53,7 +53,7 @@ def deal_args(new_args, node_type, end_args=None):
 
 
 def come_in(val, arr):
-    hash_id = id(val)
+    hash_id = utils.get_hash(val)
 
     if hash_id not in arr:
         origin.list_append(arr, hash_id)
@@ -150,7 +150,7 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         "invokeId": 0,
         "interfaces": [],
         "targetHash": [
-            id(taint_out)
+            utils.get_hash(taint_out)
         ],
         "targetValues": str(taint_out),
         "signature": signature,
