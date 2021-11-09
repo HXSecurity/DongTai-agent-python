@@ -1,4 +1,5 @@
 import base64
+import hashlib
 
 from dongtai_agent_python.common import origin
 
@@ -46,3 +47,11 @@ def is_empty(value):
 
 def is_not_allowed_type(value):
     return type(value) == int or type(value) == bool
+
+
+def get_hash(item):
+    try:
+        h = hashlib.md5((str(id(item)) + str(item)).encode('utf-8')).hexdigest()
+    except Exception:
+        h = id(item)
+    return h
