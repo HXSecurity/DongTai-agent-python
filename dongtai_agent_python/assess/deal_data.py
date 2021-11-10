@@ -1,8 +1,8 @@
 # hook 参数处理 且 处理污点池
-import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin, utils
-from dongtai_agent_python.global_var import _global_dt_dict
-from dongtai_agent_python.common.content_tracert import method_pool_data, dt_tracker_get, dt_tracker_set, come_in, \
+from dongtai_agent_python.common.content_tracert import dt_pool_status_get, dt_pool_status_set, method_pool_data, \
+    dt_tracker_get, \
+    dt_tracker_set, come_in, \
     deal_args
 
 
@@ -10,11 +10,11 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
     if not filter_result(result, node_type):
         return result
 
-    dt_open_pool = _global_dt_dict.get("dt_open_pool")
+    dt_open_pool = dt_pool_status_get()
     if not dt_open_pool:
         return result
 
-    dt_global_var.dt_set_value("dt_open_pool", False)
+    dt_pool_status_set(False)
 
     dt_data_args = dt_tracker_get("dt_data_args")
     if dt_data_args is None:
@@ -51,7 +51,7 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
             dt_tracker_set("dt_data_args", dt_data_args)
             method_pool_data(origin_cls, _fcn, invokeArgs, taint_in, result, node_type=node_type, signature=signature)
 
-    dt_global_var.dt_set_value("dt_open_pool", True)
+    dt_pool_status_set(True)
 
     return result
 

@@ -11,6 +11,7 @@ from dongtai_agent_python.common import origin, utils
 from dongtai_agent_python.common.default_data import defaultApiData
 
 dt_tracker = {}
+dt_pool_status = {}
 dt_request_id = 0
 dt_gid = 0
 dt_thread_lock = threading.RLock()
@@ -19,6 +20,17 @@ dt_thread_lock = threading.RLock()
 def current_thread_id():
     ident = threading.currentThread().ident
     return str(ident) + str(dt_request_id)
+
+
+def dt_pool_status_get(default=False):
+    try:
+        return dt_pool_status[current_thread_id()]
+    except KeyError:
+        return default
+
+
+def dt_pool_status_set(value):
+    dt_pool_status[current_thread_id()] = value
 
 
 def dt_tracker_get(key, default=None):

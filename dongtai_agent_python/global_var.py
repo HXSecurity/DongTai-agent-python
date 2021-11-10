@@ -5,7 +5,6 @@ import os
 global _global_dt_dict
 
 _global_dt_dict = {
-    "dt_open_pool": True,
     "dt_pause": False,
     "dt_manual_pause": False,
     "has_patched": {},
@@ -39,7 +38,6 @@ def dt_get_value(key):
 
 
 def get_config_data():
-    dt_set_value("dt_open_pool", False)
     base_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_dir, './config.json')
     config_data = {}
@@ -47,7 +45,6 @@ def get_config_data():
         data = config.read()
         config_data = json.loads(data)
     dt_set_value("config_data", config_data)
-    dt_set_value("dt_open_pool", True)
     return config_data
 
 

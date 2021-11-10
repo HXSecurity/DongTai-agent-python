@@ -6,7 +6,8 @@ from flask import request
 
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin, utils
-from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_tracker, dt_tracker_set, \
+from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_pool_status_set, \
+    dt_tracker, dt_tracker_set, \
     set_current
 from dongtai_agent_python.common.logger import logger_config
 from dongtai_agent_python.middlewares.base_middleware import BaseMiddleware
@@ -26,10 +27,10 @@ class AgentMiddleware(BaseMiddleware):
 
         @app.before_request
         def process_request_hook(*args, **kwargs):
-            dt_global_var.dt_set_value("dt_open_pool", False)
+            dt_pool_status_set(False)
             # agent paused
             if dt_global_var.is_pause():
-                dt_global_var.dt_set_value("dt_open_pool", True)
+                dt_pool_status_set(True)
                 return
 
             request_body = ""
@@ -74,14 +75,14 @@ class AgentMiddleware(BaseMiddleware):
             dt_global_var.dt_set_value("have_hooked", [])
             dt_global_var.dt_set_value("hook_exit", False)
             logger.info("hook request api success")
-            dt_global_var.dt_set_value("dt_open_pool", True)
+            dt_pool_status_set(True)
 
         @app.after_request
         def process_response_hook(response):
-            dt_global_var.dt_set_value("dt_open_pool", False)
+            dt_pool_status_set(False)
             # agent paused
             if dt_global_var.is_pause():
-                dt_global_var.dt_set_value("dt_open_pool", True)
+                dt_pool_status_set(True)
                 return response
 
             if not response.is_streamed and response.data and isinstance(response.data, bytes):
@@ -103,7 +104,7 @@ class AgentMiddleware(BaseMiddleware):
             # 避免循环嵌套
             dt_tracker_set("upload_pool", False)
 
-            dt_global_var.dt_set_value("dt_open_pool", True)
+            dt_pool_status_set(True)
             return response
 
         @app.before_first_request
