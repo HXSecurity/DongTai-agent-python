@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.assess.patch import enable_patches
+from dongtai_agent_python.common.content_tracert import dt_pool_status_set
 from dongtai_agent_python.common.logger import logger_config
 from dongtai_agent_python.report.upload_data import AgentUpload
 
@@ -16,10 +17,10 @@ class BaseMiddleware(object):
         if BaseMiddleware.loaded:
             return
 
-        dt_global_var.dt_set_value("dt_open_pool", False)
+        dt_pool_status_set(False)
         self.current_middleware = current_middleware
         if not current_middleware.get("module_name", ""):
-            dt_global_var.dt_set_value("dt_open_pool", True)
+            dt_pool_status_set(True)
             return
 
         logger.info("python agent init")
@@ -42,5 +43,5 @@ class BaseMiddleware(object):
 
         self.agent_upload.report_startup_time((time.time() - start_time) * 1000)
         logger.info("python agent hook open")
-        dt_global_var.dt_set_value("dt_open_pool", True)
+        dt_pool_status_set(True)
         BaseMiddleware.loaded = True

@@ -5,7 +5,8 @@ import django
 
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin, utils
-from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_tracker, dt_tracker_set, \
+from dongtai_agent_python.common.content_tracert import current_thread_id, delete_current, dt_pool_status_set, \
+    dt_tracker, dt_tracker_set, \
     set_current
 from dongtai_agent_python.common.logger import logger_config
 from dongtai_agent_python.middlewares.base_middleware import BaseMiddleware
@@ -26,10 +27,10 @@ class FireMiddleware(BaseMiddleware):
         })
 
     def __call__(self, request):
-        dt_global_var.dt_set_value("dt_open_pool", False)
+        dt_pool_status_set(False)
         # agent paused
         if dt_global_var.is_pause():
-            dt_global_var.dt_set_value("dt_open_pool", True)
+            dt_pool_status_set(True)
             return self.get_response(request)
 
         # '''产生request对象后，url匹配之前调用'''
@@ -81,14 +82,14 @@ class FireMiddleware(BaseMiddleware):
         dt_global_var.dt_set_value("hook_exit", False)
         logger.info("hook request api success")
 
-        dt_global_var.dt_set_value("dt_open_pool", True)
+        dt_pool_status_set(True)
         return self.process_response(request)
 
     def process_response(self, request):
         # '''视图函数调用之后，内容返回浏览器之前'''
-        dt_global_var.dt_set_value("dt_open_pool", True)
+        dt_pool_status_set(True)
         response = self.get_response(request)
-        dt_global_var.dt_set_value("dt_open_pool", False)
+        dt_pool_status_set(False)
 
         if not response.streaming and response.content and isinstance(response.content, bytes):
             http_res_body = response.content.decode("utf-8", errors="ignore")
@@ -117,5 +118,5 @@ class FireMiddleware(BaseMiddleware):
         dt_tracker_set("upload_pool", False)
         delete_current()
 
-        dt_global_var.dt_set_value("dt_open_pool", True)
+        dt_pool_status_set(True)
         return response
