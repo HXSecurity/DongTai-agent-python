@@ -31,3 +31,15 @@ def json_loads(value):
     if "json.loads" in dt_global_var.dt_get_value("has_patched"):
         return json.loads(value, __bypass_dt_agent__=True)
     return json.loads(value)
+
+
+def request_session_get(session, *args, **kwargs):
+    if "requests.sessions.Session.request" in dt_global_var.dt_get_value("has_patched"):
+        return session.get(*args, **kwargs, __bypass_dt_agent__=True)
+    return session.get(*args, **kwargs)
+
+
+def request_session_post(session, *args, **kwargs):
+    if "requests.sessions.Session.request" in dt_global_var.dt_get_value("has_patched"):
+        return session.post(*args, **kwargs, __bypass_dt_agent__=True)
+    return session.post(*args, **kwargs)
