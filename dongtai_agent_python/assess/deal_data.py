@@ -6,8 +6,8 @@ from dongtai_agent_python.common.content_tracert import dt_pool_status_get, dt_p
     deal_args
 
 
-def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=None, comeKwArgs=None):
-    if not filter_result(result, node_type):
+def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=None, comeKwArgs=None, extra_in=None, real_result=None):
+    if not filter_result(real_result, node_type):
         return result
 
     dt_open_pool = dt_pool_status_get()
@@ -38,6 +38,10 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
         if len(dt_data_args) != 0:
             # 入参入池 id
             end_args = deal_args(invokeArgs, node_type)
+            if extra_in:
+                for ein in extra_in:
+                    origin.list_append(end_args, ein["hash"])
+                    origin.list_insert(invokeArgs, ein["index"], ein["value"])
             for two in end_args:
                 if two in dt_data_args:
                     # hook 当前方法 且 将结果值存入污点池
@@ -47,9 +51,9 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
 
     if can_upload == 1:
         if len(dt_data_args) != 0:
-            dt_data_args = come_in(result, dt_data_args)
+            dt_data_args = come_in(real_result, dt_data_args)
             dt_tracker_set("dt_data_args", dt_data_args)
-            method_pool_data(origin_cls, _fcn, invokeArgs, taint_in, result, node_type=node_type, signature=signature)
+            method_pool_data(origin_cls, _fcn, invokeArgs, taint_in, real_result, node_type=node_type, signature=signature)
 
     dt_pool_status_set(True)
 

@@ -7,6 +7,9 @@ from dongtai_agent_python.assess.deal_data import wrapData
 
 
 # https://stackoverflow.com/a/24498525
+from dongtai_agent_python.common import origin, utils
+
+
 def magic_get_dict(o):
     # find address of dict whose offset is stored in the type
     dict_addr = id(o) + type(o).__dictoffset__
@@ -40,11 +43,31 @@ def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **k
         if ((args == ([], '*.mo') or args == (['*.mo'], '**')) and method_name == "append") or (
                 args == ('**/*.mo', '/') and method_name == "split"):
             return _fcn(*args, **kwargs)
-        result = copy_new_class.__dict__[method_name](*args, **kwargs)
 
+        # some method first args is self and is also used to return the value
+        extra_in = None
+        if signature in utils.FIRST_RETURN and len(args) > 0:
+            extra_in = [{
+                'index': 0,
+                'value': str(args[0]),
+                'hash': utils.get_hash(args[0]),
+            }]
+        result = copy_new_class.__dict__[method_name](*args, **kwargs)
+        if signature in utils.FIRST_RETURN and len(args) > 0:
+            real_result = args[0]
+        else:
+            real_result = result
+
+        come_args = []
+        for k, v in enumerate(args):
+            if signature in utils.FIRST_RETURN and k == 0:
+                continue
+            origin.list_append(come_args, v)
         result = wrapData(
             result, origin_cls.__name__, _fcn,
-            signature=signature, node_type=node_type, comeData=args, comeKwArgs=kwargs)
+            signature=signature, node_type=node_type,
+            comeData=come_args, comeKwArgs=kwargs,
+            extra_in=extra_in, real_result=real_result)
 
         return result
 
