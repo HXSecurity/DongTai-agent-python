@@ -1,7 +1,6 @@
 import base64
 import decimal
 import gzip
-import json
 import os
 import platform
 import requests
@@ -131,29 +130,31 @@ class AgentUpload(object):
 
     # 获取接口信息
     def base_api_get(self, url, params=None):
+        endpoint = url
         url = self.iast_url + url
         try:
-            res = requests.get(url, timeout=20, headers=self.headers, params=params)
+            res = origin.request_session_get(self.session, url, timeout=20, headers=self.headers, params=params)
             resp = res.content.decode("utf-8")
             resp = origin.json_loads(resp)
 
             # logger.info("report base data")
         except Exception as e:
-            logger.error("get data error: " + str(e) + traceback.format_exc())
+            logger.error("get  " + endpoint + " data error: " + str(e) + traceback.format_exc())
             resp = {}
 
         return resp
 
     def base_api_post(self, url, body_data):
+        endpoint = url
         url = self.iast_url + url
         try:
             body_data = origin.json_dumps(body_data)
-            res = requests.post(url, timeout=20, headers=self.headers, data=body_data)
+            res = origin.request_session_post(self.session, url, timeout=20, headers=self.headers, data=body_data)
             resp = res.content.decode("utf-8")
             resp = origin.json_loads(resp)
             # logger.info("report base data")
         except Exception as e:
-            logger.error("post data error: " + str(e) + traceback.format_exc())
+            logger.error("post " + endpoint + " data error: " + str(e) + traceback.format_exc())
             resp = {}
 
         return resp
@@ -165,7 +166,7 @@ class AgentUpload(object):
 
         body_data = gzip.compress(stream_data.encode('utf-8'))
         try:
-            res = self.session.post(url, data=body_data, timeout=20, headers=self.headers)
+            res = origin.request_session_post(self.session, url, data=body_data, timeout=20, headers=self.headers)
             logger.debug(res.content)
             resp = res.content.decode("utf-8")
             resp = origin.json_loads(resp)
@@ -218,13 +219,13 @@ class AgentUpload(object):
     def thread_check_manual_pause(self):
         is_paused = dt_global_var.dt_get_value("dt_manual_pause")
         resp = self.check_manual_pause()
-        if resp == "stop":
+        if resp == "coreStop":
             if not is_paused:
                 logger.info("agent manual pause")
                 dt_global_var.dt_set_value("dt_manual_pause", True)
-        elif resp == "start":
+        elif resp == "coreStart" or resp == "coreRegisterStart":
             if is_paused:
-                logger.info("agent manual unpause")
+                logger.info("agent manual unpause: " + resp)
                 dt_global_var.dt_set_value("dt_manual_pause", False)
 
         t1 = threading.Timer(self.interval_check_manual_pause, self.thread_check_manual_pause)
@@ -273,18 +274,27 @@ class AgentUpload(object):
             "autoCreateProject": auto_create_project,
         }
         resp = self.base_report(url, register_data)
-        if resp.get("status", 0) == 201:
-            self.dt_agent_id = resp.get("data", {}).get("id", 0)
-            if self.dt_agent_id:
-                # heartbeat thread
-                t1 = threading.Timer(self.interval, self.thread_heart_report)
-                t1.start()
-                # check enable thread
-                t2 = threading.Timer(self.interval_check_enable, self.thread_check_enable)
-                t2.start()
-                # check manual pause
-                t3 = threading.Timer(self.interval_check_manual_pause, self.thread_check_manual_pause)
-                t3.start()
+        if resp.get("status", 0) != 201:
+            return resp
+
+        self.dt_agent_id = resp.get("data", {}).get("id", 0)
+        if not self.dt_agent_id:
+            logger.error('register get agent id empty')
+            return resp
+
+        if resp.get("data", {}).get("coreAutoRegisterStart", 0) != 1:
+            logger.info("agent is waiting for auditing")
+            dt_global_var.dt_set_value("dt_manual_pause", True)
+
+        # heartbeat thread
+        t1 = threading.Timer(self.interval, self.thread_heart_report)
+        t1.start()
+        # check enable thread
+        t2 = threading.Timer(self.interval_check_enable, self.thread_check_enable)
+        t2.start()
+        # check manual pause
+        t3 = threading.Timer(self.interval_check_manual_pause, self.thread_check_manual_pause)
+        t3.start()
 
         return resp
 
@@ -328,13 +338,13 @@ class AgentUpload(object):
         return True
 
     def check_manual_pause(self):
-        url = "/api/v1/engine/startstop"
+        url = "/api/v1/engine/action"
         resp = self.base_api_get(url, {
-            "name": self.agent_name
+            "agentToken": self.agent_name
         })
 
         # notcmd: no handling
-        return resp.get("data", "notcmd")
+        return resp.get("action", "")
 
     def report_startup_time(self, start_time):
         url = "/api/v1/agent/startuptime"
