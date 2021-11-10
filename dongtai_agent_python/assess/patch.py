@@ -27,11 +27,11 @@ def enable_patches(current_middleware):
     if policy_info.get("status", 0) != 201:
         return
 
+    has_patched = {}
     for rules in policy_info['data']:
         if rules['enable'] != 1 or not rules['details']:
             continue
 
-        has_patched = {}
         for item in rules['details']:
             policy = item['value']
             policy_arr = policy.split(".")

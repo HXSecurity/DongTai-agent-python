@@ -8,6 +8,11 @@ NODE_TYPE_SOURCE = 2
 NODE_TYPE_FILTER = 3
 NODE_TYPE_SINK = 4
 
+FIRST_RETURN = [
+    'builtins.list.append',
+    'builtins.list.insert',
+]
+
 
 def normalize_response_header(status_line, headers):
     header_str = status_line + "\n" + json_to_str(headers)

@@ -15,6 +15,12 @@ def list_append(o, value):
     return o.append(value)
 
 
+def list_insert(o, idx, value):
+    if "builtins.list.append" in dt_global_var.dt_get_value("has_patched"):
+        return o.insert(idx, value, __bypass_dt_agent__=True)
+    return o.insert(idx, value)
+
+
 def json_dumps(value):
     if "json.dumps" in dt_global_var.dt_get_value("has_patched"):
         return json.dumps(value, __bypass_dt_agent__=True)

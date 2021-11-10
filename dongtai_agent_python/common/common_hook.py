@@ -74,6 +74,8 @@ class InstallFcnHook(object):
 
         wrapData(
             retval, self.old_cls.__name__, self._fcn,
-            signature=self.signature, node_type=self.node_type, comeData=args, comeKwArgs=kwargs)
+            signature=self.signature, node_type=self.node_type,
+            comeData=args, comeKwArgs=kwargs,
+            extra_in=None, real_result=retval)
 
         return retval
