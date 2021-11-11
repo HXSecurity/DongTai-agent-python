@@ -33,6 +33,7 @@ def bytes_to_base64(data):
     b64_data = base64.b64encode(data)
     return b64_data.decode('utf-8')
 
+
 def json_to_str(json_data):
     if json_data:
         new_list = []
@@ -56,7 +57,7 @@ def is_not_allowed_type(value):
 
 def get_hash(item):
     try:
-        h = hashlib.md5((str(id(item)) + str(item)).encode('utf-8')).hexdigest()
+        h = hashlib.md5((str(type(item)) + ":" + str(id(item)) + ":" + str(item)).encode('utf-8')).hexdigest()
     except Exception:
         h = id(item)
     return h
