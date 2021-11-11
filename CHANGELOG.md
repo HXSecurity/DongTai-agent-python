@@ -2,8 +2,15 @@
 
 ## Unreleased
 
+* FEATURES
+  * Add agent auditing on startup
 * BUGFIXES
   * Fix SQL injection sink arguments processing
+  * Fix the duplicate agent name caused by using the same configuration file under multiple frameworks
+  * Fix the problem that Django response body is getting empty
+  * Fix object hash generation method to avoid duplicate hashes
+  * Fix the problem of method pooling under multiple threads
+  * Fix the case that some methods return values from their own parameters
 
 ## [1.1.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.0) - 2021-11-05
 
