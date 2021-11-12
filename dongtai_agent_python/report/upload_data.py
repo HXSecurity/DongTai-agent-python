@@ -340,11 +340,11 @@ class AgentUpload(object):
     def check_manual_pause(self):
         url = "/api/v1/engine/action"
         resp = self.base_api_get(url, {
-            "agentToken": self.agent_name
+            "agentId": self.dt_agent_id
         })
 
         # notcmd: no handling
-        return resp.get("action", "")
+        return resp.get("data", "")
 
     def report_startup_time(self, start_time):
         url = "/api/v1/agent/startuptime"
