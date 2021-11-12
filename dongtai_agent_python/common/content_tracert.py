@@ -93,9 +93,9 @@ def set_current(request_id):
 
 def delete_current():
     global dt_thread_lock
-    dt_thread_lock.release()
     try:
         del dt_tracker[current_thread_id()]
+        dt_thread_lock.release()
     except Exception:
         pass
 
@@ -140,7 +140,11 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         return False
 
     # verify xml parser for xxe
-    if signature == "lxml.etree.fromstring" and tracert_arr[3]:
+    lxml_checks = [
+        "lxml.etree.fromstring",
+        "lxml.etree.parse",
+    ]
+    if signature in lxml_checks and tracert_arr[3]:
         if re.search('''XMLParser\\([^)]*resolve_entities\\s*=\\s*False[^)]*\\)''', tracert_arr[3]):
             return False
 
