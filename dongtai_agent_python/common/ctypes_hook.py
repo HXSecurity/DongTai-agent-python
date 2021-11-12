@@ -32,6 +32,8 @@ def magic_flush_mro_cache():
 # 属性方法hook
 def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **kwargs):
     copy_new_class = type(origin_cls.__name__, origin_cls.__bases__, dict(origin_cls.__dict__))
+    if method_name not in copy_new_class.__dict__:
+        return None
     _fcn = getattr(origin_cls, method_name)
 
     def child_func(*args, **kwargs):

@@ -222,6 +222,11 @@
           "track": "false",
           "value": "werkzeug.wrappers.request.Request.get_data",
           "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "werkzeug.wrappers.base_request.BaseRequest.get_data",
+          "inherit": "false"
         }
       ]
     },

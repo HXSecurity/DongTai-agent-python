@@ -81,14 +81,17 @@ def enable_patches(current_middleware):
             after_cls = magic_get_dict(old_cls)
 
             if isinstance(old_cls, type):
-                if config_data.get("debug"):
-                    print("------origin_cls_property------ " + policy)
-                after_cls[method_name] = new_func(
+                hooked = new_func(
                     old_cls,
                     method_name,
                     policy,
                     rules['type']
                 )
+                if hooked == None:
+                    continue
+                if config_data.get("debug"):
+                    print("------origin_cls_property------ " + policy)
+                after_cls[method_name] = hooked
             else:
                 if config_data.get("debug"):
                     print("------origin_cls_function------ " + policy)
