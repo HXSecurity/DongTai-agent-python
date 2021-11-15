@@ -282,7 +282,7 @@ class AgentUpload(object):
             logger.error('register get agent id empty')
             return resp
 
-        if resp.get("data", {}).get("coreAutoRegisterStart", 0) != 1:
+        if resp.get("data", {}).get("coreAutoStart", 0) != 1:
             logger.info("agent is waiting for auditing")
             dt_global_var.dt_set_value("dt_manual_pause", True)
 
