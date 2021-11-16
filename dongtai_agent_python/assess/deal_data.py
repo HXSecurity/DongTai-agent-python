@@ -1,6 +1,7 @@
 # hook 参数处理 且 处理污点池
 from dongtai_agent_python.common import origin, utils
-from dongtai_agent_python.common.content_tracert import dt_pool_status_get, dt_pool_status_set, method_pool_data, \
+from dongtai_agent_python.common.content_tracert import dt_pool_status_get, dt_pool_status_set, dt_tag_set, \
+    method_pool_data, \
     dt_tracker_get, \
     dt_tracker_set, come_in, \
     deal_args
@@ -85,6 +86,17 @@ def processing_invoke_args(signature=None, comeData=None, comeKwArgs=None):
         'mysql.connector.cursor.CursorBase.execute': {'args': [1], 'kwargs': ['operation']},
         'mysql.connector.cursor.CursorBase.executemany': {'args': [1], 'kwargs': ['operation']},
     }
+
+    if signature == 'django.template.base.render_value_in_context':
+        try:
+            item = comeData[1]
+            item_type = ".".join([type(item).__module__, type(item).__name__])
+            if item_type == 'django.template.context.RequestContext' or \
+                    item_type == 'django.template.context.Context':
+                if not item.autoescape:
+                    dt_tag_set('HAS_XSS', True)
+        except Exception:
+            pass
 
     invokeArgs = []
     if signature not in sink_args:

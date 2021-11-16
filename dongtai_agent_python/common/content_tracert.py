@@ -15,6 +15,7 @@ dt_pool_status = {}
 dt_request_id = 0
 dt_gid = 0
 dt_thread_lock = threading.RLock()
+dt_tags = {}
 
 
 def current_thread_id():
@@ -31,6 +32,19 @@ def dt_pool_status_get(default=False):
 
 def dt_pool_status_set(value):
     dt_pool_status[current_thread_id()] = value
+
+
+def dt_tag_get(key, default=False):
+    try:
+        return dt_tags[current_thread_id()][key]
+    except KeyError:
+        return default
+
+
+def dt_tag_set(key, value):
+    if current_thread_id() not in dt_tags:
+        dt_tags[current_thread_id()] = {}
+    dt_tags[current_thread_id()][key] = value
 
 
 def dt_tracker_get(key, default=None):
@@ -54,12 +68,21 @@ def deal_args(new_args, node_type, end_args=None):
                 utils.is_empty(item):
             continue
 
+        try:
+            item_type = ".".join([type(item).__module__, type(item).__name__])
+        except Exception:
+            item_type = ''
+
         origin.list_append(end_args, utils.get_hash(item))
 
         if isinstance(item, (tuple, list)):
             end_args = deal_args(item, node_type, end_args)
         elif isinstance(item, dict):
             end_args = deal_args(list(item.values()), node_type, end_args)
+        elif item_type == 'django.template.context.RequestContext' or \
+                item_type == 'django.template.context.Context':
+            for it in item:
+                end_args = deal_args([it], node_type, end_args)
 
     return end_args
 
@@ -94,7 +117,12 @@ def set_current(request_id):
 def delete_current():
     global dt_thread_lock
     try:
-        del dt_tracker[current_thread_id()]
+        cid = current_thread_id()
+        del dt_tracker[cid]
+        if cid in dt_pool_status:
+            del dt_pool_status[cid]
+        if cid in dt_tags:
+            del dt_tags[cid]
         dt_thread_lock.release()
     except Exception:
         pass
@@ -125,6 +153,10 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
     tracert = traceback.extract_stack()
     tracert_arr = list(tracert[layer])
     path = sys.path[0]
+
+    if signature == 'django.http.response.HttpResponse.__init__':
+        if not dt_tag_get('HAS_XSS'):
+            return False
 
     while layer > -20:
         tracert_arr = list(tracert[layer])
