@@ -319,6 +319,16 @@
           "track": "false",
           "value": "os.path.join",
           "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "django.template.base.Template.render",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "django.template.base.render_value_in_context",
+          "inherit": "false"
         }
       ]
     }
