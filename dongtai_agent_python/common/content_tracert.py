@@ -9,6 +9,7 @@ import traceback
 import dongtai_agent_python.global_var as dt_global_var
 from dongtai_agent_python.common import origin, utils
 from dongtai_agent_python.common.default_data import defaultApiData
+from dongtai_agent_python.common.utils import recursive_get_hashes
 
 dt_tracker = {}
 dt_pool_status = {}
@@ -73,7 +74,9 @@ def deal_args(new_args, node_type, end_args=None):
         except Exception:
             item_type = ''
 
-        origin.list_append(end_args, utils.get_hash(item))
+        hid = utils.get_hash(item)
+        if hid not in end_args:
+            origin.list_append(end_args, hid)
 
         if isinstance(item, (tuple, list)):
             end_args = deal_args(item, node_type, end_args)
@@ -92,6 +95,22 @@ def come_in(val, arr):
 
     if hash_id not in arr:
         origin.list_append(arr, hash_id)
+    return arr
+
+
+def recursive_come_in(val, arr):
+    hash_id = utils.get_hash(val)
+
+    if hash_id not in arr:
+        origin.list_append(arr, hash_id)
+
+    if isinstance(val, (tuple, list)):
+        for v in val:
+            arr = recursive_get_hashes(v, arr)
+    elif isinstance(val, dict):
+        for k in val:
+            arr = recursive_get_hashes(val[k], arr)
+
     return arr
 
 
@@ -158,17 +177,22 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         if not dt_tag_get('HAS_XSS'):
             return False
 
+    not_direct_invoke = [
+        'flask.app.Flask.make_response',
+        'django.urls.resolvers.URLResolver.resolve',
+    ]
     while layer > -20:
         tracert_arr = list(tracert[layer])
-        if signature == "flask.app.Flask.make_response":
+        if signature in not_direct_invoke:
             break
 
         if path in tracert_arr[0] and (path + os.sep + "dongtai_agent_python") not in tracert_arr[0]:
             break
         layer = layer - 1
 
+
     # bypass flask response for indirect call stack
-    if signature != "flask.app.Flask.make_response" and path not in tracert_arr[0]:
+    if signature not in not_direct_invoke and path not in tracert_arr[0]:
         return False
 
     # verify xml parser for xxe
@@ -194,12 +218,15 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
         class_name = signature[:-len(fcn.__name__) - 1]
     else:
         class_name = module_name
+
+    if signature == 'django.urls.resolvers.URLResolver.resolve' and isinstance(taint_out, tuple):
+        target_hash = recursive_get_hashes(taint_out)
+    else:
+        target_hash = [utils.get_hash(taint_out)]
     req_data = {
         "invokeId": 0,
         "interfaces": [],
-        "targetHash": [
-            utils.get_hash(taint_out)
-        ],
+        "targetHash": target_hash,
         "targetValues": str(taint_out),
         "signature": signature,
         "originClassName": class_name,

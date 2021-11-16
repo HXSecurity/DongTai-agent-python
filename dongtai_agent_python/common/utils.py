@@ -61,3 +61,16 @@ def get_hash(item):
     except Exception:
         h = id(item)
     return h
+
+def recursive_get_hashes(items, hashes=None):
+    if hashes is None:
+        hashes = []
+
+    for item in items:
+        origin.list_append(hashes, get_hash(item))
+
+        if isinstance(item, (tuple, list)):
+            hashes = recursive_get_hashes(item, hashes)
+        elif isinstance(item, dict):
+            hashes = recursive_get_hashes(list(item.values()), hashes)
+    return hashes

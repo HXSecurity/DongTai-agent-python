@@ -4,7 +4,7 @@ from dongtai_agent_python.common.content_tracert import dt_pool_status_get, dt_p
     method_pool_data, \
     dt_tracker_get, \
     dt_tracker_set, come_in, \
-    deal_args
+    deal_args, recursive_come_in
 
 
 def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=None, comeKwArgs=None, extra_in=None, real_result=None):
@@ -52,7 +52,10 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
 
     if can_upload == 1:
         if len(dt_data_args) != 0:
-            dt_data_args = come_in(real_result, dt_data_args)
+            if signature == 'django.urls.resolvers.URLResolver.resolve' and isinstance(real_result, tuple):
+                dt_data_args = recursive_come_in(real_result, dt_data_args)
+            else:
+                dt_data_args = come_in(real_result, dt_data_args)
             dt_tracker_set("dt_data_args", dt_data_args)
             method_pool_data(origin_cls, _fcn, invokeArgs, taint_in, real_result, node_type=node_type, signature=signature)
 

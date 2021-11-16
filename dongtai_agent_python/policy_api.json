@@ -195,6 +195,11 @@
           "track": "false",
           "value": "django.http.request.HttpRequest.read",
           "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "django.urls.resolvers.URLResolver.resolve",
+          "inherit": "false"
         }
       ]
     },
@@ -318,6 +323,11 @@
         {
           "track": "false",
           "value": "os.path.join",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "urllib.parse.unquote",
           "inherit": "false"
         },
         {

@@ -55,7 +55,9 @@ def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **k
                 'hash': utils.get_hash(args[0]),
             }]
         result = copy_new_class.__dict__[method_name](*args, **kwargs)
-        if signature in utils.FIRST_RETURN and len(args) > 0:
+        if signature == 'django.urls.resolvers.URLResolver.resolve' and type(result).__name__ == 'ResolverMatch':
+            real_result = (result.args, result.kwargs)
+        elif signature in utils.FIRST_RETURN and len(args) > 0:
             real_result = args[0]
         else:
             real_result = result
