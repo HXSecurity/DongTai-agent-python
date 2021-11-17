@@ -42,7 +42,7 @@ class AgentMiddleware(BaseMiddleware):
                     origin.list_append(forms, key + "=" + request.form[key])
                 request_body = origin.str_join("&", forms)
             elif request.get_data():
-                request_body = request.get_data().decode("utf-8", errors="ignore")
+                request_body = origin.bytes_decode(request.get_data(), "utf-8", errors="ignore")
 
             request_id = id(request)
             set_current(request_id)
@@ -86,7 +86,7 @@ class AgentMiddleware(BaseMiddleware):
                 return response
 
             if not response.is_streamed and response.data and isinstance(response.data, bytes):
-                http_res_body = response.data.decode("utf-8", errors="ignore")
+                http_res_body = origin.bytes_decode(response.data, "utf-8", errors="ignore")
             else:
                 http_res_body = ""
             dt_tracker_set("resBody", http_res_body)

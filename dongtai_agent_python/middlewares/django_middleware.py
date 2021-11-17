@@ -55,7 +55,7 @@ class FireMiddleware(BaseMiddleware):
                 req_body = request.META['wsgi.input'].read()
                 request._stream.stream = BytesIO(req_body)
                 if req_body and isinstance(req_body, bytes):
-                    request_body = req_body.decode("utf-8", errors="ignore")
+                    request_body = origin.bytes_decode(req_body, "utf-8", errors="ignore")
             except Exception as e:
                 pass
         dt_tracker_set("reqBody", request_body)
@@ -92,7 +92,7 @@ class FireMiddleware(BaseMiddleware):
         dt_pool_status_set(False)
 
         if not response.streaming and response.content and isinstance(response.content, bytes):
-            http_res_body = response.content.decode("utf-8", errors="ignore")
+            http_res_body = origin.bytes_decode(response.content, "utf-8", errors="ignore")
         else:
             http_res_body = ""
         dt_tracker_set("resBody", http_res_body)

@@ -282,6 +282,11 @@
         },
         {
           "track": "false",
+          "value": "builtins.bytes.decode",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "builtins.list.__new__",
           "inherit": "false"
         },
