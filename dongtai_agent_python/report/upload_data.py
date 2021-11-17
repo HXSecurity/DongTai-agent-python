@@ -134,7 +134,7 @@ class AgentUpload(object):
         url = self.iast_url + url
         try:
             res = origin.request_session_get(self.session, url, timeout=20, headers=self.headers, params=params)
-            resp = res.content.decode("utf-8")
+            resp = origin.bytes_decode(res.content, "utf-8")
             resp = origin.json_loads(resp)
 
             # logger.info("report base data")
@@ -150,7 +150,7 @@ class AgentUpload(object):
         try:
             body_data = origin.json_dumps(body_data)
             res = origin.request_session_post(self.session, url, timeout=20, headers=self.headers, data=body_data)
-            resp = res.content.decode("utf-8")
+            resp = origin.bytes_decode(res.content, "utf-8")
             resp = origin.json_loads(resp)
             # logger.info("report base data")
         except Exception as e:
@@ -168,7 +168,7 @@ class AgentUpload(object):
         try:
             res = origin.request_session_post(self.session, url, data=body_data, timeout=20, headers=self.headers)
             logger.debug(res.content)
-            resp = res.content.decode("utf-8")
+            resp = origin.bytes_decode(res.content, "utf-8")
             resp = origin.json_loads(resp)
 
         except Exception as e:
@@ -275,7 +275,7 @@ class AgentUpload(object):
             "serverAddr": "",
             "serverPort": "",
             "serverPath": "",
-            "serverEnv": server_env_str.decode('utf-8'),
+            "serverEnv": origin.bytes_decode(server_env_str, 'utf-8'),
             "pid": str(os.getpid()),
             "autoCreateProject": auto_create_project,
         }
