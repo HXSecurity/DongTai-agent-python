@@ -4,6 +4,10 @@
 
 * FEATURES
   * Add agent auditing on startup
+  * Use environment variable `PROJECT_VERSION` for auto create project version
+* ENHANCEMENTS
+  * Add Django template hook rule for XSS detection
+  * Add old version werkzeug request body hook rule
 * BUGFIXES
   * Fix SQL injection sink arguments processing
   * Fix the duplicate agent name caused by using the same configuration file under multiple frameworks
@@ -11,6 +15,7 @@
   * Fix object hash generation method to avoid duplicate hashes
   * Fix the problem of method pooling under multiple threads
   * Fix the case that some methods return values from their own parameters
+  * Fix old version werkzeug compatibility
 
 ## [1.1.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.0) - 2021-11-05
 
