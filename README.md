@@ -85,3 +85,5 @@ Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html)
         app.run()
     ```
 2. Restart app
+
+<img src="https://static.scarf.sh/a.png?x-pxid=e8ec5bbb-2869-4a6d-876d-f2e66bf408f2" />
