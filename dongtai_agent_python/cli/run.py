@@ -48,13 +48,16 @@ def get_config():
 
 def get_project_name(config_data):
     server_env = dict(os.environ)
-    project_name = config_data.get("project", {}).get("name", "Demo Project")
+    project_name = config_data.get("project", {}).get("name", "Python Demo Project")
     if isinstance(server_env, dict):
         if server_env.get("projectName", ""):
             project_name = server_env.get("projectName", "")
         elif server_env.get("PROJECTNAME", ""):
             # windows always upper case env key
             project_name = server_env.get("PROJECTNAME", "")
+        elif server_env.get("PROJECT_NAME", ""):
+            # windows always upper case env key
+            project_name = server_env.get("PROJECT_NAME", "")
     return project_name
 
 

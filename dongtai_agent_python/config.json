@@ -37,7 +37,8 @@
     "mode": "normal"
   },
   "project": {
-    "name": "Python Demo Project"
+    "name": "Python Demo Project",
+    "version": ""
   },
   "engine": {
     "version": "v1.1.0",
