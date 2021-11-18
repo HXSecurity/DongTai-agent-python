@@ -198,7 +198,7 @@
         },
         {
           "track": "false",
-          "value": "django.urls.resolvers.URLResolver.resolve",
+          "value": "django.urls.resolvers.RoutePattern.match",
           "inherit": "false"
         }
       ]

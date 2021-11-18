@@ -91,6 +91,8 @@ def deal_args(new_args, node_type, end_args=None):
 
 
 def come_in(val, arr):
+    if utils.is_empty(val):
+        return arr
     hash_id = utils.get_hash(val)
 
     if hash_id not in arr:
@@ -99,6 +101,8 @@ def come_in(val, arr):
 
 
 def recursive_come_in(val, arr):
+    if utils.is_empty(val):
+        return arr
     hash_id = utils.get_hash(val)
 
     if hash_id not in arr:
@@ -106,10 +110,10 @@ def recursive_come_in(val, arr):
 
     if isinstance(val, (tuple, list)):
         for v in val:
-            arr = recursive_get_hashes(v, arr)
+            arr = recursive_come_in(v, arr)
     elif isinstance(val, dict):
         for k in val:
-            arr = recursive_get_hashes(val[k], arr)
+            arr = recursive_come_in(val[k], arr)
 
     return arr
 
@@ -179,7 +183,7 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
 
     not_direct_invoke = [
         'flask.app.Flask.make_response',
-        'django.urls.resolvers.URLResolver.resolve',
+        'django.urls.resolvers.RoutePattern.match',
     ]
     while layer > -20:
         tracert_arr = list(tracert[layer])
@@ -219,7 +223,7 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
     else:
         class_name = module_name
 
-    if signature == 'django.urls.resolvers.URLResolver.resolve' and isinstance(taint_out, tuple):
+    if signature == 'django.urls.resolvers.RoutePattern.match' and isinstance(taint_out, tuple):
         target_hash = recursive_get_hashes(taint_out)
     else:
         target_hash = [utils.get_hash(taint_out)]

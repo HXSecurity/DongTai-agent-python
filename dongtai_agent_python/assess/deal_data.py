@@ -52,7 +52,7 @@ def wrapData(result, origin_cls, _fcn, signature=None, node_type=None, comeData=
 
     if can_upload == 1:
         if len(dt_data_args) != 0:
-            if signature == 'django.urls.resolvers.URLResolver.resolve' and isinstance(real_result, tuple):
+            if signature == 'django.urls.resolvers.RoutePattern.match':
                 dt_data_args = recursive_come_in(real_result, dt_data_args)
             else:
                 dt_data_args = come_in(real_result, dt_data_args)

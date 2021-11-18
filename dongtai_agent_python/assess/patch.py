@@ -90,11 +90,11 @@ def enable_patches(current_middleware):
                 if hooked == None:
                     continue
                 if config_data.get("debug"):
-                    print("------origin_cls_property------ " + policy)
+                    print("------origin_cls_property------ " + "[" + str(rules['type']) + "]" + policy)
                 after_cls[method_name] = hooked
             else:
                 if config_data.get("debug"):
-                    print("------origin_cls_function------ " + policy)
+                    print("------origin_cls_function------ " + "[" + str(rules['type']) + "]" + policy)
                 after_cls[method_name] = InstallFcnHook(old_cls, old_func, policy, rules['type'])
 
             has_patched[policy] = True
