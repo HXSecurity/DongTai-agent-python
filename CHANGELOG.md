@@ -8,6 +8,7 @@
 * ENHANCEMENTS
   * Add Django template hook rule for XSS detection
   * Add old version werkzeug request body hook rule
+  * Add Django route match hook rule
 * BUGFIXES
   * Fix SQL injection sink arguments processing
   * Fix the duplicate agent name caused by using the same configuration file under multiple frameworks
