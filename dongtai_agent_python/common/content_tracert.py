@@ -178,7 +178,7 @@ def method_pool_data(module_name, fcn, sourceValues, taint_in, taint_out, layer=
     path = sys.path[0]
 
     if signature == 'django.http.response.HttpResponse.__init__':
-        if not dt_tag_get('HAS_XSS'):
+        if dt_tag_get('DJANGO_TEMPLATE_RENDER') and not dt_tag_get('HAS_XSS'):
             return False
 
     not_direct_invoke = [
