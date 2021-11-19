@@ -1,6 +1,6 @@
 Metadata-Version: 1.2
 Name: dongtai-agent-python
-Version: 1.1.0
+Version: 1.1.1
 Summary: DongTai IAST Agent for Python
 Home-page: https://iast.huoxian.cn
 Author: songjinghao
@@ -8,9 +8,11 @@ Author-email: jinghaosong@huoxian.cn
 License: GPL-3
 Description: ## DongTai-agent-python
         
-        [![django-project](https://img.shields.io/badge/django%20versions-3.2.8-blue)](https://www.djangoproject.com/)
-        [![dongtai-project](https://img.shields.io/badge/dongtai%20versions-beta-green)](https://github.com/huoxianclub/dongtai)
-        [![dongtai--agent--python](https://img.shields.io/badge/dongtai--agent--python-v1.0.6-lightgrey)](https://github.com/huoxianclub/dongtai-web)
+        [![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.1-blue)](https://github.com/HXSecurity/DongTai)
+        [![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.1-blue)](https://github.com/HXSecurity/DongTai-agent-python)
+        
+        [![django-project](https://img.shields.io/badge/Supported%20versions%20of%20Django-3.0.x,3.1.x,3.2.x-blue)](https://www.djangoproject.com/)
+        [![flask-project](https://img.shields.io/badge/Supported%20versions%20of%20Flask-1.0.x,1.1.x,1.2.x-blue)](https://palletsprojects.com/p/flask/)
         
         - [中文版本(Chinese version)](README.ZH_CN.md)
         
@@ -36,58 +38,64 @@ Description: ## DongTai-agent-python
         
         ## Quick Start
         
-        Please refer to the [Quick Start](https://hxsecurity.github.io/DongTai-Doc/#/doc/tutorial/quickstart).
+        Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html).
         
         ## Quick Development
         
         1. Fork the [DongTai-agent-python](https://github.com/HXSecurity/DongTai-agent-python) , clone your fork:
-        
            ```
            git clone https://github.com/<your-username>/DongTai-agent-python
            ```
-        
         2. Write code to your needs.
-        
         3. The project is packaged and executed in the root directory of the agent project
              ```shell
              python3 setup.py sdist
              ```
-        
-        4. Install the agent <br>
+        4. Install the agent \
            After packaging, the dist directory will be generated, and the installation package will be found in the dist directory, Put the dongtai_agent_python.tar.gz installation package on the machine where the Web-server is located，Execute pip installation 
          
               ```shell
               pip3  install ./dongtai-python-agent.tar.gz 
               ```
           
-        ## 4.Project access Agent
+        ## Project access Agent
         
-        #### Django 
+        ### Agent Configuration
         
-        1.Enter the main directory of the app
+        #### Environment Variables
         
-        2.Open the `app/settings.py` file and find the line of `MIDDLEWARE`
+        * Auto Create Project: `AUTO_CREATE_PROJECT=1`
+        * Project Name: `PROJECT_NAME=Demo`
+        * Project Version: `PROJECT_VERSION=v1.0`
         
-        3.Insert below the line `dongtai_agent_python.middlewares.django_middleware.FireMiddleware`
+        > Note: \
+        > You can also configure the value of `project.name` in `project.version` in `dongtai_agent_python/config.json` \
+        > **The priority of the system environment variable is higher than the configuration file**
         
-        4.Restart app
+        ### Django 
         
-        #### Flask
-        1.Modify the entry file of the project (such as app.py) and add the following content
-             
-            from dongtai_agent_python.middlewares.flask_middleware import AgentMiddleware
+        1. Enter the main directory of the app
+        2. Open the `app/settings.py` file and find the line of `MIDDLEWARE`
+        3. Insert below the line `dongtai_agent_python.middlewares.django_middleware.FireMiddleware`
+        4. Restart app
+        
+        ### Flask
+        
+        1. Modify the entry file of the project (such as app.py) and add the following content
+            ```python
             
-            app = Flask(__name__)  
-            app.wsgi_app = AgentMiddleware(app.wsgi_app, app) 
+            app = Flask(__name__)
+        
+            from dongtai_agent_python.middlewares.flask_middleware import AgentMiddleware
+            app.wsgi_app = AgentMiddleware(app.wsgi_app, app)
             
             if __name__ == '__main__':
-                app.run()  
-                
-        2.Restart app
-             
-                
-        Note that the `project.name` in `dongtai_agent_python/config.json` needs to be consistent with the project name created in the iast-web page, The agent will be automatically linked to the project;
-        If `project.name` is not configured, you can configure the system environment variable `projectName`, restart the project, the same will take effect, The priority of the system environment variable `projectName` is higher than the `project.name` in the configuration file;
+                app.run()
+            ```
+        2. Restart app
+        
+        <img src="https://static.scarf.sh/a.png?x-pxid=e8ec5bbb-2869-4a6d-876d-f2e66bf408f2" />
+        
 Platform: UNKNOWN
 Classifier: Environment :: Web Environment
 Classifier: Framework :: Django

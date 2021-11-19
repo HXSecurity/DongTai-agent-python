@@ -1,6 +1,6 @@
 # 升级日志
 
-## 尚未发布
+## [1.1.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.1) - 2021-11-19
 
 * 功能
   * 增加 Agent 启动时审核功能
