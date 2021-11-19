@@ -55,10 +55,10 @@ class AgentMiddleware(BaseMiddleware):
 
             need_to_set = {
                 "agentId": reg_agent_id,
-                "uri": request.environ['REQUEST_URI'],
+                "uri": request.environ.get('PATH_INFO', '/'),
                 "url": request.url,
                 "queryString": str(request.query_string, encoding="utf-8"),
-                "protocol": request.environ['SERVER_PROTOCOL'],
+                "protocol": request.environ.get('SERVER_PROTOCOL', 'HTTP/1.1'),
                 "contextPath": request.path,
                 "clientIp": request.remote_addr,
                 "method": request.method,
