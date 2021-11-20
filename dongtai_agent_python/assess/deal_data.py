@@ -96,6 +96,7 @@ def processing_invoke_args(signature=None, comeData=None, comeKwArgs=None):
             item_type = ".".join([type(item).__module__, type(item).__name__])
             if item_type == 'django.template.context.RequestContext' or \
                     item_type == 'django.template.context.Context':
+                dt_tag_set('DJANGO_TEMPLATE_RENDER', True)
                 if not item.autoescape:
                     dt_tag_set('HAS_XSS', True)
         except Exception:
