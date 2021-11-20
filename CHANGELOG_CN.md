@@ -1,6 +1,6 @@
 # 升级日志
 
-## [1.1.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.1) - 2021-11-19
+## [1.1.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.1) - 2021-11-20
 
 * 功能
   * 增加 Agent 启动时审核功能
@@ -15,7 +15,7 @@
   * 修复 Django 请求体获取为空的问题
   * 修复对象哈希值生成方法，以避免重复哈希值
   * 修复多线程下方法池异常的问题
-  * 修正某些方法从自己的参数中返回数值的情况
+  * 修正某些方法以自身参数作为返回值的情况
   * 修复旧版本 werkzeug 兼容性
 
 ## [1.1.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.0) - 2021-11-05
