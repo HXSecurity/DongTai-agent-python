@@ -1,0 +1,3 @@
+
+CONTAINER_DJANGO = 'Django'
+CONTAINER_FLASK = 'Flask'
