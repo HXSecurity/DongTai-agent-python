@@ -31,14 +31,12 @@ class TestSingleton(unittest.TestCase):
                 self.seq = self.seq + 1
 
         def test_incr():
-            s = Test()
-            s.incr()
+            s1 = Test()
+            s1.incr()
 
-        threads = []
         thread_num = 5
         for i in range(thread_num):
             t = threading.Thread(target=test_incr)
-            threads.append(t)
             t.start()
 
         s = Test()

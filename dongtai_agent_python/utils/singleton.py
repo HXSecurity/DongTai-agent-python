@@ -1,4 +1,6 @@
 # @see: https://www.python.org/download/releases/2.2/descrintro/#__new__
+
+
 class Singleton(object):
     def __new__(cls, *args, **kwargs):
         it = cls.__dict__.get("__it__")
