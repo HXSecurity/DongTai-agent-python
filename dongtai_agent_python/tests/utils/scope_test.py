@@ -1,7 +1,7 @@
 import threading
 import unittest
 
-from dongtai_agent_python.utils.scope import current_scope, in_scope, scope
+from dongtai_agent_python.utils.scope import current_scope, in_scope, scope, with_scope
 
 
 class TestScope(unittest.TestCase):
@@ -29,3 +29,23 @@ class TestScope(unittest.TestCase):
         for i in range(thread_num):
             t = threading.Thread(target=self.test_scope)
             t.start()
+
+    def test_decorator(self):
+        @with_scope('test1')
+        def test1():
+            self.assertTrue(in_scope('test1'))
+            return 1
+
+        @with_scope('test2')
+        def test2():
+            self.assertTrue(in_scope('test2'))
+            test1()
+            self.assertFalse(in_scope('test1'))
+            return 2
+
+        t1 = test1()
+        t2 = test2()
+        self.assertFalse(in_scope('test1'))
+        self.assertFalse(in_scope('test2'))
+        self.assertEqual(1, t1)
+        self.assertEqual(2, t2)

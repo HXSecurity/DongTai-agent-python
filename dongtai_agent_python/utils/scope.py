@@ -1,6 +1,8 @@
 import threading
 from contextlib import contextmanager
 
+SCOPE_AGENT = 'agent'
+
 
 class ScopeContext(threading.local):
     def __init__(self):
@@ -42,6 +44,16 @@ def scope(name):
         yield
     finally:
         SCOPE_CONTEXT.exit_scope()
+
+
+def with_scope(name):
+    def wrapper(original_func):
+        def _wrapper(*args, **kwargs):
+            with scope(name):
+                return_value = original_func(*args, **kwargs)
+            return return_value
+        return _wrapper
+    return wrapper
 
 
 def current_scope():
