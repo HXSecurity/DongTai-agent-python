@@ -17,6 +17,7 @@ class Setting(Singleton):
 
         self.policy = {}
 
+        self.container = {}
         if container and isinstance(container, dict):
             self.container = container
 
@@ -25,6 +26,8 @@ class Setting(Singleton):
         self.project_version = self.config.get('project', {}).get('version', '')
         # engine.name will auto generated when download
         self.engine_name = self.config.get('engine', {}).get('name', 'dongtai-agent-python')
+        self.log_path = self.config.get("log", {}).get("log_path", "./dongtai_py_agent.log")
+
         self.init_os_environ()
 
     def init_os_environ(self):
@@ -48,6 +51,9 @@ class Setting(Singleton):
 
         if os_env.get('USE_LOCAL_POLICY', '') == '1':
             self.use_local_policy = True
+
+        if os_env.get('LOG_PATH', ''):
+            self.log_path = os_env.get('LOG_PATH', '')
 
         for key in os_env.keys():
             self.os_env_list.append(key + '=' + str(os_env[key]))
