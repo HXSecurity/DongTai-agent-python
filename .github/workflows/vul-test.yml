@@ -46,11 +46,12 @@ jobs:
           data['iast']['server']['token'] = '0f0025dff8311467f6da5b5109a469f1831aa782'
           data['iast']['server']['url'] = 'http://a28754cd66991441d8d682808caecead-626172336.cn-north-1.elb.amazonaws.com.cn:8000'
           data['project']['name'] = 'Python-DockerVulspace'
-          data['engine']['name'] = 'github-${{ github.run_id }}'
           with open(filename, 'w') as f:
               json.dump(data, f)
 
       - name: Run Vul Container
+        env:
+          PROJECT_VERSION: 'v1.0.${{ github.run_id }}'
         run: |
           cd ${{ github.workspace }}/DockerVulspace
           docker-compose up -d
