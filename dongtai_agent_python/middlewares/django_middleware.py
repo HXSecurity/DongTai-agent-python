@@ -1,10 +1,11 @@
 import django
 
-from .base_middleware import BaseMiddleware
 from dongtai_agent_python import CONTEXT_TRACKER
 from dongtai_agent_python.common.logger import logger_config
 from dongtai_agent_python.context import RequestContext, DjangoRequest
+from dongtai_agent_python.middlewares.base_middleware import BaseMiddleware
 from dongtai_agent_python.utils import scope
+from dongtai_agent_python.setting import const
 
 logger = logger_config("python_agent")
 
@@ -14,9 +15,8 @@ class FireMiddleware(BaseMiddleware):
         self.get_response = get_response
 
         super(FireMiddleware, self).__init__({
-            "module_name": "django",
-            "container_name": "Django",
-            "container_version": django.get_version()
+            "name": const.CONTAINER_DJANGO,
+            "version": django.get_version()
         })
 
     def __call__(self, request):

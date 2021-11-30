@@ -5,7 +5,12 @@ from dongtai_agent_python.utils import Singleton
 
 
 class Setting(Singleton):
+    loaded = False
+
     def init(self, container=None):
+        if Setting.loaded:
+            return
+
         self.paused = False
         self.manual_paused = False
         self.agent_id = 0
@@ -20,8 +25,6 @@ class Setting(Singleton):
         self.hook_exit = False
 
         self.container = {}
-        if container and isinstance(container, dict):
-            self.container = container
 
         self.config = Config()
         self.project_name = self.config.get('project', {}).get('name', 'Demo Project')
@@ -31,6 +34,11 @@ class Setting(Singleton):
         self.log_path = self.config.get("log", {}).get("log_path", "./dongtai_py_agent.log")
 
         self.init_os_environ()
+        Setting.loaded = True
+
+    def set_container(self, container):
+        if container and isinstance(container, dict):
+            self.container = container
 
     def init_os_environ(self):
         os_env = dict(os.environ)

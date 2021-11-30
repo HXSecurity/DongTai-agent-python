@@ -27,7 +27,8 @@ class BaseMiddleware(object):
         self.id = id(self)
         self.setting = None
         self.executor = ThreadPoolExecutor()
-        self.init_setting(container)
+        self.init_setting()
+        self.setting.set_container(container)
 
         self.openapi = OpenAPI(self.setting)
 
@@ -48,8 +49,8 @@ class BaseMiddleware(object):
         scope.exit_scope()
         BaseMiddleware.loaded = True
 
-    def init_setting(self, container):
-        self.setting = Setting(container)
+    def init_setting(self):
+        self.setting = Setting()
 
     def get_policies(self):
         if self.setting.use_local_policy:

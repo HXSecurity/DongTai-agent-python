@@ -1,11 +1,12 @@
 import flask
 from flask import request
 
-from .base_middleware import BaseMiddleware
 from dongtai_agent_python import CONTEXT_TRACKER
 from dongtai_agent_python.common.logger import logger_config
 from dongtai_agent_python.context import RequestContext, FlaskRequest
+from dongtai_agent_python.middlewares.base_middleware import BaseMiddleware
 from dongtai_agent_python.utils import scope
+from dongtai_agent_python.setting import const
 
 logger = logger_config("python_agent")
 
@@ -15,9 +16,8 @@ class AgentMiddleware(BaseMiddleware):
         self.old_wsgi_app = old_app
 
         super(AgentMiddleware, self).__init__({
-            "module_name": "flask",
-            "container_name": "Flask",
-            "container_version": flask.__version__
+            "name": const.CONTAINER_FLASK,
+            "version": flask.__version__
         })
 
         @app.before_request
