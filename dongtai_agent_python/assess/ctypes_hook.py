@@ -2,14 +2,14 @@ import ctypes
 import os
 import sys
 
-from dongtai_agent_python import global_var as dt_global_var
-from dongtai_agent_python.assess.deal_data import wrapData
+from dongtai_agent_python import CONTEXT_TRACKER
+from dongtai_agent_python.policy.deal_data import wrap_data
+from dongtai_agent_python.utils import utils
+from dongtai_agent_python.setting import const, Setting
+from dongtai_agent_python.utils import scope
 
 
 # https://stackoverflow.com/a/24498525
-from dongtai_agent_python.common import origin, utils
-
-
 def magic_get_dict(o):
     # find address of dict whose offset is stored in the type
     dict_addr = id(o) + type(o).__dictoffset__
@@ -34,41 +34,50 @@ def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **k
     copy_new_class = type(origin_cls.__name__, origin_cls.__bases__, dict(origin_cls.__dict__))
     if method_name not in copy_new_class.__dict__:
         return None
-    _fcn = getattr(origin_cls, method_name)
+    origin_fcn = getattr(origin_cls, method_name)
 
     def child_func(*args, **kwargs):
-        if "__bypass_dt_agent__" in kwargs:
-            del kwargs["__bypass_dt_agent__"]
-            return _fcn(*args, **kwargs)
-        if dt_global_var.is_pause():
-            return _fcn(*args, **kwargs)
+        result = copy_new_class.__dict__[method_name](*args, **kwargs)
+        if scope.in_scope(scope.SCOPE_AGENT):
+            return result
+
+        context = CONTEXT_TRACKER.current()
+        if not utils.needs_propagation(context, node_type):
+            return result
+
+        setting = Setting()
+        if setting.is_agent_paused():
+            return result
+
         if ((args == ([], '*.mo') or args == (['*.mo'], '**')) and method_name == "append") or (
                 args == ('**/*.mo', '/') and method_name == "split"):
-            return _fcn(*args, **kwargs)
+            return result
 
         # some method first args is self and is also used to return the value
         extra_in = None
-        if signature in utils.FIRST_RETURN and len(args) > 0:
+        if signature in const.FIRST_RETURN and len(args) > 0:
             extra_in = [{
                 'index': 0,
                 'value': str(args[0]),
                 'hash': utils.get_hash(args[0]),
             }]
-        result = copy_new_class.__dict__[method_name](*args, **kwargs)
-        if signature in utils.FIRST_RETURN and len(args) > 0:
+
+        if signature in const.FIRST_RETURN and len(args) > 0:
             real_result = args[0]
         else:
             real_result = result
 
-        come_args = []
-        for k, v in enumerate(args):
-            if signature in utils.FIRST_RETURN and k == 0:
-                continue
-            origin.list_append(come_args, v)
-        result = wrapData(
-            result, origin_cls.__name__, _fcn,
+        with scope.scope(scope.SCOPE_AGENT):
+            come_args = []
+            for k, v in enumerate(args):
+                if signature in const.FIRST_RETURN and k == 0:
+                    continue
+                come_args.append(v)
+
+        result = wrap_data(
+            result, origin_cls.__name__, origin_fcn,
             signature=signature, node_type=node_type,
-            comeData=come_args, comeKwArgs=kwargs,
+            come_args=come_args, come_kwargs=kwargs,
             extra_in=extra_in, real_result=real_result)
 
         return result

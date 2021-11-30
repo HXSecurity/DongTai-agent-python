@@ -10,9 +10,8 @@ import requests
 import socket
 import threading
 from dongtai_agent_python.common.logger import logger_config
-from dongtai_agent_python.utils.scope import SCOPE_AGENT, with_scope
-from dongtai_agent_python.utils.singleton import Singleton
-from dongtai_agent_python.utils.system_info import SystemInfo
+from dongtai_agent_python.utils import scope
+from dongtai_agent_python.utils import Singleton, SystemInfo
 
 logger = logger_config('openapi')
 
@@ -43,7 +42,7 @@ class OpenAPI(Singleton):
 
         self.system_info = SystemInfo()
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def get(self, url, params=None):
         full_url = self.base_url + url
 
@@ -57,7 +56,7 @@ class OpenAPI(Singleton):
 
         return resp
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def post(self, url, body):
         full_url = self.base_url + url
 
@@ -72,14 +71,16 @@ class OpenAPI(Singleton):
 
         return resp
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def report(self, url, body):
         api_url = self.base_url + url
+        logger.debug(body)
         stream_data = json.dumps(body)
 
         body_data = gzip.compress(stream_data.encode('utf-8'))
         try:
             res = self.session.post(api_url, data=body_data, timeout=20, headers=self.headers)
+            logger.debug(res.content)
             resp = bytes.decode(res.content, 'utf-8')
             resp = json.loads(resp)
         except Exception as e:
@@ -94,7 +95,7 @@ class OpenAPI(Singleton):
 
         return resp
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def thread_heart_report(self):
         # 上报心跳数据
         system_info = {
@@ -149,7 +150,7 @@ class OpenAPI(Singleton):
         t1 = threading.Timer(self.interval_check_manual_pause, self.thread_check_manual_pause)
         t1.start()
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def agent_register(self):
         url = '/api/v1/agent/register'
         data = self.setting.container
@@ -187,6 +188,9 @@ class OpenAPI(Singleton):
         if resp.get('data', {}).get('coreAutoStart', 0) != 1:
             logger.info("agent is waiting for auditing")
             self.setting.dt_manual_pause = True
+
+        if self.setting.disable_heartbeat:
+            return resp
 
         # heartbeat thread
         t1 = threading.Timer(self.interval, self.thread_heart_report)

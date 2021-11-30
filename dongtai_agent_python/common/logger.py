@@ -1,6 +1,6 @@
 import logging
-from dongtai_agent_python.setting.setting import Setting
-from dongtai_agent_python.utils.scope import SCOPE_AGENT, with_scope
+from dongtai_agent_python.setting import Setting
+from dongtai_agent_python.utils import scope
 
 loggers = {}
 
@@ -11,40 +11,40 @@ class AgentLogger(object):
     def __init__(self, log):
         self._log = log
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def debug(self, msg, *args, **kwargs):
         return self._log.debug(msg, *args, **kwargs)
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def info(self, msg, *args, **kwargs):
         return self._log.info(msg, *args, **kwargs)
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def warning(self, msg, *args, **kwargs):
         return self._log.warning(msg, *args, **kwargs)
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def warn(self, msg, *args, **kwargs):
         return self._log.warn(msg, *args, **kwargs)
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def error(self, msg, *args, **kwargs):
         return self._log.error(msg, *args, **kwargs)
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def exception(self, msg, *args, exc_info=True, **kwargs):
         return self._log.exception(msg, *args, exc_info, **kwargs)
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def critical(self, msg, *args, **kwargs):
         return self._log.critical(msg, *args, **kwargs)
 
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def log(self, level, msg, *args, **kwargs):
         return self._log.log(level, msg, *args, **kwargs)
 
 
-@with_scope(SCOPE_AGENT)
+@scope.with_scope(scope.SCOPE_AGENT)
 def logger_config(logging_name):
     """
     get logger by name

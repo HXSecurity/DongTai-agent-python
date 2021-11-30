@@ -1,6 +1,12 @@
-import os, sys, subprocess, json, string, random, requests
-from subprocess import Popen, PIPE
-from dongtai_agent_python.cli import command, usage, log_message
+import json
+import os
+import random
+import requests
+import string
+import sys
+from subprocess import PIPE, Popen
+
+from dongtai_agent_python.cli import command, log_message, usage
 
 
 @command('run', '...',
@@ -76,9 +82,9 @@ def update(config_data):
         "projectName": get_project_name(config_data),
     }
 
-    dir = os.path.dirname(__file__)
+    file_path = os.path.dirname(__file__)
     rnd = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(8))
-    filename = dir + os.sep + "dongtai-agent-python-" + rnd + ".tar.gz"
+    filename = file_path + os.sep + "dongtai-agent-python-" + rnd + ".tar.gz"
     resp = requests.get(url + "/api/v1/agent/download", params, timeout=60, headers=headers)
     with open(filename, "wb") as f:
         f.write(resp.content)

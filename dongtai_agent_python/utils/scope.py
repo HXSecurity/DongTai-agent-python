@@ -60,5 +60,13 @@ def current_scope():
     return SCOPE_CONTEXT.current_scope
 
 
+def enter_scope(name):
+    return SCOPE_CONTEXT.enter_scope(name)
+
+
+def exit_scope():
+    return SCOPE_CONTEXT.exit_scope()
+
+
 def in_scope(name):
     return SCOPE_CONTEXT.in_scope(name)

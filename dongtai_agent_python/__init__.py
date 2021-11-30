@@ -1,4 +1,4 @@
-import dongtai_agent_python.global_var as dt_global_var
+from dongtai_agent_python.context import ContextTracker
 
-dt_global_var._init()
-dt_global_var.get_config_data()
+
+CONTEXT_TRACKER = ContextTracker()

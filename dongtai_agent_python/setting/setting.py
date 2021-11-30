@@ -1,21 +1,23 @@
 import os
-import threading
 
-from dongtai_agent_python.setting.config import Config
-from dongtai_agent_python.utils.singleton import Singleton
+from .config import Config
+from dongtai_agent_python.utils import Singleton
 
 
 class Setting(Singleton):
     def init(self, container=None):
         self.paused = False
         self.manual_paused = False
+        self.agent_id = 0
         self.request_seq = 0
 
         self.auto_create_project = 0
         self.use_local_policy = False
+        self.disable_heartbeat = False
         self.os_env_list = []
 
         self.policy = {}
+        self.hook_exit = False
 
         self.container = {}
         if container and isinstance(container, dict):
@@ -51,6 +53,9 @@ class Setting(Singleton):
 
         if os_env.get('USE_LOCAL_POLICY', '') == '1':
             self.use_local_policy = True
+
+        if os_env.get('DISABLE_HEARTBEAT', '') == '1':
+            self.disable_heartbeat = True
 
         if os_env.get('LOG_PATH', ''):
             self.log_path = os_env.get('LOG_PATH', '')

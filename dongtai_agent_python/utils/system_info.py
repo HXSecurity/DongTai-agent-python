@@ -1,5 +1,5 @@
 from dongtai_agent_python.common.logger import logger_config
-from dongtai_agent_python.utils.scope import SCOPE_AGENT, with_scope
+from dongtai_agent_python.utils import scope
 
 logger = logger_config('system_info')
 
@@ -16,7 +16,7 @@ class SystemInfo(object):
             logger.error("psutil import error, please install psutil")
 
     # 获取网络信息
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def print_net_if_addr(self):
         if self.psutil is not None:
             try:
@@ -44,7 +44,7 @@ class SystemInfo(object):
             return ''
 
     # 获取cpu信息
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def get_cpu_rate(self):
         if self.psutil is not None:
             # print(self.psutil.cpu_percent())
@@ -54,7 +54,7 @@ class SystemInfo(object):
             return 0
 
     # 获取系统内存使用情况
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def get_memory_info(self):
         if self.psutil is not None:
             memory_info = self.psutil.virtual_memory()
@@ -71,7 +71,7 @@ class SystemInfo(object):
             }
 
     # 获取磁盘信息
-    @with_scope(SCOPE_AGENT)
+    @scope.with_scope(scope.SCOPE_AGENT)
     def get_disk(self):
         disk = {'info': []}
         if self.psutil is not None:

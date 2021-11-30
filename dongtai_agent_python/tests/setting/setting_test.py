@@ -1,6 +1,5 @@
 import os
 import threading
-import time
 import unittest
 
 from dongtai_agent_python.setting.setting import Setting
