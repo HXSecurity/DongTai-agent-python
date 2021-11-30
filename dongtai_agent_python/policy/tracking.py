@@ -18,6 +18,7 @@ class Tracking(object):
         if signature == 'django.http.response.HttpResponse.__init__':
             if self.context.tags.get('TAG_DJANGO_TEMPLATE_RENDER') and not self.context.tags.get('TAG_HAS_XSS'):
                 self.ignore_tracking = True
+                scope.exit_scope()
                 return
 
         self.signature = signature
@@ -43,6 +44,7 @@ class Tracking(object):
         # bypass some indirect call stack
         if signature not in not_direct_invoke and path not in tracert_arr[0]:
             self.ignore_tracking = True
+            scope.exit_scope()
             return
 
         # verify xml parser for xxe
@@ -53,6 +55,7 @@ class Tracking(object):
         if signature in lxml_checks and tracert_arr[3]:
             if re.search('''XMLParser\\([^)]*resolve_entities\\s*=\\s*False[^)]*\\)''', tracert_arr[3]):
                 self.ignore_tracking = True
+                scope.exit_scope()
                 return
 
         self.class_name = origin_cls
