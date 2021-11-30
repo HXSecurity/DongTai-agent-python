@@ -287,27 +287,12 @@
         },
         {
           "track": "false",
+          "value": "builtins.str.encode",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "builtins.bytes.decode",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "builtins.list.__new__",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "builtins.list.append",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "builtins.list.insert",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "builtins.list.__add__",
           "inherit": "false"
         },
         {

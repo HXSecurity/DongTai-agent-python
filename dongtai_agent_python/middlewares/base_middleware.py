@@ -1,11 +1,13 @@
+import json
+import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-import dongtai_agent_python.global_var as dt_global_var
+from dongtai_agent_python.api import OpenAPI
 from dongtai_agent_python.assess.patch import enable_patches
-from dongtai_agent_python.common.content_tracert import dt_pool_status_set
 from dongtai_agent_python.common.logger import logger_config
-from dongtai_agent_python.report.upload_data import AgentUpload
+from dongtai_agent_python.setting import Setting
+from dongtai_agent_python.utils import scope
 
 logger = logger_config("base_middleware")
 
@@ -13,35 +15,52 @@ logger = logger_config("base_middleware")
 class BaseMiddleware(object):
     loaded = False
 
-    def __init__(self, current_middleware):
+    def __init__(self, container):
         if BaseMiddleware.loaded:
-            return
-
-        dt_pool_status_set(False)
-        self.current_middleware = current_middleware
-        if not current_middleware.get("module_name", ""):
-            dt_pool_status_set(True)
             return
 
         logger.info("python agent init")
         start_time = time.time()
+        scope.enter_scope(scope.SCOPE_AGENT)
 
+        # middleware id
+        self.id = id(self)
+        self.setting = None
         self.executor = ThreadPoolExecutor()
-        self.agent_upload = AgentUpload(self.current_middleware)
+        self.init_setting()
+        self.setting.set_container(container)
+
+        self.openapi = OpenAPI(self.setting)
+
         # register agent
-        register_resp = self.agent_upload.agent_register()
+        register_resp = self.openapi.agent_register()
         if register_resp.get("status", 0) == 201:
-            dt_agent_id = register_resp.get("data", {}).get("id", 0)
             logger.info("python agent register success ")
         else:
-            dt_agent_id = 0
             logger.error("python agent register error ")
 
-        dt_global_var.dt_set_value("agentId", dt_agent_id)
         logger.debug("------begin hook-----")
-        enable_patches(self.current_middleware)
+        policies = self.get_policies()
+        enable_patches(policies)
 
-        self.agent_upload.report_startup_time((time.time() - start_time) * 1000)
+        self.openapi.agent_startup_time((time.time() - start_time) * 1000)
         logger.info("python agent hook open")
-        dt_pool_status_set(True)
+
+        scope.exit_scope()
         BaseMiddleware.loaded = True
+
+    def init_setting(self):
+        self.setting = Setting()
+
+    def get_policies(self):
+        if self.setting.use_local_policy:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            file_path = os.path.join(base_dir, '../policy_api.json')
+            with open(file_path, 'r') as f:
+                policies = json.load(f)
+        else:
+            policies = self.openapi.get_policies()
+
+        if policies.get("status", 0) != 201:
+            return []
+        return policies.get('data', [])

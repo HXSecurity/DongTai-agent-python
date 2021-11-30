@@ -1,4 +1,6 @@
-import sys, time, os
+import os
+import sys
+import time
 
 _builtin_commands = [
     'run',
@@ -8,7 +10,7 @@ _commands = {}
 
 
 def command(name, options='', description='', hidden=False,
-        log_intercept=True, deprecated=False):
+            log_intercept=True, deprecated=False):
     def wrapper(callback):
         callback.name = name
         callback.options = options
@@ -18,13 +20,14 @@ def command(name, options='', description='', hidden=False,
         callback.deprecated = deprecated
         _commands[name] = callback
         return callback
+
     return wrapper
 
 
 def usage(name):
     cmd = _commands[name]
     if cmd.deprecated:
-        print("Command %s is deprecated" % (name))
+        print("Command %s is deprecated" % (name,))
     print('Usage: dongtai-cli %s %s' % (name, cmd.options))
 
 
@@ -41,23 +44,21 @@ def load_internal_commands():
 
 def main():
     if len(sys.argv) > 1:
-        command = sys.argv[1]
+        cmd = sys.argv[1]
     else:
         print("Command can not empty")
         sys.exit(1)
 
     try:
-        callback = _commands[command]
-
+        callback = _commands[cmd]
     except Exception:
-        print("Unknown command " + command)
+        print("Unknown command " + cmd)
         sys.exit(1)
 
     callback(sys.argv[2:])
 
 
 load_internal_commands()
-
 
 if __name__ == '__main__':
     main()

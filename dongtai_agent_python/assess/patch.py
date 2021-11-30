@@ -1,50 +1,33 @@
 import copy
 import sys
 
-import dongtai_agent_python.global_var as dt_global_var
-from dongtai_agent_python.common import origin
-from dongtai_agent_python.common.common_hook import InstallFcnHook
-from dongtai_agent_python.common.ctypes_hook import HookLazyImport, magic_flush_mro_cache, magic_get_dict, new_func
-from dongtai_agent_python.report.upload_data import AgentUpload
+from dongtai_agent_python.assess.common_hook import InstallFcnHook
+from dongtai_agent_python.assess.ctypes_hook import HookLazyImport, magic_flush_mro_cache, magic_get_dict, new_func
+from dongtai_agent_python.setting import Setting
+from dongtai_agent_python.utils import scope
 
 
-def enable_patches(current_middleware):
-    cur_frame_app = current_middleware.get("module_name", "")
-
-    config_data = dt_global_var.dt_get_value("config_data")
-    # 通过api读取策略信息
-    agent_req = AgentUpload(current_middleware)
-    policy_info = agent_req.get_policy_config()
-    policy_global = dt_global_var.dt_get_value("policy")
-    frame_app = ["django", "flask", "tornado", "bottle"]
-    # 测试环境 本地读取
-    # import os, json
-    # base_dir = os.path.dirname(os.path.abspath(__file__))
-    # file_path = os.path.join(base_dir, '../policy_api.json')
-    # with open(file_path, 'r') as load_f:
-    #     policy_info = json.load(load_f)
-
-    if policy_info.get("status", 0) != 201:
+@scope.with_scope(scope.SCOPE_AGENT)
+def enable_patches(policies):
+    if len(policies) == 0:
         return
 
+    setting = Setting()
     has_patched = {}
-    for rules in policy_info['data']:
+    for rules in policies:
         if rules['enable'] != 1 or not rules['details']:
             continue
 
         for item in rules['details']:
             policy = item['value']
             policy_arr = policy.split(".")
-            if policy_arr[0] in frame_app and policy_arr[0] != cur_frame_app:
-                continue
-
             try:
                 imp_arr = copy.deepcopy(policy_arr)
                 method_name = imp_arr[-1]
-                policy_global[method_name] = rules['type']
+                setting.policy[method_name] = rules['type']
                 # 存储到全局变量
                 del imp_arr[-1]
-                policy_str = origin.str_join(".", imp_arr)
+                policy_str = ".".join(imp_arr)
                 old_module = HookLazyImport(policy_str, [method_name])
                 old_func = getattr(old_module, method_name)
                 old_cls = old_module.origin_module()
@@ -54,7 +37,7 @@ def enable_patches(current_middleware):
                     class_name = imp_arr[-2]
                     del imp_arr[-1]
                     del imp_arr[-1]
-                    policy_str = origin.str_join(".", imp_arr)
+                    policy_str = ".".join(imp_arr)
                     old_module = HookLazyImport(policy_str, [class_name])
                     old_cls = getattr(old_module, class_name)
             except Exception as e:
@@ -67,7 +50,7 @@ def enable_patches(current_middleware):
                 class_name = imp_arr[-2]
                 del imp_arr[-1]
                 del imp_arr[-1]
-                policy_str = origin.str_join(".", imp_arr)
+                policy_str = ".".join(imp_arr)
 
                 try:
                     old_module = HookLazyImport(policy_str, [class_name])
@@ -87,18 +70,16 @@ def enable_patches(current_middleware):
                     policy,
                     rules['type']
                 )
-                if hooked == None:
+                if hooked is None:
                     continue
-                if config_data.get("debug"):
+                if setting.config.get("debug"):
                     print("------origin_cls_property------ " + "[" + str(rules['type']) + "]" + policy)
                 after_cls[method_name] = hooked
             else:
-                if config_data.get("debug"):
+                if setting.config.get("debug"):
                     print("------origin_cls_function------ " + "[" + str(rules['type']) + "]" + policy)
                 after_cls[method_name] = InstallFcnHook(old_cls, old_func, policy, rules['type'])
 
             has_patched[policy] = True
-            dt_global_var.dt_set_value("has_patched", has_patched)
 
-    dt_global_var.dt_set_value("policy", policy_global)
     magic_flush_mro_cache()
