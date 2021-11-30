@@ -153,7 +153,6 @@ class OpenAPI(Singleton):
     @scope.with_scope(scope.SCOPE_AGENT)
     def agent_register(self):
         url = '/api/v1/agent/register'
-        data = self.setting.container
 
         env_str = ','.join(self.setting.os_env_list)
         server_env_str = base64.b64encode(env_str.encode('utf-8'))
@@ -165,8 +164,8 @@ class OpenAPI(Singleton):
             'projectName': self.setting.project_name,
             'hostname': socket.gethostname(),
             'network': network_info,
-            'containerName': data.get('container_name', ''),
-            'containerVersion': data.get('container_version', ''),
+            'containerName': self.setting.container.get('name', ''),
+            'containerVersion': self.setting.container.get('version', ''),
             'serverAddr': '',
             'serverPort': '',
             'serverPath': '',
