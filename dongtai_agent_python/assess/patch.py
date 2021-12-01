@@ -1,7 +1,7 @@
 import copy
 import sys
 
-from dongtai_agent_python.assess.common_hook import InstallFcnHook
+from dongtai_agent_python.assess.common_hook import InstallFcnHook, build_exec_eval_patch
 from dongtai_agent_python.assess.ctypes_hook import HookLazyImport, magic_flush_mro_cache, magic_get_dict, new_func
 from dongtai_agent_python.setting import Setting
 from dongtai_agent_python.utils import scope
@@ -23,6 +23,24 @@ def enable_patches(policies):
             policy_arr = policy.split(".")
 
             if policy in has_patched:
+                continue
+
+            if policy == 'builtins.eval' or policy == 'builtins.exec':
+                imp_arr = copy.deepcopy(policy_arr)
+                method_name = imp_arr[-1]
+                setting.policy[method_name] = rules['type']
+                # 存储到全局变量
+                del imp_arr[-1]
+                policy_str = ".".join(imp_arr)
+                old_module = HookLazyImport(policy_str, [method_name])
+                old_func = getattr(old_module, method_name)
+                old_cls = old_module.origin_module()
+
+                new_fn = build_exec_eval_patch(old_cls, old_func, policy, rules['type'])
+                after_cls = magic_get_dict(old_cls)
+                after_cls[method_name] = new_fn
+                print("------exec_eval_patch---------- " + "[" + str(rules['type']) + "]" + policy)
+                has_patched[policy] = True
                 continue
 
             try:

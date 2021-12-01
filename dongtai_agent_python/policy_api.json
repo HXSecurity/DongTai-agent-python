@@ -93,6 +93,11 @@
         },
         {
           "track": "false",
+          "value": "builtins.exec",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "yaml.unsafe_load",
           "inherit": "false"
         },
