@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+* FEATURES
+  * Use the environment variable `ENGINE_NAME` to customize agent name
+  * Use the environment variable `LOG_PATH` to customize log file path
+  * Add `exec` hook and policy rule to detect code execution vulnerabilities
+* ENHANCEMENTS
+  * Code refactoring: Add scope to prevent recursive execution of the agent's own code
+  * Code refactoring: Add runtime settings and replace the configuration that uses global variables
+  * Code refactoring: Add request context to store tainted data
+  * Performance improvements: Tainted data processing optimization
+  * Performance improvements: Remove unnecessary `list` policy rules
+* BUGFIXES
+  * Fix `eval` exceptions with contextual variables
+
 ## [1.1.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.1) - 2021-11-20
 
 * FEATURES
