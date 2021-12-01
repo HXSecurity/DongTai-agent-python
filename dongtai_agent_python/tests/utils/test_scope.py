@@ -49,3 +49,7 @@ class TestScope(unittest.TestCase):
         self.assertFalse(scope.in_scope('test2'))
         self.assertEqual(1, t1)
         self.assertEqual(2, t2)
+
+
+if __name__ == '__main__':
+    unittest.main()
