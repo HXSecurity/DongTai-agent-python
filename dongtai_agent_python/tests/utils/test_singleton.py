@@ -41,3 +41,7 @@ class TestSingleton(unittest.TestCase):
 
         s = Test()
         self.assertEqual(thread_num, s.seq)
+
+
+if __name__ == '__main__':
+    unittest.main()
