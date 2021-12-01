@@ -74,7 +74,7 @@ def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **k
                     continue
                 come_args.append(v)
 
-        result = wrap_data(
+        wrap_data(
             result, origin_cls.__name__, origin_fcn,
             signature=signature, node_type=node_type,
             come_args=come_args, come_kwargs=kwargs,

@@ -21,6 +21,10 @@ def enable_patches(policies):
         for item in rules['details']:
             policy = item['value']
             policy_arr = policy.split(".")
+
+            if policy in has_patched:
+                continue
+
             try:
                 imp_arr = copy.deepcopy(policy_arr)
                 method_name = imp_arr[-1]
@@ -57,9 +61,6 @@ def enable_patches(policies):
                     old_cls = getattr(old_module, class_name)
                 except Exception as e:
                     continue
-
-            if policy in has_patched:
-                continue
 
             after_cls = magic_get_dict(old_cls)
 
