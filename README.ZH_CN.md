@@ -63,10 +63,16 @@ DongTai-agent-python
 * 自动创建项目: `AUTO_CREATE_PROJECT=1`
 * 项目名称: `PROJECT_NAME=Demo`
 * 项目版本: `PROJECT_VERSION=v1.0`
+* Agent 名称: `ENGINE_NAME=test-flask`
+* 日志文件路径: `LOG_PATH=/tmp/dongtai-agent-python.log`
 
-> 注意: \
-> 也可以配置 `dongtai_agent_python/config.json` 中的 `project.name` 和 `project.version`，同样生效 \
-> **环境变量的配置优先级高于配置文件**
+也可以配置 `dongtai_agent_python/config.json` 中相关的配置项，同样生效
+  * `project.name`
+  * `project.version`
+  * `engine.name`
+  * `log.log_path`
+
+> **注意: 环境变量的配置优先级高于配置文件**
 
 ### Django 
 

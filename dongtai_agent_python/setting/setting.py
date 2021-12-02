@@ -7,7 +7,7 @@ from dongtai_agent_python.utils import Singleton
 class Setting(Singleton):
     loaded = False
 
-    def init(self, container=None):
+    def init(self):
         if Setting.loaded:
             return
 
@@ -57,7 +57,7 @@ class Setting(Singleton):
             self.engine_name = os_env.get('ENGINE_NAME', '')
 
         if os_env.get('AUTO_CREATE_PROJECT', '') == '1':
-            self.auto_create_project = os_env.get('AUTO_CREATE_PROJECT', '')
+            self.auto_create_project = 1
 
         if os_env.get('USE_LOCAL_POLICY', '') == '1':
             self.use_local_policy = True
