@@ -1,6 +1,6 @@
 import threading
-from contextlib import contextmanager
 from collections import defaultdict
+from contextlib import contextmanager
 
 
 class ContextTracker(object):
@@ -11,7 +11,7 @@ class ContextTracker(object):
 
     def get(self, key, default=None):
         cid = self.current_thread_id()
-        if cid not in self._tracker or key not in self._tracker[cid]:
+        if cid == 0 or cid not in self._tracker or key not in self._tracker[cid]:
             return default
 
         return self._tracker[cid][key]
@@ -20,18 +20,21 @@ class ContextTracker(object):
         self._tracker.clear()
 
     def set(self, key, value):
-        self._tracker[self.current_thread_id()][key] = value
+        cid = self.current_thread_id()
+        if cid == 0:
+            return
+        self._tracker[cid][key] = value
 
     def delete(self, key):
-        current_thread_id = self.current_thread_id()
+        cid = self.current_thread_id()
 
-        if current_thread_id not in self._tracker or key not in self._tracker[current_thread_id]:
+        if cid not in self._tracker or key not in self._tracker[cid]:
             return
 
-        del self._tracker[current_thread_id][key]
+        del self._tracker[cid][key]
 
-        if len(self._tracker[current_thread_id]) == 0:
-            del self._tracker[current_thread_id]
+        if len(self._tracker[cid]) == 0:
+            del self._tracker[cid]
 
     def set_current(self, value):
         self.set(self.CURRENT_CONTEXT, value)
@@ -51,4 +54,7 @@ class ContextTracker(object):
         return self.get(self.CURRENT_CONTEXT)
 
     def current_thread_id(self):
-        return threading.currentThread().ident
+        tid = threading.get_ident()
+        if tid not in threading._active:
+            return 0
+        return tid
