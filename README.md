@@ -59,10 +59,16 @@ Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html)
 * Auto Create Project: `AUTO_CREATE_PROJECT=1`
 * Project Name: `PROJECT_NAME=Demo`
 * Project Version: `PROJECT_VERSION=v1.0`
+* Agent Name: `ENGINE_NAME=test-flask`
+* Log Path: `LOG_PATH=/tmp/dongtai-agent-python.log`
 
-> Note: \
-> You can also configure the value of `project.name` in `project.version` in `dongtai_agent_python/config.json` \
-> **The priority of the system environment variable is higher than the configuration file**
+You can also configure the value in `dongtai_agent_python/config.json`
+  * `project.name`
+  * `project.version`
+  * `engine.name`
+  * `log.log_path`
+
+> **Note: The priority of the system environment variable is higher than the configuration file**
 
 ### Django 
 
