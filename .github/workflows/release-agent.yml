@@ -66,4 +66,4 @@ jobs:
       - name: Publish
         run: |
           filename=$(python setup.py --fullname)
-          ossutil cp -rf dist/${filename}.tar.gz oss://dongtai/agent/python1/dongtai_agent_python.tar.gz --meta x-oss-object-acl:public-read
+          ossutil cp -rf dist/${filename}.tar.gz oss://dongtai/agent/python/dongtai_agent_python.tar.gz --meta x-oss-object-acl:public-read
