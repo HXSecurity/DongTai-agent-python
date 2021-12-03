@@ -43,11 +43,11 @@ DongTai-agent-python
    git clone https://github.com/<your-username>/DongTai-agent-python
    ```
 2. 根据需求编写代码
-3. 修改配置文件`dongtai_agent_python/config.json`
-    iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
-    iast.server.url: "https://iast-test.huoxian.cn/openapi"
-    project.name:"DemoProjectName"
-    url与token从洞态IAST-web页面(eg:https://iast-test.huoxian.cn/deploy)>python-agent部署页面,下载agent的shell命令中获取，分别替换url域名与token
+3. 修改配置文件`dongtai_agent_python/config.json` \
+    iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a" \
+    iast.server.url: "https://iast-test.huoxian.cn/openapi" \
+    project.name:"DemoProjectName" \
+    url与token从洞态IAST-web页面(eg:https://iast-test.huoxian.cn/deploy) > python-agent部署页面,下载agent的shell命令中获取，分别替换url域名与token
 4. 项目打包，在agent项目根目录执行
      ```shell
      python3 setup.py sdist
