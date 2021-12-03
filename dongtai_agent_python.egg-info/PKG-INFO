@@ -1,6 +1,6 @@
 Metadata-Version: 1.2
 Name: dongtai-agent-python
-Version: 1.1.1
+Version: 1.1.3
 Summary: DongTai IAST Agent for Python
 Home-page: https://iast.huoxian.cn
 Author: songjinghao
@@ -8,8 +8,8 @@ Author-email: jinghaosong@huoxian.cn
 License: GPL-3
 Description: ## DongTai-agent-python
         
-        [![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.1-blue)](https://github.com/HXSecurity/DongTai)
-        [![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.1-blue)](https://github.com/HXSecurity/DongTai-agent-python)
+        [![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.3-blue)](https://github.com/HXSecurity/DongTai)
+        [![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.3-blue)](https://github.com/HXSecurity/DongTai-agent-python)
         
         [![django-project](https://img.shields.io/badge/Supported%20versions%20of%20Django-3.0.x,3.1.x,3.2.x-blue)](https://www.djangoproject.com/)
         [![flask-project](https://img.shields.io/badge/Supported%20versions%20of%20Flask-1.0.x,1.1.x,1.2.x-blue)](https://palletsprojects.com/p/flask/)
@@ -43,21 +43,25 @@ Description: ## DongTai-agent-python
         ## Quick Development
         
         1. Fork the [DongTai-agent-python](https://github.com/HXSecurity/DongTai-agent-python) , clone your fork:
-           ```
-           git clone https://github.com/<your-username>/DongTai-agent-python
-           ```
+            ```
+            git clone https://github.com/<your-username>/DongTai-agent-python
+            ```
         2. Write code to your needs.
-        3. The project is packaged and executed in the root directory of the agent project
-             ```shell
-             python3 setup.py sdist
-             ```
-        4. Install the agent \
-           After packaging, the dist directory will be generated, and the installation package will be found in the dist directory, Put the dongtai_agent_python.tar.gz installation package on the machine where the Web-server is located，Execute pip installation 
-         
-              ```shell
-              pip3  install ./dongtai-python-agent.tar.gz 
-              ```
-          
+        3. Modify the configuration file `dongtai_agent_python/config.json`
+            * iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
+            * iast.server.url: "https://iast-test.huoxian.cn/openapi"
+            * project.name: "DemoProjectName"
+            > URL and token from the hole state IAST-web page (eg: https://iast-test.huoxian.cn/deploy) > python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
+        4. The project is packaged and executed in the root directory of the agent project
+            ```shell
+            python3 setup.py sdist
+            ```
+        5. Install the agent \
+           After packaging, the dist directory will be generated, and the installation package will be found in the dist directory, Put the dongtai_agent_python.tar.gz installation package on the machine where the Web-server is located，Execute pip installation
+            ```shell
+            pip3 install ./dongtai-python-agent.tar.gz 
+            ```
+        
         ## Project access Agent
         
         ### Agent Configuration
@@ -67,10 +71,16 @@ Description: ## DongTai-agent-python
         * Auto Create Project: `AUTO_CREATE_PROJECT=1`
         * Project Name: `PROJECT_NAME=Demo`
         * Project Version: `PROJECT_VERSION=v1.0`
+        * Agent Name: `ENGINE_NAME=test-flask`
+        * Log Path: `LOG_PATH=/tmp/dongtai-agent-python.log`
         
-        > Note: \
-        > You can also configure the value of `project.name` in `project.version` in `dongtai_agent_python/config.json` \
-        > **The priority of the system environment variable is higher than the configuration file**
+        You can also configure the value in `dongtai_agent_python/config.json`
+          * `project.name`
+          * `project.version`
+          * `engine.name`
+          * `log.log_path`
+        
+        > **Note: The priority of the system environment variable is higher than the configuration file**
         
         ### Django 
         

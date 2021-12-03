@@ -1,7 +1,7 @@
 ## DongTai-agent-python
 
-[![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.1-blue)](https://github.com/HXSecurity/DongTai)
-[![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.1-blue)](https://github.com/HXSecurity/DongTai-agent-python)
+[![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.3-blue)](https://github.com/HXSecurity/DongTai)
+[![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.3-blue)](https://github.com/HXSecurity/DongTai-agent-python)
 
 [![django-project](https://img.shields.io/badge/Supported%20versions%20of%20Django-3.0.x,3.1.x,3.2.x-blue)](https://www.djangoproject.com/)
 [![flask-project](https://img.shields.io/badge/Supported%20versions%20of%20Flask-1.0.x,1.1.x,1.2.x-blue)](https://palletsprojects.com/p/flask/)
@@ -35,26 +35,25 @@ Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html)
 ## Quick Development
 
 1. Fork the [DongTai-agent-python](https://github.com/HXSecurity/DongTai-agent-python) , clone your fork:
-   ```
-   git clone https://github.com/<your-username>/DongTai-agent-python
-   ```
+    ```
+    git clone https://github.com/<your-username>/DongTai-agent-python
+    ```
 2. Write code to your needs.
-3. Modify the configuration file `dongtai_agent_python/config.json` \
-    iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a" \
-    iast.server.url: "https://iast-test.huoxian.cn/openapi" \
-    project.name:"DemoProjectName" \
-    URL and token from the hole state IAST-web page (eg:https://iast-test.huoxian.cn/deploy) > python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
+3. Modify the configuration file `dongtai_agent_python/config.json`
+    * iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
+    * iast.server.url: "https://iast-test.huoxian.cn/openapi"
+    * project.name: "DemoProjectName"
+    > URL and token from the hole state IAST-web page (eg: https://iast-test.huoxian.cn/deploy) > python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
 4. The project is packaged and executed in the root directory of the agent project
-     ```shell
-     python3 setup.py sdist
-     ```
+    ```shell
+    python3 setup.py sdist
+    ```
 5. Install the agent \
-   After packaging, the dist directory will be generated, and the installation package will be found in the dist directory, Put the dongtai_agent_python.tar.gz installation package on the machine where the Web-server is located，Execute pip installation 
- 
-      ```shell
-      pip3  install ./dongtai-python-agent.tar.gz 
-      ```
-  
+   After packaging, the dist directory will be generated, and the installation package will be found in the dist directory, Put the dongtai_agent_python.tar.gz installation package on the machine where the Web-server is located，Execute pip installation
+    ```shell
+    pip3 install ./dongtai-python-agent.tar.gz 
+    ```
+
 ## Project access Agent
 
 ### Agent Configuration
