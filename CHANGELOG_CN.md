@@ -1,6 +1,6 @@
 # 升级日志
 
-## 尚未发布
+## [1.1.3](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.3) - 2021-12-03
 
 * 功能
   * 使用环境变量 `ENGINE_NAME` 自定义 Agent 名称

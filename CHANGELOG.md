@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [1.1.3](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.3) - 2021-12-03
 
 * FEATURES
   * Use the environment variable `ENGINE_NAME` to customize agent name

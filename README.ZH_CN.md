@@ -1,7 +1,7 @@
 ## DongTai-agent-python
 
-[![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.1-blue)](https://github.com/HXSecurity/DongTai)
-[![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.1-blue)](https://github.com/HXSecurity/DongTai-agent-python)
+[![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.3-blue)](https://github.com/HXSecurity/DongTai)
+[![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.3-blue)](https://github.com/HXSecurity/DongTai-agent-python)
 
 [![django-project](https://img.shields.io/badge/Supported%20versions%20of%20Django-3.0.x,3.1.x,3.2.x-blue)](https://www.djangoproject.com/)
 [![flask-project](https://img.shields.io/badge/Supported%20versions%20of%20Flask-1.0.x,1.1.x,1.2.x-blue)](https://palletsprojects.com/p/flask/)
@@ -39,26 +39,25 @@ DongTai-agent-python
 ### 快速开发
 
 1. Fork [DongTai-agent-python](https://github.com/HXSecurity/DongTai-agent-python) 项目到自己的 github 仓库并 clone 项目：
-```shell
-   git clone https://github.com/<your-username>/DongTai-agent-python
-   ```
+    ```shell
+    git clone https://github.com/<your-username>/DongTai-agent-python
+    ```
 2. 根据需求编写代码
-3. 修改配置文件`dongtai_agent_python/config.json` \
-    iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a" \
-    iast.server.url: "https://iast-test.huoxian.cn/openapi" \
-    project.name:"DemoProjectName" \
-    url与token从洞态IAST-web页面(eg:https://iast-test.huoxian.cn/deploy) > python-agent部署页面,下载agent的shell命令中获取，分别替换url域名与token
+3. 修改配置文件 `dongtai_agent_python/config.json`
+    * iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
+    * iast.server.url: "https://iast-test.huoxian.cn/openapi"
+    * project.name: "DemoProjectName"
+    > url 与 token 从洞态 IAST-web 页面(eg: https://iast-test.huoxian.cn/deploy) > python-agent 部署页面,下载 agent 的 shell 命令中获取，分别替换 url 域名与 token
 4. 项目打包，在agent项目根目录执行
-     ```shell
-     python3 setup.py sdist
-     ```
+    ```shell
+    python3 setup.py sdist
+    ```
 5. 安装探针 \
-   打包后会生成 dist 目录，在 dist 目录下找到安装包，将 dongtai_agent_python.tar.gz 安装包放入 Web 服务器所在机器上，执行 pip 安装
- 
-      ```shell
-      pip3  install ./dongtai-python-agent.tar.gz 
-      ```
-  
+    打包后会生成 dist 目录，在 dist 目录下找到安装包，将 dongtai_agent_python.tar.gz 安装包放入 Web 服务器所在机器上，执行 pip 安装
+    ```shell
+    pip3 install ./dongtai-python-agent.tar.gz 
+    ```
+
 ## 项目接入探针
 
 ### 探针配置

@@ -1,9 +1,13 @@
 include *.py
-include *.json
-include dongtai_agent_python/*
+include dongtai_agent_python/*.py
+include dongtai_agent_python/*.json
+include dongtai_agent_python/api/*.py
 include dongtai_agent_python/assess/*.py
 include dongtai_agent_python/cli/*.py
 include dongtai_agent_python/common/*.py
-include dongtai_agent_python/report/*.py
+include dongtai_agent_python/context/*.py
 include dongtai_agent_python/middlewares/*.py
+include dongtai_agent_python/policy/*.py
+include dongtai_agent_python/setting/*.py
+include dongtai_agent_python/utils/*.py
 include version.txt
