@@ -20,10 +20,43 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Package 
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Get python version
+        id: get_python_version
+        run: |
+          V=`echo ${{ steps.get_release.outputs.tag_name }} | sed -e's/v//g' | sed -e's/V//g'`; \
+          echo ::set-output name=VERSION::${V}
+
+      - name: Generate version file
+        run: |
+          cd ${{ github.workspace }} && \
+          echo "${{ github.event.repository.name }},version,${{ steps.get_python_version.outputs.VERSION }}" >> version.txt && \
+          echo "${{ github.event.repository.name }},commit_hash,${GITHUB_SHA}" >> version.txt
+
+      - name: Replace setup cfg
+        run: |
+          sed -i -e 's/version = .*$/version = ${{ steps.get_python_version.outputs.VERSION }}/g' setup.cfg
+          cat setup.cfg
+
+      - name: Upload version file to oss
+        id: upload_version_file_to_oss
+        uses: tvrcgo/upload-to-oss@master
+        with:
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: oss-cn-beijing
+          bucket: huoqi-public
+          assets: |
+            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.get_python_version.outputs.VERSION }}/version.txt
+
+      - name: Package
         run: |
           python setup.py sdist
-
       - uses: manyuanrong/setup-ossutil@v2.0
         with:
           endpoint: "oss-cn-beijing.aliyuncs.com"
