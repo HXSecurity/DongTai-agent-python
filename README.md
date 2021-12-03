@@ -39,11 +39,11 @@ Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html)
    git clone https://github.com/<your-username>/DongTai-agent-python
    ```
 2. Write code to your needs.
-3. Modify the configuration file `dongtai_agent_python/config.json`
-    iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
-    iast.server.url: "https://iast-test.huoxian.cn/openapi"
-    project.name:"DemoProjectName"
-    URL and token from the hole state IAST-web page (eg:https://iast-test.huoxian.cn/deploy)>python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
+3. Modify the configuration file `dongtai_agent_python/config.json` \
+    iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a" \
+    iast.server.url: "https://iast-test.huoxian.cn/openapi" \
+    project.name:"DemoProjectName" \
+    URL and token from the hole state IAST-web page (eg:https://iast-test.huoxian.cn/deploy) > python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
 4. The project is packaged and executed in the root directory of the agent project
      ```shell
      python3 setup.py sdist
