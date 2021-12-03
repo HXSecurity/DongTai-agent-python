@@ -52,7 +52,7 @@ jobs:
           region: oss-cn-beijing
           bucket: huoqi-public
           assets: |
-            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.release.outputs.version }}/version.txt
+            ./version.txt:/iast/release-version/${{ github.event.repository.name }}/${{ steps.get_python_version.outputs.VERSION }}/version.txt
 
       - name: Package
         run: |
