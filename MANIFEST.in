@@ -3,6 +3,10 @@ include dongtai_agent_python/*.py
 include dongtai_agent_python/*.json
 include dongtai_agent_python/api/*.py
 include dongtai_agent_python/assess/*.py
+include dongtai_agent_python/assess_ext/*.c
+recursive-include dongtai_agent_python/assess_ext/funchook *
+recursive-exclude dongtai_agent_python/assess_ext/funchook/build *
+include dongtai_agent_python/assess_ext/include/*.h
 include dongtai_agent_python/cli/*.py
 include dongtai_agent_python/common/*.py
 include dongtai_agent_python/context/*.py
