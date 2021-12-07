@@ -37,7 +37,9 @@ class Tracking(object):
             if signature in not_direct_invoke:
                 break
 
-            if path in tracert_arr[0] and (path + os.sep + "dongtai_agent_python") not in tracert_arr[0]:
+            if path in tracert_arr[0] and \
+                    (path + os.sep + "dongtai_agent_python") not in tracert_arr[0] and \
+                    ("site-packages" + os.sep + "dongtai_agent_python") not in tracert_arr[0]:
                 break
             layer = layer - 1
 
