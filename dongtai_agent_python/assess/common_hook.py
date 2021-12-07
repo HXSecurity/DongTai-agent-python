@@ -77,9 +77,9 @@ def build_exec_eval_patch(orig_cls, orig_func, signature, node_type):
             return ret_val
 
         wrap_data(
-            ret_val, orig_cls.__name__, orig_func,
+            ret_val, orig_cls.__name__, orig_func.__name__,
             signature=signature, node_type=node_type,
-            come_args=[code], real_result=ret_val)
+            come_args=[code])
         return ret_val
 
     return exec_eval_patch

@@ -11,3 +11,10 @@ FIRST_RETURN = [
     'builtins.list.append',
     'builtins.list.insert',
 ]
+
+C_API_PATCHES = [
+    'builtins.str.fstring',
+    'builtins.str.cformat',
+    'builtins.bytes.cformat',
+    'builtins.bytearray.cformat',
+]
