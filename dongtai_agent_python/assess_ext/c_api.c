@@ -1,7 +1,7 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#include <c_api.h>
+#include <patch.h>
 
 static PyMethodDef methods[] = {
     {
@@ -10,6 +10,13 @@ static PyMethodDef methods[] = {
         METH_VARARGS,
         "Initialize C API patcher"
     },
+    {
+        "enable_patches",
+        enable_patches,
+        METH_O,
+        "Patch relevant non-method functions"
+    },
+    {"install", install, METH_O, "Install patches"},
     {NULL, NULL, 0, NULL},
 };
 

@@ -13,7 +13,7 @@ from setuptools.command.install_lib import install_lib
 ext_clean = os.environ.get('ASSESS_EXT_CLEAN')
 
 assess_ext_path = os.path.join('dongtai_agent_python', 'assess_ext')
-c_sources = glob(os.path.join(assess_ext_path, '*.c'))
+c_sources = glob(os.path.join(assess_ext_path, '*.c')) + glob(os.path.join(assess_ext_path, "patch/*.c"))
 
 if platform.startswith('darwin'):
     link_args = ['-rpath', '@loader_path']
@@ -34,7 +34,7 @@ extensions = [
             os.path.join(assess_ext_path, 'include'),
             os.path.join(assess_ext_path, 'funchook/include'),
         ],
-        library_dirs=[assess_ext_path],
+        library_dirs=[os.path.join(assess_ext_path, 'funchook/build')],
         runtime_library_dirs=['$ORIGIN'],
         extra_compile_args=[
             '-Wall',

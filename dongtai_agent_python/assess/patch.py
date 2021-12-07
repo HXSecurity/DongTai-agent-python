@@ -3,8 +3,19 @@ import sys
 
 from dongtai_agent_python.assess.common_hook import InstallFcnHook, build_exec_eval_patch
 from dongtai_agent_python.assess.ctypes_hook import HookLazyImport, magic_flush_mro_cache, magic_get_dict, new_func
+from dongtai_agent_python.assess_ext import c_api
+from dongtai_agent_python.common.logger import logger_config
 from dongtai_agent_python.setting import Setting
 from dongtai_agent_python.utils import scope
+
+
+class Namespace(object):
+    def __new__(cls, *args, **kwargs):
+        raise TypeError("Namespace derivatives may not be instantiated")
+
+
+class Module(Namespace):
+    hook = None
 
 
 @scope.with_scope(scope.SCOPE_AGENT)
@@ -14,6 +25,13 @@ def enable_patches(policies):
 
     setting = Setting()
     has_patched = {}
+
+    log = logger_config("assess_ext")
+    Module.hook = c_api.initialize(log)
+
+    c_api.enable_patches(Module.hook)
+    c_api.install(Module.hook)
+
     for rules in policies:
         if rules['enable'] != 1 or not rules['details']:
             continue

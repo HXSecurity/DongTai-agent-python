@@ -7,6 +7,7 @@ include dongtai_agent_python/assess_ext/*.c
 recursive-include dongtai_agent_python/assess_ext/funchook *
 recursive-exclude dongtai_agent_python/assess_ext/funchook/build *
 include dongtai_agent_python/assess_ext/include/*.h
+include dongtai_agent_python/assess_ext/patch/*.c
 include dongtai_agent_python/cli/*.py
 include dongtai_agent_python/common/*.py
 include dongtai_agent_python/context/*.py
