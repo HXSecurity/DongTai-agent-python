@@ -74,7 +74,7 @@ class BuildExt(build_ext):
         global tempdir
         global funchook_temp
 
-        ext = 'dylib' if platform.startswith('darwin') else 'so.1'
+        ext = '1.dylib' if platform.startswith('darwin') else 'so.1'
         funchook_name = 'libfunchook.{}'.format(ext)
         funchook = os.path.join(assess_ext_path, 'funchook/build/' + funchook_name)
 
