@@ -32,10 +32,9 @@ class InstallFcnHook(object):
             return ret_val
 
         wrap_data(
-            ret_val, self.old_cls.__name__, self._fcn,
+            ret_val, self.old_cls.__name__, self._fcn.__name__,
             signature=self.signature, node_type=self.node_type,
-            come_args=args, come_kwargs=kwargs,
-            extra_in=None, real_result=ret_val)
+            come_args=args, come_kwargs=kwargs)
 
         return ret_val
 
