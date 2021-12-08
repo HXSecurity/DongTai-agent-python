@@ -3,8 +3,21 @@ import sys
 
 from dongtai_agent_python.assess.common_hook import InstallFcnHook, build_exec_eval_patch
 from dongtai_agent_python.assess.ctypes_hook import HookLazyImport, magic_flush_mro_cache, magic_get_dict, new_func
-from dongtai_agent_python.setting import Setting
+from dongtai_agent_python.assess_ext import c_api
+from dongtai_agent_python.common.logger import logger_config
+from dongtai_agent_python.setting import Setting, const
 from dongtai_agent_python.utils import scope
+
+logger = logger_config('assess_patch')
+
+
+class Namespace(object):
+    def __new__(cls, *args, **kwargs):
+        raise TypeError("Namespace derivatives may not be instantiated")
+
+
+class Module(Namespace):
+    hook = None
 
 
 @scope.with_scope(scope.SCOPE_AGENT)
@@ -14,6 +27,13 @@ def enable_patches(policies):
 
     setting = Setting()
     has_patched = {}
+
+    log = logger_config("assess_ext")
+    Module.hook = c_api.initialize(log)
+
+    c_api.enable_patches(Module.hook)
+    c_api.install(Module.hook)
+
     for rules in policies:
         if rules['enable'] != 1 or not rules['details']:
             continue
@@ -39,8 +59,11 @@ def enable_patches(policies):
                 new_fn = build_exec_eval_patch(old_cls, old_func, policy, rules['type'])
                 after_cls = magic_get_dict(old_cls)
                 after_cls[method_name] = new_fn
-                print("------exec_eval_patch---------- " + "[" + str(rules['type']) + "]" + policy)
+                logger.debug("------exec_eval_patch---------- " + "[" + str(rules['type']) + "]" + policy)
                 has_patched[policy] = True
+                continue
+            elif policy in const.C_API_PATCHES:
+                # patch by C extension
                 continue
 
             try:
@@ -91,12 +114,10 @@ def enable_patches(policies):
                 )
                 if hooked is None:
                     continue
-                if setting.config.get("debug"):
-                    print("------origin_cls_property------ " + "[" + str(rules['type']) + "]" + policy)
+                logger.debug("------origin_cls_property------ " + "[" + str(rules['type']) + "]" + policy)
                 after_cls[method_name] = hooked
             else:
-                if setting.config.get("debug"):
-                    print("------origin_cls_function------ " + "[" + str(rules['type']) + "]" + policy)
+                logger.debug("------origin_cls_function------ " + "[" + str(rules['type']) + "]" + policy)
                 after_cls[method_name] = InstallFcnHook(old_cls, old_func, policy, rules['type'])
 
             has_patched[policy] = True

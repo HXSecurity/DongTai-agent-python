@@ -53,15 +53,6 @@ def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **k
                 args == ('**/*.mo', '/') and method_name == "split"):
             return result
 
-        # some method first args is self and is also used to return the value
-        extra_in = None
-        if signature in const.FIRST_RETURN and len(args) > 0:
-            extra_in = [{
-                'index': 0,
-                'value': str(args[0]),
-                'hash': utils.get_hash(args[0]),
-            }]
-
         if signature in const.FIRST_RETURN and len(args) > 0:
             real_result = args[0]
         else:
@@ -75,10 +66,9 @@ def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **k
                 come_args.append(v)
 
         wrap_data(
-            result, origin_cls.__name__, origin_fcn,
+            real_result, origin_cls.__name__, origin_fcn.__name__,
             signature=signature, node_type=node_type,
-            come_args=come_args, come_kwargs=kwargs,
-            extra_in=extra_in, real_result=real_result)
+            come_args=come_args, come_kwargs=kwargs)
 
         return result
 

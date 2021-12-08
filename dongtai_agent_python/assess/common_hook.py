@@ -32,10 +32,9 @@ class InstallFcnHook(object):
             return ret_val
 
         wrap_data(
-            ret_val, self.old_cls.__name__, self._fcn,
+            ret_val, self.old_cls.__name__, self._fcn.__name__,
             signature=self.signature, node_type=self.node_type,
-            come_args=args, come_kwargs=kwargs,
-            extra_in=None, real_result=ret_val)
+            come_args=args, come_kwargs=kwargs)
 
         return ret_val
 
@@ -77,9 +76,9 @@ def build_exec_eval_patch(orig_cls, orig_func, signature, node_type):
             return ret_val
 
         wrap_data(
-            ret_val, orig_cls.__name__, orig_func,
+            ret_val, orig_cls.__name__, orig_func.__name__,
             signature=signature, node_type=node_type,
-            come_args=[code], real_result=ret_val)
+            come_args=[code])
         return ret_val
 
     return exec_eval_patch

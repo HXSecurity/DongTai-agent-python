@@ -32,19 +32,18 @@ jobs:
 
       - name: Prepare Agent code
         run: |
-          cd ${{ github.workspace }}/DockerVulspace
-          cp -r ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python ./dongtai_agent_python
+          cp -r ${{ github.workspace }}/DongTai-agent-python ${{ github.workspace }}/DockerVulspace/DongTai-agent-python
 
       - name: Prepare Agent Config
         shell: python
         run: |
           import json
-          filename = '${{ github.workspace }}/DockerVulspace/dongtai_agent_python/config.json'
+          filename = '${{ github.workspace }}/DockerVulspace/DongTai-agent-python/dongtai_agent_python/config.json'
           with open(filename) as f:
               data = json.load(f)
           data['debug'] = True
           data['iast']['server']['token'] = '0f0025dff8311467f6da5b5109a469f1831aa782'
-          data['iast']['server']['url'] = 'http://a28754cd66991441d8d682808caecead-626172336.cn-north-1.elb.amazonaws.com.cn:8000'
+          data['iast']['server']['url'] = 'http://iast-test.huoxian.cn/openapi'
           data['project']['name'] = 'Python-DockerVulspace'
           with open(filename, 'w') as f:
               json.dump(data, f)

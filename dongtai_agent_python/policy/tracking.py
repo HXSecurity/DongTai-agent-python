@@ -9,7 +9,7 @@ from dongtai_agent_python.utils import scope, utils
 
 
 class Tracking(object):
-    def __init__(self, signature, node_type, origin_cls, func, layer=-4):
+    def __init__(self, signature, node_type, origin_cls, func_name, layer=-4):
         scope.enter_scope(scope.SCOPE_AGENT)
 
         self.context = CONTEXT_TRACKER.current()
@@ -37,7 +37,9 @@ class Tracking(object):
             if signature in not_direct_invoke:
                 break
 
-            if path in tracert_arr[0] and (path + os.sep + "dongtai_agent_python") not in tracert_arr[0]:
+            if path in tracert_arr[0] and \
+                    (path + os.sep + "dongtai_agent_python") not in tracert_arr[0] and \
+                    ("site-packages" + os.sep + "dongtai_agent_python") not in tracert_arr[0]:
                 break
             layer = layer - 1
 
@@ -59,10 +61,10 @@ class Tracking(object):
                 return
 
         self.class_name = origin_cls
-        if signature.endswith("." + func.__name__):
-            self.class_name = signature[:-len(func.__name__) - 1]
+        if signature.endswith("." + func_name):
+            self.class_name = signature[:-len(func_name) - 1]
 
-        self.method_name = func.__name__
+        self.method_name = func_name
         self.caller_class = tracert_arr[0]
         self.caller_line_number = tracert_arr[1]
         self.caller_method = tracert_arr[2]

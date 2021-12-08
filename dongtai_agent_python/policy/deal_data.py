@@ -5,24 +5,21 @@ from dongtai_agent_python.utils import scope, utils
 
 
 @scope.with_scope(scope.SCOPE_AGENT)
-def wrap_data(result, origin_cls, _fcn, signature=None, node_type=None, come_args=None, come_kwargs=None,
-              extra_in=None, real_result=None):
+def wrap_data(target, origin_cls, origin_func, signature=None, node_type=None, come_args=None, come_kwargs=None):
     context = CONTEXT_TRACKER.current()
     if not utils.needs_propagation(context, node_type):
-        return result
+        return
 
-    if not filter_result(real_result, node_type):
-        return result
+    if not filter_result(target, node_type):
+        return
 
     invoke_args = processing_invoke_args(signature, come_args, come_kwargs)
 
     if node_type == const.NODE_TYPE_SOURCE:
         context.has_source = True
 
-    tracking = Tracking(signature, node_type, origin_cls, _fcn)
-    tracking.apply(invoke_args, real_result)
-
-    return result
+    tracking = Tracking(signature, node_type, origin_cls, origin_func)
+    tracking.apply(invoke_args, target)
 
 
 def filter_result(result, node_type=None):

@@ -297,7 +297,27 @@
         },
         {
           "track": "false",
+          "value": "builtins.str.fstring",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.cformat",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "builtins.bytes.decode",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.bytes.cformat",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.bytearray.cformat",
           "inherit": "false"
         },
         {
