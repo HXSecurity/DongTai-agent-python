@@ -10,16 +10,16 @@
 
 ## 项目介绍
 
-DongTai-agent-python 是 **洞态IAST** 针对 Python 应用开发的数据采集端。在添加 iast-agent 代理的 Python 应用中，通过改写类字节码的方式采集所需数据，然后将数据发送至 DongTai-openapi 服务，再由云端引擎处理数据判断是否存在安全漏洞。
+DongTai-agent-python 是 **洞态IAST** 针对 Python 应用开发的数据采集端。在添加 iast-agent 代理的 Python 应用中，通过改写类字节码的方式采集所需数据，然后将数据发送至
+DongTai-openapi 服务，再由云端引擎处理数据判断是否存在安全漏洞。
 
-DongTai-agent-python  
+DongTai-agent-python
 
 - `dongtai_agent_python/config.json`用于配置DongTai-openapi服务地址、Token、项目名称。
 - `dongtai_agent_python/cli`控制agent版本的热更新。
 - `dongtai_agent_python/middleware/`用于接入不同的python框架，目前支持Django、Flask,均以中间件方式引入。
 - `dongtai_agent_python/assess/`根据云端策略hook python 底层方法。
 - `dongtai_agent_python/report/`将agent采集数据上报至DongTai-openapi服务。
-
 
 ## 应用场景
 
@@ -29,6 +29,20 @@ DongTai-agent-python
 - 代码审计
 - 0 Day挖掘
 
+## 系统依赖
+
+* Python: >=3.6
+* CPython
+* gcc
+* cmake
+* make
+* Web 框架
+    * Django: 3.0-3.2
+    * Flask: 1.0-1.2
+* Python 依赖包
+    * psutil: >= 5.8.0
+    * requests: >= 2.25.1
+    * pip: >= 19.2.3
 
 ## 快速上手
 
@@ -47,13 +61,13 @@ DongTai-agent-python
     * iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
     * iast.server.url: "https://iast-test.huoxian.cn/openapi"
     * project.name: "DemoProjectName"
-    > url 与 token 从洞态 IAST-web 页面(eg: https://iast-test.huoxian.cn/deploy) > python-agent 部署页面,下载 agent 的 shell 命令中获取，分别替换 url 域名与 token
+   > url 与 token 从洞态 IAST-web 页面(eg: https://iast-test.huoxian.cn/deploy) > python-agent 部署页面,下载 agent 的 shell 命令中获取，分别替换 url 域名与 token
 4. 项目打包，在agent项目根目录执行
     ```shell
     python3 setup.py sdist
     ```
 5. 安装探针 \
-    打包后会生成 dist 目录，在 dist 目录下找到安装包，将 dongtai_agent_python.tar.gz 安装包放入 Web 服务器所在机器上，执行 pip 安装
+   打包后会生成 dist 目录，在 dist 目录下找到安装包，将 dongtai_agent_python.tar.gz 安装包放入 Web 服务器所在机器上，执行 pip 安装
     ```shell
     pip3 install ./dongtai-python-agent.tar.gz 
     ```
@@ -71,14 +85,15 @@ DongTai-agent-python
 * 日志文件路径: `LOG_PATH=/tmp/dongtai-agent-python.log`
 
 也可以配置 `dongtai_agent_python/config.json` 中相关的配置项，同样生效
-  * `project.name`
-  * `project.version`
-  * `engine.name`
-  * `log.log_path`
+
+* `project.name`
+* `project.version`
+* `engine.name`
+* `log.log_path`
 
 > **注意: 环境变量的配置优先级高于配置文件**
 
-### Django 
+### Django
 
 1. 进入app的主目录
 2. 打开 `app/settings.py` 文件，找到 `MIDDLEWARE` 所在行

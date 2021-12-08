@@ -1,5 +1,12 @@
 # 升级日志
 
+## 尚未发布
+
+* 功能
+  * 增加 [funchook](https://github.com/kubo/funchook) 用于 Python C API 相关的函数/方法
+  * 增加 `fstring` hook
+  * 增加 `str/bytes/bytearray` `cformat(%)` hook
+
 ## [1.1.3](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.3) - 2021-12-03
 
 * 功能
