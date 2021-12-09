@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Build/Install Agent
+      - name: Build and Install Agent
         run: |
           pip install --user --upgrade pip setuptools
           pip install --user . -v

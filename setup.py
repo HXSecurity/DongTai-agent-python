@@ -1,4 +1,6 @@
 import os
+import subprocess
+import sys
 import tempfile
 from distutils.errors import DistutilsExecError
 from glob import glob
@@ -59,13 +61,15 @@ class BuildExt(build_ext):
         cmake -DCMAKE_BUILD_TYPE=Release ..
         make
         '''
+        shell = 'bash'
         if platform == 'win32':
             cmake_cmd = '''
-            cmake.exe  -DCMAKE_INSTALL_PREFIX=%s ..
-            cmake --build . --config Release
-            ''' % os.path.join(assess_ext_path, 'funchook')
+            cmake.exe ..
+            cmake.exe --build . --config Release
+            '''
+            shell = 'cmd'
 
-        build_dir = os.path.join(assess_ext_path, 'funchook/build')
+        build_dir = os.path.join(assess_ext_path, 'funchook', 'build')
         if ext_clean and os.path.exists(build_dir):
             rmtree(build_dir)
         if not os.path.exists(build_dir):
@@ -75,8 +79,11 @@ class BuildExt(build_ext):
         cd %s
         %s
         ''' % (build_dir, cmake_cmd)
-        if os.system(build_script) != 0:
-            raise DistutilsExecError("Failed to build DongTai-agent-python C extension")
+
+        process = subprocess.Popen(shell, stdin=subprocess.PIPE, stdout=sys.stdout)
+        out, err = process.communicate(build_script.encode('utf-8'))
+        if err is not None:
+            raise DistutilsExecError("Failed to build DongTai-agent-python C extension %s" % err)
 
         build_ext.run(self)
 
