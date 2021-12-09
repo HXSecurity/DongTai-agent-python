@@ -1,0 +1,37 @@
+name: Build macOS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  setup:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "macos-latest" ]
+        python-version: [ "3.6" ]
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+
+      - name: Install packages
+        run: |
+          brew install cmake
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build/Install Agent
+        run: |
+          pip install --user --upgrade pip setuptools
+          pip install --user . -v
+          pip show dongtai_agent_python
