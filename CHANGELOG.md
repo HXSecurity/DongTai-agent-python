@@ -6,6 +6,9 @@
   * Add [funchook](https://github.com/kubo/funchook) for Python C API functions/methods
   * Add `fstring` hook
   * Add `str/bytes/bytearray` `cformat(%)` hook
+* BUILD
+  * Support for C extension build under Windows
+  * Add build actions on Ubuntu/macOS/Windows
 
 ## [1.1.3](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.3) - 2021-12-03
 
