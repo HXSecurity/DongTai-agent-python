@@ -6,6 +6,9 @@
   * 增加 [funchook](https://github.com/kubo/funchook) 用于 Python C API 相关的函数/方法
   * 增加 `fstring` hook
   * 增加 `str/bytes/bytearray` `cformat(%)` hook
+* 构建
+  * 支持 Windows 下 C 语言扩展构建
+  * 添加 Ubuntu/MacOS/Windows 上的构建动作
 
 ## [1.1.3](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.3) - 2021-12-03
 

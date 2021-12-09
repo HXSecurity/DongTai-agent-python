@@ -35,9 +35,10 @@ DongTai-agent-python
 
 * Python: >=3.6
 * CPython
-* gcc
+* gcc (Linux/macOS)
+* make (Linux/macOS)
 * cmake
-* make
+* Visual Studio (Windows)
 * Web Framework
     * Django: 3.0-3.2
     * Flask: 1.0-1.2
