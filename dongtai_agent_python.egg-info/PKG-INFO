@@ -18,13 +18,16 @@ Description: ## DongTai-agent-python
         
         ## Project Introduction
         
-        Dongtai-agent-python is DongTai Iast's data acquisition tool for Python applications. In a Python application with the iast agent added, the required data is collected by rewriting class bytecode, and then the data is sent to dongtai-OpenAPI service, and then the cloud engine processes the data to determine whether there are security holes.
+        Dongtai-agent-python is DongTai Iast's data acquisition tool for Python applications. In a Python application with the
+        iast agent added, the required data is collected by rewriting class bytecode, and then the data is sent to
+        dongtai-OpenAPI service, and then the cloud engine processes the data to determine whether there are security holes.
         
-        DongTai-agent-python  
+        DongTai-agent-python
         
         - `dongtai_agent_python/config.json` For configuration DongTai-openapi Url、Token、Web-ProjectName。
         - `dongtai_agent_python/cli` Control the hot update of the agent version。
-        - `dongtai_agent_python/middleware/` Used to access different python frameworks, currently supports Django and Flask, both of which are introduced in the form of middleware。
+        - `dongtai_agent_python/middleware/` Used to access different python frameworks, currently supports Django and Flask,
+          both of which are introduced in the form of middleware。
         - `dongtai_agent_python/assess/` Hook the underlying method of python according to the cloud strategy。
         - `dongtai_agent_python/report/` Report the collected data of the agent to the DongTai-openapi service。
         
@@ -35,6 +38,21 @@ Description: ## DongTai-agent-python
         - Third-party Component Management
         - Code audit
         - 0 Day digging
+        
+        ## Requirements
+        
+        * Python: >=3.6
+        * CPython
+        * gcc
+        * cmake
+        * make
+        * Web Framework
+            * Django: 3.0-3.2
+            * Flask: 1.0-1.2
+        * Python packages
+            * psutil: >= 5.8.0
+            * requests: >= 2.25.1
+            * pip: >= 19.2.3
         
         ## Quick Start
         
@@ -48,16 +66,21 @@ Description: ## DongTai-agent-python
             ```
         2. Write code to your needs.
         3. Modify the configuration file `dongtai_agent_python/config.json`
-            * iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
-            * iast.server.url: "https://iast-test.huoxian.cn/openapi"
-            * project.name: "DemoProjectName"
-            > URL and token from the hole state IAST-web page (eg: https://iast-test.huoxian.cn/deploy) > python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
+        
+        * iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
+        * iast.server.url: "https://iast-test.huoxian.cn/openapi"
+        * project.name: "DemoProjectName"
+        
+        > URL and token from the hole state IAST-web page (eg: https://iast-test.huoxian.cn/deploy) > python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
+        
         4. The project is packaged and executed in the root directory of the agent project
             ```shell
             python3 setup.py sdist
             ```
         5. Install the agent \
-           After packaging, the dist directory will be generated, and the installation package will be found in the dist directory, Put the dongtai_agent_python.tar.gz installation package on the machine where the Web-server is located，Execute pip installation
+           After packaging, the dist directory will be generated, and the installation package will be found in the dist
+           directory, Put the dongtai_agent_python.tar.gz installation package on the machine where the Web-server is
+           located，Execute pip installation
             ```shell
             pip3 install ./dongtai-python-agent.tar.gz 
             ```
@@ -75,14 +98,15 @@ Description: ## DongTai-agent-python
         * Log Path: `LOG_PATH=/tmp/dongtai-agent-python.log`
         
         You can also configure the value in `dongtai_agent_python/config.json`
-          * `project.name`
-          * `project.version`
-          * `engine.name`
-          * `log.log_path`
+        
+        * `project.name`
+        * `project.version`
+        * `engine.name`
+        * `log.log_path`
         
         > **Note: The priority of the system environment variable is higher than the configuration file**
         
-        ### Django 
+        ### Django
         
         1. Enter the main directory of the app
         2. Open the `app/settings.py` file and find the line of `MIDDLEWARE`
@@ -93,7 +117,6 @@ Description: ## DongTai-agent-python
         
         1. Modify the entry file of the project (such as app.py) and add the following content
             ```python
-            
             app = Flask(__name__)
         
             from dongtai_agent_python.middlewares.flask_middleware import AgentMiddleware
