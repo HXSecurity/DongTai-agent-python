@@ -22,7 +22,6 @@ class Setting(Singleton):
         self.os_env_list = []
 
         self.policy = {}
-        self.hook_exit = False
 
         self.container = {}
 

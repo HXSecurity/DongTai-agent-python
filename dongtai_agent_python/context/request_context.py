@@ -11,7 +11,6 @@ logger = logger_config("request_context")
 class RequestContext(object):
     def __init__(self, request):
         self.has_source = False
-        self.hook_exit = False
         self.taint_ids = []
         self.pool = []
         self.tags = {}

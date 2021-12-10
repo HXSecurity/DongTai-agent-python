@@ -113,8 +113,6 @@ class Tracking(object):
         }
 
         self.context.pool.append(pool)
-        if self.node_type == const.NODE_TYPE_SINK:
-            self.context.hook_exit = True
 
 
 @scope.with_scope(scope.SCOPE_AGENT)
