@@ -105,6 +105,16 @@
           "track": "false",
           "value": "yaml.load",
           "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.unsafe_load_all",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.load_all",
+          "inherit": "false"
         }
       ]
     },
