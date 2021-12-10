@@ -307,6 +307,11 @@
         },
         {
           "track": "false",
+          "value": "builtins.str.__new__",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "builtins.bytes.decode",
           "inherit": "false"
         },
@@ -317,7 +322,22 @@
         },
         {
           "track": "false",
+          "value": "builtins.bytes.__new__",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.bytearray.decode",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "builtins.bytearray.cformat",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.bytearray.__init__",
           "inherit": "false"
         },
         {

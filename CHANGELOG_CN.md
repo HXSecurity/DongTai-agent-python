@@ -4,8 +4,12 @@
 
 * 功能
   * 增加 [funchook](https://github.com/kubo/funchook) 用于 Python C API 相关的函数/方法
-  * 增加 `fstring` hook
-  * 增加 `str/bytes/bytearray` `cformat(%)` hook
+  * 增加 `fstring` 方法改写
+  * 增加 `str/bytes/bytearray` `cformat(%)` 方法改写
+  * 增加 `str.__new__`, `bytes.__new__`, `bytearray.__init__` 方法改写
+  * 增加 `pickle.load`, `pickle.loads` 策略规则以检测不安全的反序列化漏洞
+* 变更
+  * 修改 `yaml.load`, `yaml.unsafe_load` 策略类型为不安全的反序列化
 * 构建
   * 支持 Windows 下 C 语言扩展构建
   * 添加 Ubuntu/MacOS/Windows 上的构建动作

@@ -68,6 +68,7 @@ PyObject *enable_patches(PyObject *self, PyObject *arg) {
 
     apply_patch(apply_cformat_patch, funchook);
     apply_patch(apply_fstring_patch, funchook);
+    apply_patch(apply_cast_patch, funchook);
 
     Py_RETURN_NONE;
 }

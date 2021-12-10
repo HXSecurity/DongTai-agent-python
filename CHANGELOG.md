@@ -4,8 +4,12 @@
 
 * FEATURES
   * Add [funchook](https://github.com/kubo/funchook) for Python C API functions/methods
-  * Add `fstring` hook
-  * Add `str/bytes/bytearray` `cformat(%)` hook
+  * Add `fstring` patch
+  * Add `str/bytes/bytearray` `cformat(%)` patches
+  * Add `str.__new__`, `bytes.__new__`, `bytearray.__init__` patches
+  * Add `pickle.load`, `pickle.loads` hook rules for Insecure Deserialization detection
+* CHANGES
+  * Change `yaml.load`, `yaml.unsafe_load` strategy type to Insecure Deserialization
 * BUILD
   * Support for C extension build under Windows
   * Add build actions on Ubuntu/macOS/Windows

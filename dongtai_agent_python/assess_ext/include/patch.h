@@ -18,6 +18,7 @@ void patch_string_callback(char *prop_method_name, PyObject *source, PyObject *t
 
 int apply_cformat_patch(funchook_t *funchook);
 int apply_fstring_patch(funchook_t *funchook);
+int apply_cast_patch(funchook_t *funchook);
 
 #define BUILD_NEW_BINARYFUNC(NAME)                                            \
     static PyObject *NAME##_new(PyObject *self, PyObject *args) {             \

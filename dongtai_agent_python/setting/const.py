@@ -17,4 +17,7 @@ C_API_PATCHES = [
     'builtins.str.cformat',
     'builtins.bytes.cformat',
     'builtins.bytearray.cformat',
+    'builtins.str.__new__',
+    'builtins.bytes.__new__',
+    'builtins.bytearray.__init__',
 ]
