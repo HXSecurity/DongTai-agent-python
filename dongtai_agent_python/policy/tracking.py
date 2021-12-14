@@ -3,6 +3,8 @@ import re
 import sys
 import traceback
 
+from pkg_resources import parse_version
+
 from dongtai_agent_python import CONTEXT_TRACKER
 from dongtai_agent_python.setting import const
 from dongtai_agent_python.utils import scope, utils
@@ -15,8 +17,8 @@ class Tracking(object):
         self.context = CONTEXT_TRACKER.current()
         self.ignore_tracking = False
 
-        if signature == 'django.http.response.HttpResponse.__init__':
-            if self.context.tags.get('TAG_DJANGO_TEMPLATE_RENDER') and not self.context.tags.get('TAG_HAS_XSS'):
+        if signature in const.RESPONSE_SIGNATURES:
+            if self.context.tags.get('TAG_TEMPLATE_RENDER') and self.context.tags.get('TAG_HTML_ENCODED'):
                 self.ignore_tracking = True
                 scope.exit_scope()
                 return
@@ -71,13 +73,19 @@ class Tracking(object):
 
         scope.exit_scope()
 
-    def apply(self, source, target):
+    def apply(self, args, kwargs, target):
         if self.ignore_tracking or not utils.needs_propagation(self.context, self.node_type):
             return
+
+        if (self.signature == 'yaml.load' or self.signature == 'yaml.load_all') and yaml_load_is_safe(args, kwargs):
+            return
+
+        source = processing_invoke_args(self.signature, args, kwargs)
 
         source_ids = recurse_tracking(source, self.node_type)
 
         if self.node_type != const.NODE_TYPE_SOURCE:
+            # if len([item for item in source_ids if item in self.context.taint_ids]) == 0:
             if len(list(set(self.context.taint_ids) & set(source_ids))) == 0:
                 return
 
@@ -113,8 +121,80 @@ class Tracking(object):
         }
 
         self.context.pool.append(pool)
-        if self.node_type == const.NODE_TYPE_SINK:
-            self.context.hook_exit = True
+
+
+def processing_invoke_args(signature=None, come_args=None, come_kwargs=None):
+    sink_args = {
+        'sqlite3.Cursor.execute': {'args': [1]},
+        'sqlite3.Cursor.executemany': {'args': [1]},
+        'sqlite3.Cursor.executescript': {'args': [1]},
+        'psycopg2._psycopg.cursor.execute': {'args': [1], 'kwargs': ['query']},
+        'psycopg2._psycopg.cursor.executemany': {'args': [1], 'kwargs': ['query']},
+        'MySQLdb.cursors.BaseCursor.execute': {'args': [1], 'kwargs': ['query']},
+        'MySQLdb.cursors.BaseCursor.executemany': {'args': [1], 'kwargs': ['query']},
+        'pymysql.cursors.Cursor.execute': {'args': [1], 'kwargs': ['query']},
+        'pymysql.cursors.Cursor.executemany': {'args': [1], 'kwargs': ['query']},
+        'mysql.connector.cursor.CursorBase.execute': {'args': [1], 'kwargs': ['operation']},
+        'mysql.connector.cursor.CursorBase.executemany': {'args': [1], 'kwargs': ['operation']},
+    }
+
+    context = CONTEXT_TRACKER.current()
+    if signature == 'django.template.base.render_value_in_context':
+        try:
+            item = come_args[1]
+            item_type = ".".join([type(item).__module__, type(item).__name__])
+            if item_type == 'django.template.context.RequestContext' or \
+                    item_type == 'django.template.context.Context':
+                context.tags['TAG_TEMPLATE_RENDER'] = True
+                if not item.autoescape:
+                    context.tags['TAG_HTML_ENCODED'] = False
+        except Exception:
+            pass
+
+    invoke_args = []
+    if signature not in sink_args:
+        if come_args is not None:
+            for v in come_args:
+                invoke_args.append(v)
+        if come_kwargs is not None:
+            for k in come_kwargs:
+                invoke_args.append(come_kwargs[k])
+
+        return invoke_args
+
+    if come_args and len(come_args) > 0 and 'args' in sink_args[signature]:
+        args_size = len(come_args)
+        for arg in sink_args[signature]['args']:
+            if args_size > arg:
+                invoke_args.append(come_args[arg])
+
+    if come_kwargs and len(come_kwargs) > 0 and 'kwargs' in sink_args[signature]:
+        for key in sink_args[signature]['kwargs']:
+            if key in come_kwargs:
+                invoke_args.append(come_kwargs[key])
+
+    return invoke_args
+
+
+def yaml_load_is_safe(args, kwargs=None):
+    if kwargs is None:
+        kwargs = {}
+
+    try:
+        import yaml
+        if parse_version(yaml.__version__) < parse_version('5.1'):
+            if len(args) < 2 and 'Loader' not in kwargs:
+                return False
+    except ImportError:
+        pass
+
+    if len(args) == 2:
+        if args[1].__name__ == 'UnsafeLoader':
+            return False
+    if 'Loader' in kwargs:
+        if kwargs['Loader'].__name__ == 'UnsafeLoader':
+            return False
+    return True
 
 
 @scope.with_scope(scope.SCOPE_AGENT)
@@ -126,9 +206,7 @@ def recurse_tracking(obj, node_type, hash_ids=None):
         hash_ids = []
 
     for item in obj:
-        if (node_type == const.NODE_TYPE_SOURCE or
-            node_type == const.NODE_TYPE_PROPAGATOR) and \
-                utils.is_empty(item):
+        if utils.is_empty(item) or utils.is_not_allowed_type(item):
             continue
 
         try:

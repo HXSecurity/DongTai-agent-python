@@ -28,7 +28,6 @@ class WSGIRequestContext(object):
         self.request = WSGIRequest(environ)
 
         self.has_source = False
-        self.hook_exit = False
         self.taint_ids = []
         self.pool = []
         self.tags = {}

@@ -105,6 +105,16 @@
           "track": "false",
           "value": "yaml.load",
           "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.unsafe_load_all",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.load_all",
+          "inherit": "false"
         }
       ]
     },
@@ -292,6 +302,11 @@
         },
         {
           "track": "false",
+          "value": "builtins.str.replace",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "builtins.str.encode",
           "inherit": "false"
         },
@@ -373,6 +388,28 @@
         {
           "track": "false",
           "value": "django.template.base.render_value_in_context",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
+      "type": 3,
+      "enable": 1,
+      "value": "general-rules",
+      "details": [
+        {
+          "track": "false",
+          "value": "html.escape",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "markupsafe.escape",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "jinja2.runtime.escape",
           "inherit": "false"
         }
       ]

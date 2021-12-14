@@ -21,3 +21,7 @@ C_API_PATCHES = [
     'builtins.bytes.__new__',
     'builtins.bytearray.__init__',
 ]
+
+RESPONSE_SIGNATURES = [
+    'django.http.response.HttpResponse.__init__',
+]

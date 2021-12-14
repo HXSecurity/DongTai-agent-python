@@ -51,8 +51,7 @@ def is_not_allowed_type(value):
 
 
 def needs_propagation(context, node_type):
-    if context is None or context.hook_exit or \
-            (node_type != const.NODE_TYPE_SOURCE and not context.has_source):
+    if context is None or (node_type != const.NODE_TYPE_SOURCE and not context.has_source):
         return False
 
     return True
