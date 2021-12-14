@@ -95,26 +95,6 @@
           "track": "false",
           "value": "builtins.exec",
           "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "yaml.unsafe_load",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "yaml.load",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "yaml.unsafe_load_all",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "yaml.load_all",
-          "inherit": "false"
         }
       ]
     },
@@ -192,6 +172,43 @@
       ]
     },
     {
+      "type": 4,
+      "enable": 1,
+      "value": "untrusted-deserialization",
+      "details": [
+        {
+          "track": "false",
+          "value": "yaml.unsafe_load",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.load",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.unsafe_load_all",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.load_all",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "pickle.load",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "pickle.loads",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
       "type": 2,
       "enable": 1,
       "value": "general-rules",
@@ -262,7 +279,47 @@
         },
         {
           "track": "false",
+          "value": "builtins.str.__new__",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.capitalize",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.casefold",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.center",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.cformat",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.concat",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.encode",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
           "value": "builtins.str.format",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.fstring",
           "inherit": "false"
         },
         {
@@ -282,22 +339,12 @@
         },
         {
           "track": "false",
-          "value": "builtins.str.rjust",
+          "value": "builtins.str.lstrip",
           "inherit": "false"
         },
         {
           "track": "false",
-          "value": "builtins.str.index",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "builtins.str.split",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "builtins.str.translate",
+          "value": "builtins.str.partition",
           "inherit": "false"
         },
         {
@@ -307,32 +354,77 @@
         },
         {
           "track": "false",
-          "value": "builtins.str.encode",
+          "value": "builtins.str.removeprefix",
           "inherit": "false"
         },
         {
           "track": "false",
-          "value": "builtins.str.fstring",
+          "value": "builtins.str.removesuffix",
           "inherit": "false"
         },
         {
           "track": "false",
-          "value": "builtins.str.cformat",
+          "value": "builtins.str.repeat",
           "inherit": "false"
         },
         {
           "track": "false",
-          "value": "builtins.str.__new__",
+          "value": "builtins.str.rjust",
           "inherit": "false"
         },
         {
           "track": "false",
-          "value": "builtins.bytes.decode",
+          "value": "builtins.str.rpartition",
           "inherit": "false"
         },
         {
           "track": "false",
-          "value": "builtins.bytes.cformat",
+          "value": "builtins.str.rsplit",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.rstrip",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.split",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.splitlines",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.strip",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.swapcase",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.title",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.translate",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.upper",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.str.zfill",
           "inherit": "false"
         },
         {
@@ -342,7 +434,17 @@
         },
         {
           "track": "false",
-          "value": "builtins.bytearray.decode",
+          "value": "builtins.bytes.cformat",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.bytes.decode",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "builtins.bytearray.__init__",
           "inherit": "false"
         },
         {
@@ -352,7 +454,7 @@
         },
         {
           "track": "false",
-          "value": "builtins.bytearray.__init__",
+          "value": "builtins.bytearray.decode",
           "inherit": "false"
         },
         {
@@ -368,6 +470,31 @@
         {
           "track": "false",
           "value": "flask.jsonify",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "base64.b64encode",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "base64.b64decode",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.dump",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "yaml.dump_all",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "pickle.dumps",
           "inherit": "false"
         },
         {
@@ -405,6 +532,11 @@
         {
           "track": "false",
           "value": "markupsafe.escape",
+          "inherit": "false"
+        },
+        {
+          "track": "false",
+          "value": "markupsafe.escape_silent",
           "inherit": "false"
         },
         {
