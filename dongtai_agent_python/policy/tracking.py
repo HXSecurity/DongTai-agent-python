@@ -17,8 +17,8 @@ class Tracking(object):
         self.context = CONTEXT_TRACKER.current()
         self.ignore_tracking = False
 
-        if signature == 'django.http.response.HttpResponse.__init__':
-            if self.context.tags.get('TAG_DJANGO_TEMPLATE_RENDER') and not self.context.tags.get('TAG_HAS_XSS'):
+        if signature in const.RESPONSE_SIGNATURES:
+            if self.context.tags.get('TAG_TEMPLATE_RENDER') and self.context.tags.get('TAG_HTML_ENCODED'):
                 self.ignore_tracking = True
                 scope.exit_scope()
                 return
@@ -85,6 +85,7 @@ class Tracking(object):
         source_ids = recurse_tracking(source, self.node_type)
 
         if self.node_type != const.NODE_TYPE_SOURCE:
+            # if len([item for item in source_ids if item in self.context.taint_ids]) == 0:
             if len(list(set(self.context.taint_ids) & set(source_ids))) == 0:
                 return
 
@@ -144,9 +145,9 @@ def processing_invoke_args(signature=None, come_args=None, come_kwargs=None):
             item_type = ".".join([type(item).__module__, type(item).__name__])
             if item_type == 'django.template.context.RequestContext' or \
                     item_type == 'django.template.context.Context':
-                context.tags['TAG_DJANGO_TEMPLATE_RENDER'] = True
+                context.tags['TAG_TEMPLATE_RENDER'] = True
                 if not item.autoescape:
-                    context.tags['TAG_HAS_XSS'] = True
+                    context.tags['TAG_HTML_ENCODED'] = False
         except Exception:
             pass
 
