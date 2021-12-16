@@ -5,7 +5,10 @@ include dongtai_agent_python/api/*.py
 include dongtai_agent_python/assess/*.py
 include dongtai_agent_python/assess_ext/*.c
 recursive-include dongtai_agent_python/assess_ext/funchook *
+exclude dongtai_agent_python/assess_ext/funchook/bin/*
 recursive-exclude dongtai_agent_python/assess_ext/funchook/build *
+recursive-exclude dongtai_agent_python/assess_ext/funchook/distorm/.git *
+exclude dongtai_agent_python/assess_ext/funchook/lib/*
 include dongtai_agent_python/assess_ext/include/*.h
 include dongtai_agent_python/assess_ext/patch/*.c
 include dongtai_agent_python/cli/*.py

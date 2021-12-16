@@ -36,7 +36,6 @@ dongtai_agent_python/assess_ext/funchook/cmake/aarch64-linux-gnu.cmake
 dongtai_agent_python/assess_ext/funchook/cmake/capstone.cmake.in
 dongtai_agent_python/assess_ext/funchook/cmake/i686-w64-mingw32.cmake
 dongtai_agent_python/assess_ext/funchook/cmake/x86_64-w64-mingw32.cmake
-dongtai_agent_python/assess_ext/funchook/distorm/.git
 dongtai_agent_python/assess_ext/funchook/distorm/.gitignore
 dongtai_agent_python/assess_ext/funchook/distorm/COPYING
 dongtai_agent_python/assess_ext/funchook/distorm/MANIFEST.in
@@ -161,6 +160,7 @@ dongtai_agent_python/assess_ext/funchook/test/x86_test.S
 dongtai_agent_python/assess_ext/include/logger.h
 dongtai_agent_python/assess_ext/include/patch.h
 dongtai_agent_python/assess_ext/include/utils.h
+dongtai_agent_python/assess_ext/patch/cast.c
 dongtai_agent_python/assess_ext/patch/str_cformat.c
 dongtai_agent_python/assess_ext/patch/str_fstring.c
 dongtai_agent_python/cli/__init__.py
@@ -185,6 +185,8 @@ dongtai_agent_python/setting/config.py
 dongtai_agent_python/setting/const.py
 dongtai_agent_python/setting/setting.py
 dongtai_agent_python/tests/__init__.py
+dongtai_agent_python/tests/policy/__init__.py
+dongtai_agent_python/tests/policy/test_tracking.py
 dongtai_agent_python/tests/setting/__init__.py
 dongtai_agent_python/tests/setting/test_setting.py
 dongtai_agent_python/tests/utils/__init__.py
