@@ -11,7 +11,7 @@ from dongtai_agent_python.utils import scope, utils
 
 
 class Tracking(object):
-    def __init__(self, signature, node_type, origin_cls, func_name, layer=-4):
+    def __init__(self, signature, node_type, origin_cls, func_name):
         scope.enter_scope(scope.SCOPE_AGENT)
 
         self.context = CONTEXT_TRACKER.current()
@@ -26,6 +26,19 @@ class Tracking(object):
         self.signature = signature
         self.node_type = node_type
 
+        self.class_name = origin_cls
+        if signature.endswith("." + func_name):
+            self.class_name = signature[:-len(func_name) - 1]
+
+        self.method_name = func_name
+        self.caller_class = ''
+        self.caller_line_number = ''
+        self.caller_method = ''
+
+        scope.exit_scope()
+
+    @scope.scope(scope.SCOPE_AGENT)
+    def get_caller(self, layer):
         tracert = traceback.extract_stack()
         tracert_arr = list(tracert[layer])
         path = sys.path[0]
@@ -36,7 +49,7 @@ class Tracking(object):
         ]
         while layer > -20:
             tracert_arr = list(tracert[layer])
-            if signature in not_direct_invoke:
+            if self.signature in not_direct_invoke:
                 break
 
             if path in tracert_arr[0] and \
@@ -46,9 +59,8 @@ class Tracking(object):
             layer = layer - 1
 
         # bypass some indirect call stack
-        if signature not in not_direct_invoke and path not in tracert_arr[0]:
+        if self.signature not in not_direct_invoke and path not in tracert_arr[0]:
             self.ignore_tracking = True
-            scope.exit_scope()
             return
 
         # verify xml parser for xxe
@@ -56,23 +68,16 @@ class Tracking(object):
             "lxml.etree.fromstring",
             "lxml.etree.parse",
         ]
-        if signature in lxml_checks and tracert_arr[3]:
+        if self.signature in lxml_checks and tracert_arr[3]:
             if re.search('''XMLParser\\([^)]*resolve_entities\\s*=\\s*False[^)]*\\)''', tracert_arr[3]):
                 self.ignore_tracking = True
-                scope.exit_scope()
                 return
 
-        self.class_name = origin_cls
-        if signature.endswith("." + func_name):
-            self.class_name = signature[:-len(func_name) - 1]
-
-        self.method_name = func_name
         self.caller_class = tracert_arr[0]
         self.caller_line_number = tracert_arr[1]
         self.caller_method = tracert_arr[2]
 
-        scope.exit_scope()
-
+    @scope.scope(scope.SCOPE_AGENT)
     def apply(self, args, kwargs, target):
         if self.ignore_tracking or not utils.needs_propagation(self.context, self.node_type):
             return
@@ -81,13 +86,17 @@ class Tracking(object):
             return
 
         source = processing_invoke_args(self.signature, args, kwargs)
-
+        # @TODO: improve performance
         source_ids = recurse_tracking(source, self.node_type)
 
         if self.node_type != const.NODE_TYPE_SOURCE:
             # if len([item for item in source_ids if item in self.context.taint_ids]) == 0:
             if len(list(set(self.context.taint_ids) & set(source_ids))) == 0:
                 return
+
+        self.get_caller(-4)
+        if self.ignore_tracking:
+            return
 
         source_arr = []
         for src in source:
