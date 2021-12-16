@@ -494,11 +494,6 @@
         },
         {
           "track": "false",
-          "value": "pickle.dumps",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
           "value": "os.path.join",
           "inherit": "false"
         },
