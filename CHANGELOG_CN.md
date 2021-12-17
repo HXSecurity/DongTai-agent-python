@@ -2,14 +2,20 @@
 
 ## 尚未发布
 
+## [1.1.4](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.4) - 2021-12-18
+
 * 功能
   * 增加 [funchook](https://github.com/kubo/funchook) 用于 Python C API 相关的函数/方法
   * 增加 `fstring` 方法改写
   * 增加 `str/bytes/bytearray` `cformat(%)` 方法改写
   * 增加 `str.__new__`, `bytes.__new__`, `bytearray.__init__` 方法改写
   * 增加 `pickle.load`, `pickle.loads` 策略规则以检测不安全的反序列化漏洞
+  * 为 HTML 转义添加一些过滤规则
+* 修复
+  * 修复 `yaml.load` 以及 `yaml.load_all` 危险参数检查
 * 变更
   * 修改 `yaml.load`, `yaml.unsafe_load` 策略类型为不安全的反序列化
+  * 对于包含多个危险方法的请求, 在检测到第一个危险方法后不再停止跟踪
 * 构建
   * 支持 Windows 下 C 语言扩展构建
   * 添加 Ubuntu/MacOS/Windows 上的构建动作

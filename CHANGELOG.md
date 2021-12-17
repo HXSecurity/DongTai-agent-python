@@ -2,14 +2,20 @@
 
 ## Unreleased
 
+## [1.1.4](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.4) - 2021-12-18
+
 * FEATURES
   * Add [funchook](https://github.com/kubo/funchook) for Python C API functions/methods
   * Add `fstring` patch
   * Add `str/bytes/bytearray` `cformat(%)` patches
   * Add `str.__new__`, `bytes.__new__`, `bytearray.__init__` patches
   * Add `pickle.load`, `pickle.loads` hook rules for Insecure Deserialization detection
+  * Add some filtering rules for HTML escaping
+* BUGFIXES
+  * Fix `yaml.load` and `yaml.load_all` sink parameters check
 * CHANGES
   * Change `yaml.load`, `yaml.unsafe_load` strategy type to Insecure Deserialization
+  * For requests containing multiple sink methods, tracking is no longer stopped after the first sink method is detected
 * BUILD
   * Support for C extension build under Windows
   * Add build actions on Ubuntu/macOS/Windows
