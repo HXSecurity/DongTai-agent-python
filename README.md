@@ -1,7 +1,7 @@
 ## DongTai-agent-python
 
-[![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.3-blue)](https://github.com/HXSecurity/DongTai)
-[![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.3-blue)](https://github.com/HXSecurity/DongTai-agent-python)
+[![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.4-blue)](https://github.com/HXSecurity/DongTai)
+[![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.4-blue)](https://github.com/HXSecurity/DongTai-agent-python)
 
 [![django-project](https://img.shields.io/badge/Supported%20versions%20of%20Django-3.0.x,3.1.x,3.2.x-blue)](https://www.djangoproject.com/)
 [![flask-project](https://img.shields.io/badge/Supported%20versions%20of%20Flask-1.0.x,1.1.x,1.2.x-blue)](https://palletsprojects.com/p/flask/)
