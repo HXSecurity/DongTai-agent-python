@@ -209,6 +209,20 @@
       ]
     },
     {
+      "type": 4,
+      "enable": 1,
+      "value": "nosql-injection",
+      "details": [
+        {
+          "source": "P2,filter",
+          "track": "true",
+          "target": "",
+          "value": "pymongo.collection.Collection.find",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
       "type": 2,
       "enable": 1,
       "value": "general-rules",
