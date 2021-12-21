@@ -145,6 +145,7 @@ def processing_invoke_args(signature=None, come_args=None, come_kwargs=None):
         'pymysql.cursors.Cursor.executemany': {'args': [1], 'kwargs': ['query']},
         'mysql.connector.cursor.CursorBase.execute': {'args': [1], 'kwargs': ['operation']},
         'mysql.connector.cursor.CursorBase.executemany': {'args': [1], 'kwargs': ['operation']},
+        'pymongo.collection.Collection.find': {'args': [1], 'kwargs': ['filter']},
     }
 
     context = CONTEXT_TRACKER.current()
