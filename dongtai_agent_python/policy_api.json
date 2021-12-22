@@ -223,6 +223,20 @@
       ]
     },
     {
+      "type": 4,
+      "enable": 1,
+      "value": "ldap-injection",
+      "details": [
+        {
+          "source": "P3,search_filter",
+          "track": "true",
+          "target": "",
+          "value": "ldap3.core.connection.Connection.search",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
       "type": 2,
       "enable": 1,
       "value": "general-rules",
