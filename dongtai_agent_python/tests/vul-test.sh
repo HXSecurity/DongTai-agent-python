@@ -82,7 +82,6 @@ api_post "demo/exec_post_e" "code=whoami"
 
 headline "exec-code"
 api_post "demo/eval_post_e" "code=__import__%28%27os%27%29.system%28%27whoami%27%29"
-api_post "demo/yaml_post_e" "code=whoami"
 
 headline "path-traversal"
 api_get "demo/get_open" "name=Data**"
@@ -101,7 +100,7 @@ api_post "demo/sqlite3_post" "name=song"
 headline "xss"
 api_get "demo/xss_return" "content=alert"
 api_get "demo/xss_template" "content=alert"
-api_get "demo/xss_template_string" "content=alert"
+api_post_single flask "demo/xss_template_string" "content=alert"
 
 headline "xxe"
 curl_with_code -H "Content-Type: text/plain" "${HOST}/api/django/demo/xxe_login?_r=${RUN_ID}" -X POST --data-raw '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Anything [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><username>&xxe;</username><password>yzx</password></user>'
@@ -110,3 +109,10 @@ curl_with_code -H "Content-Type: text/plain" "${HOST}/api/flask/demo/xxe_login?_
 headline "ssrf"
 api_get "demo/urllib_ssrf" "url=https://www.huoxian.cn/"
 api_get "demo/request_ssrf" "url=https://www.huoxian.cn/"
+
+headline "unsafe-deserialization"
+api_post "demo/yaml_post_e" "code=whoami"
+api_post_single flask "demo/get_pickle_data" "gASVHgAAAAAAAACMAm50lIwGc3lzdGVtlJOUjAZ3aG9hbWmUhZRSlC4="
+
+headline "nosql-injection"
+api_post_single flask "demo/mongo_find" "name=' || '' == '"
