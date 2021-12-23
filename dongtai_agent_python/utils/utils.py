@@ -7,7 +7,7 @@ from dongtai_agent_python.utils import scope
 
 @scope.with_scope(scope.SCOPE_AGENT)
 def normalize_response_header(status_line, headers):
-    header_str = status_line + "\n" + json_to_str(headers)
+    header_str = status_line + "\r\n" + json_to_str(headers)
     header_str = base64.b64encode(header_str.encode('utf-8'))
     header_str = bytes.decode(header_str, 'utf-8')
     return header_str
@@ -33,8 +33,8 @@ def json_to_str(json_data):
     if json_data:
         new_list = []
         for item in json_data.keys():
-            new_list.append(str(item) + "=" + str(json_data[item]))
-        json_data = "\n".join(new_list)
+            new_list.append(str(item) + ": " + str(json_data[item]))
+        json_data = "\r\n".join(new_list)
     return json_data
 
 
