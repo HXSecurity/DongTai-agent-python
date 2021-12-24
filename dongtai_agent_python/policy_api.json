@@ -233,6 +233,13 @@
           "target": "",
           "value": "ldap3.core.connection.Connection.search",
           "inherit": "false"
+        },
+        {
+          "source": "P4,filterstr",
+          "track": "true",
+          "target": "",
+          "value": "ldap.ldapobject.SimpleLDAPObject.search_ext",
+          "inherit": "false"
         }
       ]
     },
