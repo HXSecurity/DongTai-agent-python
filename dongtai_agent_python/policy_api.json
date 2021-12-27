@@ -233,6 +233,13 @@
           "target": "",
           "value": "ldap3.core.connection.Connection.search",
           "inherit": "false"
+        },
+        {
+          "source": "P4,filterstr",
+          "track": "true",
+          "target": "",
+          "value": "ldap.ldapobject.SimpleLDAPObject.search_ext",
+          "inherit": "false"
         }
       ]
     },
@@ -565,6 +572,20 @@
         {
           "track": "false",
           "value": "jinja2.runtime.escape",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,assertion_value",
+          "track": "true",
+          "target": "R",
+          "value": "ldap.filter.escape_filter_chars",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,text",
+          "track": "true",
+          "target": "R",
+          "value": "ldap3.utils.conv.escape_filter_chars",
           "inherit": "false"
         }
       ]
