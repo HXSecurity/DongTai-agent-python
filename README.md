@@ -32,17 +32,18 @@ DongTai-agent-python
 
 * Python: >=3.6
 * CPython
-* gcc (Linux/macOS)
-* make (Linux/macOS)
-* cmake
-* Visual Studio (Windows)
+* Compiling Dependencies
+  * gcc (Linux/macOS)
+  * make (Linux/macOS)
+  * cmake
+  * Visual Studio (Windows)
 * Web Framework
-    * Django: 3.0-3.2, 4.0
-    * Flask: 1.0-1.2, 2.0
+  * Django: 3.0-3.2, 4.0
+  * Flask: 1.0-1.2, 2.0
 * Python packages
-    * psutil: >= 5.8.0
-    * requests: >= 2.25.1
-    * pip: >= 19.2.3
+  * psutil: >= 5.8.0
+  * requests: >= 2.25.1
+  * pip: >= 19.2.3
 
 ## Quick Start
 
@@ -81,6 +82,7 @@ Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html)
 
 #### Environment Variables
 
+* DEBUG mode: `DEBUG=1`
 * Auto Create Project: `AUTO_CREATE_PROJECT=1`
 * Project Name: `PROJECT_NAME=Demo`
 * Project Version: `PROJECT_VERSION=v1.0`
@@ -89,6 +91,7 @@ Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html)
 
 You can also configure the value in `dongtai_agent_python/config.json`
 
+* `debug`
 * `project.name`
 * `project.version`
 * `engine.name`

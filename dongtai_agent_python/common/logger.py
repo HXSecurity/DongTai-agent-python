@@ -64,7 +64,7 @@ def logger_config(logging_name):
     logger = logging.getLogger(logging_name)
     logger.handlers.clear()
 
-    if setting.config.get("debug"):
+    if setting.debug:
         level = logging.DEBUG
     else:
         level = logging.INFO

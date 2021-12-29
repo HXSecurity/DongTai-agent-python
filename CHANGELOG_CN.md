@@ -5,6 +5,7 @@
 * 功能
   * 增加 `pymongo` 策略规则以检测 NoSQL 注入漏洞 #84
   * 增加 `python-ldap` and `ldap3` 策略规则以检测 LDAP 注入漏洞 #86, #88
+  * 使用环境变量 `DEBUG=1` 开启 DEBUG 模式 #92
 * 修复
   * 修复请求头和响应头格式 #87
 

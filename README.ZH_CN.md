@@ -30,17 +30,18 @@ DongTai-agent-python
 
 * Python: >=3.6
 * CPython
-* gcc (Linux/macOS)
-* make (Linux/macOS)
-* cmake
-* Visual Studio (Windows)
+* 编译依赖
+  * gcc (Linux/macOS)
+  * make (Linux/macOS)
+  * cmake
+  * Visual Studio (Windows)
 * Web 框架
-    * Django: 3.0-3.2, 4.0
-    * Flask: 1.0-1.2, 2.0
+  * Django: 3.0-3.2, 4.0
+  * Flask: 1.0-1.2, 2.0
 * Python 依赖包
-    * psutil: >= 5.8.0
-    * requests: >= 2.25.1
-    * pip: >= 19.2.3
+  * psutil: >= 5.8.0
+  * requests: >= 2.25.1
+  * pip: >= 19.2.3
 
 ## 快速上手
 
@@ -76,6 +77,7 @@ DongTai-agent-python
 
 #### 环境变量
 
+* 开启调试: `DEBUG=1`
 * 自动创建项目: `AUTO_CREATE_PROJECT=1`
 * 项目名称: `PROJECT_NAME=Demo`
 * 项目版本: `PROJECT_VERSION=v1.0`
@@ -84,6 +86,7 @@ DongTai-agent-python
 
 也可以配置 `dongtai_agent_python/config.json` 中相关的配置项，同样生效
 
+* `debug`
 * `project.name`
 * `project.version`
 * `engine.name`
