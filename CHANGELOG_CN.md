@@ -8,6 +8,7 @@
   * 使用环境变量 `DEBUG=1` 开启 DEBUG 模式 #92
 * 修复
   * 修复请求头和响应头格式 #87
+  * 绕过过滤规则中的 hook #93
 
 ## [1.1.4](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.4) - 2021-12-18
 
