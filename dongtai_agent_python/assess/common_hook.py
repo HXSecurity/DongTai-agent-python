@@ -2,7 +2,7 @@ import sys
 
 from dongtai_agent_python import CONTEXT_TRACKER
 from dongtai_agent_python.policy.deal_data import wrap_data
-from dongtai_agent_python.setting import Setting
+from dongtai_agent_python.setting import Setting, const
 from dongtai_agent_python.utils import scope, utils
 
 
@@ -17,7 +17,11 @@ class InstallFcnHook(object):
         self.node_type = node_type
 
     def __call__(self, *args, **kwargs):
-        ret_val = self._fcn(*args, **kwargs)
+        if self.node_type == const.NODE_TYPE_FILTER:
+            with scope.scope(scope.SCOPE_AGENT):
+                ret_val = self._fcn(*args, **kwargs)
+        else:
+            ret_val = self._fcn(*args, **kwargs)
 
         if scope.in_scope(scope.SCOPE_AGENT):
             return ret_val

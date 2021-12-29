@@ -37,7 +37,11 @@ def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **k
     origin_fcn = getattr(origin_cls, method_name)
 
     def child_func(*args, **kwargs):
-        result = copy_new_class.__dict__[method_name](*args, **kwargs)
+        if node_type == const.NODE_TYPE_FILTER:
+            with scope.scope(scope.SCOPE_AGENT):
+                result = copy_new_class.__dict__[method_name](*args, **kwargs)
+        else:
+            result = copy_new_class.__dict__[method_name](*args, **kwargs)
         if scope.in_scope(scope.SCOPE_AGENT):
             return result
 

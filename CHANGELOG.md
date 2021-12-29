@@ -8,6 +8,7 @@
   * Use the environment variable `DEBUG=1` to enable debug mode #92
 * BUGFIXES
   * Fix request and response header formats #87
+  * Bypass the hook in the filter rules #93
 
 ## [1.1.4](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.4) - 2021-12-18
 
