@@ -5,4 +5,5 @@ venv
 __pycache__/
 /build/
 /dist
+/dongtai_agent_python.egg-info
 *.log
