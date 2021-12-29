@@ -1,14 +1,13 @@
 #!/bin/bash
 
-HOST=$1
-RUN_ID=$2
-if [ -z ${HOST} ]; then
-  echo -e "api host required!"
-  echo -e "Usage: $( basename $0 ) <api host>"
+FRAMEWORK=$1
+API_URL=$2
+RUN_ID=$3
+if [ -z "${API_URL}" ]; then
+  echo -e "api url required!"
+  echo -e "Usage: $( basename "$0" ) <api url>"
   exit 1
 fi
-
-FRAMEWORKS=(django flask)
 
 headline() {
   local TITLE=$1
@@ -46,19 +45,9 @@ api_get() {
   local API_PATH=$1
   local QUERY=$2
 
-  for FRAMEWORK in "${FRAMEWORKS[@]}"; do
-    api_get_single ${FRAMEWORK} ${API_PATH} ${QUERY}
-  done
-}
-
-api_get_single() {
-  local FRAMEWORK=$1
-  local API_PATH=$2
-  local QUERY=$3
-
-  echo "=========================== POST /api/${FRAMEWORK}/${API_PATH}"
+  echo "=========================== ${FRAMEWORK} GET /${API_PATH}"
   echo
-  curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
+  curl_with_code "${API_URL}/${API_PATH}?_r=${RUN_ID}&${QUERY}"
   echo
 }
 
@@ -66,19 +55,9 @@ api_post() {
   local API_PATH=$1
   local DATA=$2
 
-  for FRAMEWORK in "${FRAMEWORKS[@]}"; do
-    api_post_single ${FRAMEWORK} ${API_PATH} ${DATA}
-  done
-}
-
-api_post_single() {
-  local FRAMEWORK=$1
-  local API_PATH=$2
-  local DATA=$3
-
-  echo "=========================== POST /api/${FRAMEWORK}/${API_PATH}"
+  echo "=========================== ${FRAMEWORK} POST /${API_PATH}"
   echo
-  curl_with_code "${HOST}/api/${FRAMEWORK}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw ${DATA}
+  curl_with_code "${API_URL}/${API_PATH}?_r=${RUN_ID}" -X POST --data-raw ${DATA}
   echo
 }
 
@@ -96,8 +75,12 @@ api_get "demo/get_open" "name=Data**"
 api_post "demo/post_open" "name=.%2Ffile%2Fdata.json"
 
 headline "sql-injection"
-api_post_single django "demo/postgresql_post_many" "id=100000&name=song&phone1=13300000000"
-api_post_single flask "demo/postgresql_post_many" "id=200000&name=song&phone1=13300000000"
+if [[ "x${FRAMEWORK}" == "xdjango" ]]; then
+  api_post "demo/postgresql_post_many" "id=100000&name=song&phone1=13300000000"
+fi
+if [[ "x${FRAMEWORK}" == "xflask" ]]; then
+  api_post "demo/postgresql_post_many" "id=200000&name=song&phone1=13300000000"
+fi
 api_post "demo/postgresql_post_excute" "name=song"
 api_post "demo/mysql_post_many" "name=song&phone1=13300000000"
 api_post "demo/mysql_post_exec" "name=song"
@@ -108,11 +91,12 @@ api_post "demo/sqlite3_post" "name=song"
 headline "xss"
 api_get "demo/xss_return" "content=alert"
 api_get "demo/xss_template" "content=alert"
-api_get_single flask "demo/xss_template_string" "content=alert"
+if [[ "x${FRAMEWORK}" == "xflask" ]]; then
+  api_get "demo/xss_template_string" "content=alert"
+fi
 
 headline "xxe"
-curl_with_code -H "Content-Type: text/plain" "${HOST}/api/django/demo/xxe_login?_r=${RUN_ID}" -X POST --data-raw '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Anything [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><username>&xxe;</username><password>yzx</password></user>'
-curl_with_code -H "Content-Type: text/plain" "${HOST}/api/flask/demo/xxe_login?_r=${RUN_ID}" -X POST --data-raw '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Anything [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><username>&xxe;</username><password>yzx</password></user>'
+curl_with_code -H "Content-Type: text/plain" "${API_URL}/demo/xxe_login?_r=${RUN_ID}" -X POST --data-raw '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE Anything [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><user><username>&xxe;</username><password>yzx</password></user>'
 
 headline "ssrf"
 api_get "demo/urllib_ssrf" "url=https://www.huoxian.cn/"
@@ -120,13 +104,19 @@ api_get "demo/request_ssrf" "url=https://www.huoxian.cn/"
 
 headline "unsafe-deserialization"
 api_post "demo/yaml_post_e" "code=whoami"
-api_post_single flask "demo/get_pickle_data" "code=gASVIQAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjAZ3aG9hbWmUhZRSlC4="
+if [[ "x${FRAMEWORK}" == "xflask" ]]; then
+  api_post "demo/get_pickle_data" "code=gASVIQAAAAAAAACMBXBvc2l4lIwGc3lzdGVtlJOUjAZ3aG9hbWmUhZRSlC4="
+fi
 
 headline "nosql-injection"
-api_get_single flask "demo/mongo_find" "name=%27%20||%20%27%27%20==%20%27"
+if [[ "x${FRAMEWORK}" == "xflask" ]]; then
+  api_get "demo/mongo_find" "name=%27%20||%20%27%27%20==%20%27"
+fi
 
 headline "ldap-injection"
-api_get_single flask "demo/ldap_search" "username=*&password=*"
-api_get_single flask "demo/ldap_safe_search" "username=*&password=*"
-api_get_single flask "demo/ldap3_search" "username=*&password=*"
-api_get_single flask "demo/ldap3_safe_search" "username=*&password=*"
+if [[ "x${FRAMEWORK}" == "xflask" ]]; then
+  api_get "demo/ldap_search" "username=*&password=*"
+  api_get "demo/ldap_safe_search" "username=*&password=*"
+  api_get "demo/ldap3_search" "username=*&password=*"
+  api_get "demo/ldap3_safe_search" "username=*&password=*"
+fi
