@@ -26,6 +26,7 @@ class Setting(Singleton):
         self.container = {}
 
         self.config = Config()
+        self.debug = self.config.get("debug", False)
         self.project_name = self.config.get('project', {}).get('name', 'Demo Project')
         self.project_version = self.config.get('project', {}).get('version', '')
         # engine.name will auto generated when download
@@ -43,6 +44,9 @@ class Setting(Singleton):
         os_env = dict(os.environ)
         if not isinstance(os_env, dict):
             return
+
+        if os_env.get('DEBUG', '') == '1':
+            self.debug = True
 
         # windows always upper case env key
         project_name = os_env.get('PROJECT_NAME', '') or os_env.get('PROJECTNAME', '') or os_env.get('projectName', '')

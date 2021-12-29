@@ -5,6 +5,7 @@
 * FEATURES
   * Add `pymongo` hook rules for NoSQL injection detection #84
   * Add `python-ldap` and `ldap3` hook rules for LDAP injection detection #86, #88
+  * Use the environment variable `DEBUG=1` to enable debug mode #92
 * BUGFIXES
   * Fix request and response header formats #87
 
