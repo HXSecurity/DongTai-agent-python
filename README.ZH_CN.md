@@ -1,10 +1,7 @@
 ## DongTai-agent-python
 
-[![dongtai-project](https://img.shields.io/badge/DongTai-v1.1.4-blue)](https://github.com/HXSecurity/DongTai)
-[![dongtai--agent--python](https://img.shields.io/badge/DongTai--agent--python-v1.1.4-blue)](https://github.com/HXSecurity/DongTai-agent-python)
-
-[![django-project](https://img.shields.io/badge/Supported%20versions%20of%20Django-3.0.x,3.1.x,3.2.x-blue)](https://www.djangoproject.com/)
-[![flask-project](https://img.shields.io/badge/Supported%20versions%20of%20Flask-1.0.x,1.1.x,1.2.x-blue)](https://palletsprojects.com/p/flask/)
+[![dongtai-project](https://img.shields.io/github/v/release/HXSecurity/DongTai?label=DongTai)](https://github.com/HXSecurity/DongTai/releases)
+[![dongtai--agent--python](https://img.shields.io/github/v/release/HXSecurity/DongTai-agent-python?label=DongTai-agent-python)](https://github.com/HXSecurity/DongTai-agent-python/releases)
 
 - [English document](README.md)
 
@@ -38,8 +35,8 @@ DongTai-agent-python
 * cmake
 * Visual Studio (Windows)
 * Web 框架
-    * Django: 3.0-3.2
-    * Flask: 1.0-1.2
+    * Django: 3.0-3.2, 4.0
+    * Flask: 1.0-1.2, 2.0
 * Python 依赖包
     * psutil: >= 5.8.0
     * requests: >= 2.25.1

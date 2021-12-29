@@ -2,6 +2,12 @@
 
 ## 尚未发布
 
+* 功能
+  * 增加 `pymongo` 策略规则以检测 NoSQL 注入漏洞 #84
+  * 增加 `python-ldap` and `ldap3` 策略规则以检测 LDAP 注入漏洞 #86, #88
+* 修复
+  * 修复请求头和响应头格式 #87
+
 ## [1.1.4](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.4) - 2021-12-18
 
 * 功能

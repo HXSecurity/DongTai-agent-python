@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+* FEATURES
+  * Add `pymongo` hook rules for NoSQL injection detection #84
+  * Add `python-ldap` and `ldap3` hook rules for LDAP injection detection #86, #88
+* BUGFIXES
+  * Fix request and response header formats #87
+
 ## [1.1.4](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.4) - 2021-12-18
 
 * FEATURES
