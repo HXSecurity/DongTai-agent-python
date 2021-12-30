@@ -22,6 +22,7 @@ jobs:
 
       - name: Package 
         run: |
+          cp config-example.json config.json
           python setup.py sdist
 
       - uses: manyuanrong/setup-ossutil@v2.0
