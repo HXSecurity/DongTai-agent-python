@@ -2,13 +2,17 @@
 
 ## Unreleased
 
+## [1.2.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.2.0) - 2021-12-31
+
 * FEATURES
-  * Add `pymongo` hook rules for NoSQL injection detection #84
-  * Add `python-ldap` and `ldap3` hook rules for LDAP injection detection #86, #88
-  * Use the environment variable `DEBUG=1` to enable debug mode #92
+  * Add `pymongo` hook rules for NoSQL injection detection [#84](https://github.com/HXSecurity/DongTai-agent-python/pull/84)
+  * Add `python-ldap` and `ldap3` hook rules for LDAP injection detection [#86](https://github.com/HXSecurity/DongTai-agent-python/pull/86), [#88](https://github.com/HXSecurity/DongTai-agent-python/pull/88)
+  * Use the environment variable `DEBUG=1` to enable debug mode [#92](https://github.com/HXSecurity/DongTai-agent-python/pull/92)
 * BUGFIXES
-  * Fix request and response header formats #87
-  * Bypass the hook in the filter rules #93
+  * Fix request and response header formats [#87](https://github.com/HXSecurity/DongTai-agent-python/pull/87)
+  * Bypass the hook in the filter rules [#93](https://github.com/HXSecurity/DongTai-agent-python/pull/93)
+* TESTING
+  * When testing for vulnerabilities, separate Django and Flask project names [#94](https://github.com/HXSecurity/DongTai-agent-python/pull/94), [DockerVulspace#8](https://github.com/jinghao1/DockerVulspace/pull/8)
 
 ## [1.1.4](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.4) - 2021-12-18
 
