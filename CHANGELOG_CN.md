@@ -2,13 +2,17 @@
 
 ## 尚未发布
 
+## [1.2.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.2.0) - 2021-12-31
+
 * 功能
-  * 增加 `pymongo` 策略规则以检测 NoSQL 注入漏洞 #84
-  * 增加 `python-ldap` and `ldap3` 策略规则以检测 LDAP 注入漏洞 #86, #88
-  * 使用环境变量 `DEBUG=1` 开启 DEBUG 模式 #92
+  * 增加 `pymongo` 策略规则以检测 NoSQL 注入漏洞 [#84](https://github.com/HXSecurity/DongTai-agent-python/pull/84)
+  * 增加 `python-ldap` and `ldap3` 策略规则以检测 LDAP 注入漏洞 [#86](https://github.com/HXSecurity/DongTai-agent-python/pull/86), [#88](https://github.com/HXSecurity/DongTai-agent-python/pull/88)
+  * 使用环境变量 `DEBUG=1` 开启 DEBUG 模式 [#92](https://github.com/HXSecurity/DongTai-agent-python/pull/92)
 * 修复
-  * 修复请求头和响应头格式 #87
-  * 绕过过滤规则中的 hook #93
+  * 修复请求头和响应头格式 [#87](https://github.com/HXSecurity/DongTai-agent-python/pull/87)
+  * 绕过过滤规则中的 hook [#93](https://github.com/HXSecurity/DongTai-agent-python/pull/93)
+* 测试
+  * 靶场测试时, 将 Django 和 Flask 的项目名称分开 [#94](https://github.com/HXSecurity/DongTai-agent-python/pull/94), [DockerVulspace#8](https://github.com/jinghao1/DockerVulspace/pull/8)
 
 ## [1.1.4](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.1.4) - 2021-12-18
 

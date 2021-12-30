@@ -7,3 +7,4 @@ __pycache__/
 /dist
 /dongtai_agent_python.egg-info
 *.log
+config.json
