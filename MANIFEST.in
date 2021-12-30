@@ -1,6 +1,9 @@
 include *.py
+include *.md
+include LICENSE
 include dongtai_agent_python/*.py
-include dongtai_agent_python/*.json
+include dongtai_agent_python/config.json
+include dongtai_agent_python/policy_api.json
 include dongtai_agent_python/api/*.py
 include dongtai_agent_python/assess/*.py
 include dongtai_agent_python/assess_ext/*.c
