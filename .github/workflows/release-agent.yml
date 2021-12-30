@@ -51,7 +51,7 @@ jobs:
 
       - name: Package
         run: |
-          cp config-example.json config.json
+          cp dongtai_agent_python/config-example.json dongtai_agent_python/config.json
           python setup.py sdist
 
       - uses: manyuanrong/setup-ossutil@v2.0
