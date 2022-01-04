@@ -21,6 +21,7 @@ PyObject *str_origin(PyObject *self, PyObject *args);
 int apply_cformat_patch(funchook_t *funchook);
 int apply_fstring_patch(funchook_t *funchook);
 int apply_cast_patch(funchook_t *funchook);
+int apply_concat_patch(funchook_t *funchook);
 
 #define BUILD_NEW_BINARYFUNC(NAME)                                            \
     static PyObject *NAME##_new(PyObject *self, PyObject *args) {             \
