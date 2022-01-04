@@ -27,6 +27,8 @@ static PyObject *unicode_joinarray_new(PyObject *sep, joinarray_items_t items, P
 
     patch_string_callback("callback_unicode_fstring", sep, result, args, NULL);
 
+    Py_XDECREF(args);
+    Py_XDECREF(item_list);
     return result;
 }
 
