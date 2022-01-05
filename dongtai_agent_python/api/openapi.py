@@ -10,7 +10,7 @@ import requests
 import socket
 import threading
 from dongtai_agent_python.common.logger import logger_config
-from dongtai_agent_python.utils import scope
+from dongtai_agent_python.utils import scope, utils
 from dongtai_agent_python.utils import Singleton, SystemInfo
 
 logger = logger_config('openapi')
@@ -200,6 +200,9 @@ class OpenAPI(Singleton):
         # check manual pause
         t3 = threading.Timer(self.interval_check_manual_pause, self.thread_check_manual_pause)
         t3.start()
+        # packages
+        t4 = threading.Timer(2, self.packages_report)
+        t4.start()
 
         return resp
 
@@ -213,6 +216,25 @@ class OpenAPI(Singleton):
     def async_report_upload(self, executor, upload_report):
         self.report_queue = self.report_queue + 1
         executor.submit(self.report_upload, upload_report)
+
+    @scope.with_scope(scope.SCOPE_AGENT)
+    def packages_report(self):
+        packages = utils.get_packages()
+        if not packages:
+            return
+        detail = {
+            'detail': {
+                'agentId': self.agent_id,
+                'packages': packages,
+            },
+            'type': 17,
+        }
+        url = '/api/v1/report/upload'
+        heart_resp = self.report(url, detail)
+        if heart_resp.get('status', 0) == 201:
+            logger.debug("packages report success")
+        else:
+            logger.error("packages report error")
 
     # check agent should pause when use high system resource
     def check_enable(self):

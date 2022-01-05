@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import pip
 
 from dongtai_agent_python.setting import const
 from dongtai_agent_python.utils import scope
@@ -64,3 +65,9 @@ def get_hash(item):
     except Exception:
         h = id(item)
     return h
+
+
+@scope.with_scope(scope.SCOPE_AGENT)
+def get_packages():
+    packages = pip.main(['list', '--format=json'])
+    return None
