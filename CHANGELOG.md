@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## [1.2.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.2.1) - 2022-01-05
+
+* BUGFIXES
+  * Fix memory leak in fstring hook
+
 ## [1.2.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.2.0) - 2021-12-31
 
 * FEATURES
