@@ -8,13 +8,10 @@
       "value": "path-traversal",
       "details": [
         {
-          "track": "false",
+          "source": "P1,file",
+          "track": "true",
+          "target": "",
           "value": "builtins.open",
-          "inherit": "false"
-        },
-        {
-          "track": "false",
-          "value": "typing.BinaryIO.readline",
           "inherit": "false"
         }
       ]
@@ -25,57 +22,79 @@
       "value": "sql-injection",
       "details": [
         {
-          "track": "false",
+          "source": "P2",
+          "track": "true",
+          "target": "",
           "value": "sqlite3.Cursor.execute",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2",
+          "track": "true",
+          "target": "",
           "value": "sqlite3.Cursor.executemany",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2",
+          "track": "true",
+          "target": "",
           "value": "sqlite3.Cursor.executescript",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,query",
+          "track": "true",
+          "target": "",
           "value": "psycopg2._psycopg.cursor.execute",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,query",
+          "track": "true",
+          "target": "",
           "value": "psycopg2._psycopg.cursor.executemany",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,operation",
+          "track": "true",
+          "target": "",
           "value": "mysql.connector.cursor.CursorBase.execute",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,operation",
+          "track": "true",
+          "target": "",
           "value": "mysql.connector.cursor.CursorBase.executemany",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,query",
+          "track": "true",
+          "target": "",
           "value": "MySQLdb.cursors.BaseCursor.execute",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,query",
+          "track": "true",
+          "target": "",
           "value": "MySQLdb.cursors.BaseCursor.executemany",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,query",
+          "track": "true",
+          "target": "",
           "value": "pymysql.cursors.Cursor.execute",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,query",
+          "track": "true",
+          "target": "",
           "value": "pymysql.cursors.Cursor.executemany",
           "inherit": "false"
         }
@@ -87,12 +106,16 @@
       "value": "exec-code",
       "details": [
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "",
           "value": "builtins.eval",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "",
           "value": "builtins.exec",
           "inherit": "false"
         }
@@ -104,17 +127,23 @@
       "value": "exec-command",
       "details": [
         {
-          "track": "false",
+          "source": "P1,command",
+          "track": "true",
+          "target": "",
           "value": "os.system",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,cmd",
+          "track": "true",
+          "target": "",
           "value": "os.popen",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,args",
+          "track": "true",
+          "target": "",
           "value": "subprocess.Popen",
           "inherit": "false"
         }
@@ -126,12 +155,16 @@
       "value": "reflected-xss",
       "details": [
         {
-          "track": "false",
+          "source": "P2,rv",
+          "track": "true",
+          "target": "",
           "value": "flask.app.Flask.make_response",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,content",
+          "track": "true",
+          "target": "",
           "value": "django.http.response.HttpResponse.__init__",
           "inherit": "false"
         }
@@ -143,12 +176,16 @@
       "value": "xxe",
       "details": [
         {
-          "track": "false",
+          "source": "P1,text",
+          "track": "true",
+          "target": "",
           "value": "lxml.etree.fromstring",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,source",
+          "track": "true",
+          "target": "",
           "value": "lxml.etree.parse",
           "inherit": "false"
         }
@@ -160,12 +197,16 @@
       "value": "ssrf",
       "details": [
         {
-          "track": "false",
+          "source": "P1,url",
+          "track": "true",
+          "target": "",
           "value": "urllib.request.urlopen",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P3,url",
+          "track": "true",
+          "target": "",
           "value": "requests.sessions.Session.request",
           "inherit": "false"
         }
@@ -177,32 +218,44 @@
       "value": "untrusted-deserialization",
       "details": [
         {
-          "track": "false",
+          "source": "P1,stream",
+          "track": "true",
+          "target": "",
           "value": "yaml.unsafe_load",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,stream",
+          "track": "true",
+          "target": "",
           "value": "yaml.load",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,stream",
+          "track": "true",
+          "target": "",
           "value": "yaml.unsafe_load_all",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,stream",
+          "track": "true",
+          "target": "",
           "value": "yaml.load_all",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,file",
+          "track": "true",
+          "target": "",
           "value": "pickle.load",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,data",
+          "track": "true",
+          "target": "",
           "value": "pickle.loads",
           "inherit": "false"
         }
@@ -249,22 +302,30 @@
       "value": "general-rules",
       "details": [
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "django.utils.datastructures.MultiValueDict.get",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "django.utils.datastructures.MultiValueDict.__getitem__",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "django.http.request.HttpRequest.read",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P2,path",
+          "track": "true",
+          "target": "R",
           "value": "django.urls.resolvers.RoutePattern.match",
           "inherit": "false"
         }
@@ -276,27 +337,37 @@
       "value": "general-rules",
       "details": [
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "werkzeug.datastructures.getlist",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "werkzeug.datastructures.TypeConversionDict.get",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "werkzeug.datastructures.MultiDict.__getitem__",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "werkzeug.wrappers.request.Request.get_data",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "werkzeug.wrappers.base_request.BaseRequest.get_data",
           "inherit": "false"
         }
@@ -308,242 +379,338 @@
       "value": "general-rules",
       "details": [
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.__format__",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,object",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.__new__",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.capitalize",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.casefold",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.center",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.cformat",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.concat",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.encode",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.format",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.fstring",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.join",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.lower",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.ljust",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.lstrip",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.partition",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.replace",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.removeprefix",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.removesuffix",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.repeat",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.rjust",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.rpartition",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.rsplit",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.rstrip",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.split",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.splitlines",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.strip",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.swapcase",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.title",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.translate",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.upper",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.str.zfill",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,source",
+          "track": "true",
+          "target": "R",
           "value": "builtins.bytes.__new__",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.bytes.cformat",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.bytes.decode",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,source",
+          "track": "true",
+          "target": "R",
           "value": "builtins.bytearray.__init__",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "builtins.bytearray.cformat",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1",
+          "track": "true",
+          "target": "R",
           "value": "builtins.bytearray.decode",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,s",
+          "track": "true",
+          "target": "R",
           "value": "json.loads",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,obj",
+          "track": "true",
+          "target": "R",
           "value": "json.dumps",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "flask.jsonify",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,s",
+          "track": "true",
+          "target": "R",
           "value": "base64.b64encode",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,s",
+          "track": "true",
+          "target": "R",
           "value": "base64.b64decode",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,data",
+          "track": "true",
+          "target": "R",
           "value": "yaml.dump",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,documents",
+          "track": "true",
+          "target": "R",
           "value": "yaml.dump_all",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "os.path.join",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,string",
+          "track": "true",
+          "target": "R",
           "value": "urllib.parse.unquote",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "django.template.base.Template.render",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "django.template.base.render_value_in_context",
           "inherit": "false"
         }
@@ -555,22 +722,30 @@
       "value": "general-rules",
       "details": [
         {
-          "track": "false",
+          "source": "P1,s",
+          "track": "true",
+          "target": "R",
           "value": "html.escape",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,s",
+          "track": "true",
+          "target": "R",
           "value": "markupsafe.escape",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P1,s",
+          "track": "true",
+          "target": "R",
           "value": "markupsafe.escape_silent",
           "inherit": "false"
         },
         {
-          "track": "false",
+          "source": "P",
+          "track": "true",
+          "target": "R",
           "value": "jinja2.runtime.escape",
           "inherit": "false"
         },
