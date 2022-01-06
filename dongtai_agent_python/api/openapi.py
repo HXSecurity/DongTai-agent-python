@@ -27,7 +27,6 @@ class OpenAPI(Singleton):
 
         self.agent_id = 0
         self.report_queue = 0
-        self.session = requests.session()
 
         self.headers = {
             'Authorization': 'Token ' + self.config.get('iast', {}).get('server', {}).get('token', ''),
@@ -47,9 +46,10 @@ class OpenAPI(Singleton):
         full_url = self.base_url + url
 
         try:
-            res = self.session.get(full_url, timeout=20, headers=self.headers, params=params)
+            res = requests.get(full_url, timeout=20, headers=self.headers, params=params)
             resp = bytes.decode(res.content, 'utf-8')
             resp = json.loads(resp)
+            res.close()
         except Exception as e:
             logger.error("get " + url + " failed: " + str(e) + "\n" + traceback.format_exc())
             resp = {}
@@ -62,9 +62,10 @@ class OpenAPI(Singleton):
 
         try:
             body_data = json.dumps(body)
-            res = self.session.post(full_url, timeout=20, headers=self.headers, data=body_data)
+            res = requests.post(full_url, timeout=20, headers=self.headers, data=body_data)
             resp = bytes.decode(res.content, 'utf-8')
             resp = json.loads(resp)
+            res.close()
         except Exception as e:
             logger.error("post " + url + " failed: " + str(e) + "\n" + traceback.format_exc())
             resp = {}
@@ -79,10 +80,11 @@ class OpenAPI(Singleton):
 
         body_data = gzip.compress(stream_data.encode('utf-8'))
         try:
-            res = self.session.post(api_url, data=body_data, timeout=20, headers=self.headers)
+            res = requests.post(api_url, data=body_data, timeout=20, headers=self.headers)
             logger.debug(res.content)
             resp = bytes.decode(res.content, 'utf-8')
             resp = json.loads(resp)
+            res.close()
         except Exception as e:
             logger.error("report failed: " + str(e) + "\n" + traceback.format_exc())
             resp = {}
