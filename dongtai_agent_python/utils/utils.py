@@ -1,5 +1,8 @@
 import base64
 import hashlib
+import os
+
+import pkg_resources
 
 from dongtai_agent_python.setting import const
 from dongtai_agent_python.utils import scope
@@ -64,3 +67,43 @@ def get_hash(item):
     except Exception:
         h = id(item)
     return h
+
+
+@scope.with_scope(scope.SCOPE_AGENT)
+def get_packages():
+    packages = pkg_resources.working_set
+    sca_packages = []
+    for package in packages:
+        module_path = package.location + os.sep + package.project_name.lower()
+        found = False
+        if os.path.exists(module_path):
+            found = True
+
+        if not found:
+            module_path = package.location + os.sep + package.project_name.replace('-', '_')
+            if os.path.exists(module_path):
+                found = True
+
+        if not found:
+            module_path = package.location + os.sep + package.project_name
+            if os.path.exists(module_path):
+                found = True
+
+        if not found and package.has_metadata('top_level.txt'):
+            top_level = package.get_metadata('top_level.txt').splitlines()
+            if top_level:
+                for lvl in top_level:
+                    if os.path.exists(package.location + os.sep + lvl):
+                        module_path = package.location + os.sep + lvl
+
+        sha_1 = hashlib.sha1()
+        sha_1.update(bytes(package.project_name.lower() + '-' + package.version, encoding='utf-8'))
+        digest = sha_1.hexdigest()
+
+        sca_packages.append({
+            'packageName': package.project_name + '-' + package.version,
+            'packagePath': module_path,
+            'packageAlgorithm': 'SHA-1',
+            'packageSignature': digest
+        })
+    return sca_packages
