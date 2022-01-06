@@ -1,6 +1,8 @@
 import base64
 import hashlib
-import pip
+import os
+
+import pkg_resources
 
 from dongtai_agent_python.setting import const
 from dongtai_agent_python.utils import scope
@@ -69,5 +71,27 @@ def get_hash(item):
 
 @scope.with_scope(scope.SCOPE_AGENT)
 def get_packages():
-    packages = pip.main(['list', '--format=json'])
-    return None
+    packages = pkg_resources.working_set
+    sca_packages = []
+    for package in packages:
+        module_path = package.location + os.sep + package.project_name.lower()
+        if not os.path.exists(module_path):
+            module_path = package.location + os.sep + package.project_name
+        if not os.path.exists(module_path):
+            top_level = package.get_metadata('top_level.txt').splitlines()
+            if top_level:
+                for lvl in top_level:
+                    if os.path.exists(package.location + os.sep + lvl):
+                        module_path = package.location + os.sep + lvl
+
+        sha_1 = hashlib.sha1()
+        sha_1.update(bytes(package.project_name.lower() + '-' + package.version, encoding='utf-8'))
+        digest = sha_1.hexdigest()
+
+        sca_packages.append({
+            'packageName': package.project_name,
+            'packagePath': module_path,
+            'packageAlgorithm': 'SHA-1',
+            'packageSignature': digest
+        })
+    return sca_packages

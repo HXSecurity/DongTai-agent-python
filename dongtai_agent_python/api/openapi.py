@@ -227,7 +227,7 @@ class OpenAPI(Singleton):
                 'agentId': self.agent_id,
                 'packages': packages,
             },
-            'type': 17,
+            'type': 18,
         }
         url = '/api/v1/report/upload'
         heart_resp = self.report(url, detail)
