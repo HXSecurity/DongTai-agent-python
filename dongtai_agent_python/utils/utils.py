@@ -75,14 +75,29 @@ def get_packages():
     sca_packages = []
     for package in packages:
         module_path = package.location + os.sep + package.project_name.lower()
-        if not os.path.exists(module_path):
+        found = False
+        if os.path.exists(module_path):
+            found = True
+
+        if not found:
+            module_path = package.location + os.sep + package.project_name.replace('-', '_')
+            if os.path.exists(module_path):
+                found = True
+
+        if not found:
             module_path = package.location + os.sep + package.project_name
-        if not os.path.exists(module_path):
-            top_level = package.get_metadata('top_level.txt').splitlines()
-            if top_level:
-                for lvl in top_level:
-                    if os.path.exists(package.location + os.sep + lvl):
-                        module_path = package.location + os.sep + lvl
+            if os.path.exists(module_path):
+                found = True
+
+        if not found:
+            try:
+                top_level = package.get_metadata('top_level.txt').splitlines()
+                if top_level:
+                    for lvl in top_level:
+                        if os.path.exists(package.location + os.sep + lvl):
+                            module_path = package.location + os.sep + lvl
+            except Exception:
+                module_path = package.location + os.sep + package.project_name.lower()
 
         sha_1 = hashlib.sha1()
         sha_1.update(bytes(package.project_name.lower() + '-' + package.version, encoding='utf-8'))
