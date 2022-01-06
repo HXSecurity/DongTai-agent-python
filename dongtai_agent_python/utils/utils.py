@@ -104,7 +104,7 @@ def get_packages():
         digest = sha_1.hexdigest()
 
         sca_packages.append({
-            'packageName': package.project_name,
+            'packageName': package.project_name + '-' + package.version,
             'packagePath': module_path,
             'packageAlgorithm': 'SHA-1',
             'packageSignature': digest
