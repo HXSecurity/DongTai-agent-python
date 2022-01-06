@@ -32,10 +32,10 @@ DongTai-agent-python
 
 * Python: >=3.6
 * CPython
-* Compiling Dependencies
+* Compiling Dependencies (Agent version >= 1.1.4)
   * gcc (Linux/macOS)
   * make (Linux/macOS)
-  * cmake
+  * cmake: >= 3.6
   * Visual Studio (Windows)
 * Web Framework
   * Django: 3.0-3.2, 4.0
