@@ -3,14 +3,14 @@
 ## 尚未发布
 
 * 功能
-  * 组件管理: 上报已安装的软件包
+  * 组件管理: 上报已安装的软件包 [#100](https://github.com/HXSecurity/DongTai-agent-python/pull/100)
 * 修复
-  * 修复使用 requests 的内存泄漏
+  * 修复使用 requests 的内存泄漏 [#99](https://github.com/HXSecurity/DongTai-agent-python/pull/99)
 
 ## [1.2.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.2.1) - 2022-01-05
 
 * 修复
-  * 修复 fstring hook 的内存泄漏
+  * 修复 fstring hook 的内存泄漏 [#97](https://github.com/HXSecurity/DongTai-agent-python/pull/97)
 
 ## [1.2.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.2.0) - 2021-12-31
 
