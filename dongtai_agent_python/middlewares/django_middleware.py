@@ -35,11 +35,7 @@ class FireMiddleware(BaseMiddleware):
 
         context = CONTEXT_TRACKER.current()
         context.detail['pool'] = context.pool
-        data = {
-            'detail': context.detail,
-            'type': 36,
-        }
-        self.openapi.async_report_upload(self.executor, data)
+        self.openapi.async_report_upload(self.executor, context.detail)
 
         return response
 

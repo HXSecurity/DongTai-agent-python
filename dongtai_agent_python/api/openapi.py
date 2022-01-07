@@ -111,7 +111,8 @@ class OpenAPI(Singleton):
                 'reqCount': self.setting.request_seq,
                 'reportQueue': self.report_queue
             },
-            'type': 1
+            'type': 1,
+            'version': 'v1',
         }
         url = '/api/v1/report/upload'
         heart_resp = self.report(url, system_info)
@@ -208,16 +209,22 @@ class OpenAPI(Singleton):
 
         return resp
 
-    def report_upload(self, upload_report):
+    def report_upload(self, detail):
         url = '/api/v1/report/upload'
-        resp = self.report(url, upload_report)
+
+        data = {
+            'detail': detail,
+            'type': 36,
+            'version': 'v1',
+        }
+        resp = self.report(url, data)
         self.report_queue = self.report_queue - 1
 
         return resp
 
-    def async_report_upload(self, executor, upload_report):
+    def async_report_upload(self, executor, detail):
         self.report_queue = self.report_queue + 1
-        executor.submit(self.report_upload, upload_report)
+        executor.submit(self.report_upload, detail)
 
     @scope.with_scope(scope.SCOPE_AGENT)
     def packages_report(self):
@@ -230,6 +237,7 @@ class OpenAPI(Singleton):
                 'packages': packages,
             },
             'type': 18,
+            'version': 'v1',
         }
         url = '/api/v1/report/upload'
         heart_resp = self.report(url, detail)
