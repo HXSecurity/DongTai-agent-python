@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* FEATURES
+  * Add installed packages report for SCA
+* BUGFIXES
+  * Fix memory leak when use requests
+
 ## [1.2.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.2.1) - 2022-01-05
 
 * BUGFIXES

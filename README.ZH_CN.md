@@ -30,10 +30,10 @@ DongTai-agent-python
 
 * Python: >=3.6
 * CPython
-* 编译依赖
+* 编译依赖 (Agent 版本 >= 1.1.4)
   * gcc (Linux/macOS)
   * make (Linux/macOS)
-  * cmake
+  * cmake >= 3.6
   * Visual Studio (Windows)
 * Web 框架
   * Django: 3.0-3.2, 4.0
