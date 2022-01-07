@@ -100,8 +100,4 @@ class WSGIMiddleware(BaseMiddleware):
             return response(environ, start_response)
         finally:
             context.detail['pool'] = context.pool
-            data = {
-                'detail': context.detail,
-                'type': 36,
-            }
-            self.openapi.async_report_upload(self.executor, data)
+            self.openapi.async_report_upload(self.executor, context.detail)
