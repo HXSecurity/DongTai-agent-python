@@ -96,14 +96,15 @@ def get_packages():
                     if os.path.exists(package.location + os.sep + lvl):
                         module_path = package.location + os.sep + lvl
 
-        sha_1 = hashlib.sha1()
-        sha_1.update(bytes(package.project_name.lower() + '-' + package.version, encoding='utf-8'))
-        digest = sha_1.hexdigest()
+        # @TODO: temporary set package signature to blank
+        # sha_1 = hashlib.sha1()
+        # sha_1.update(bytes(package.project_name.lower() + '-' + package.version, encoding='utf-8'))
+        # digest = sha_1.hexdigest()
 
         sca_packages.append({
             'packageName': package.project_name + '-' + package.version,
             'packagePath': module_path,
             'packageAlgorithm': 'SHA-1',
-            'packageSignature': digest
+            'packageSignature': '',
         })
     return sca_packages
