@@ -31,6 +31,13 @@ C_API_PATCHES = [
     'builtins.bytearray.__init__',
 ]
 
+CRYPTO_BAD_CIPHER_NEW = [
+    'Crypto.Cipher.Blowfish.new',
+    'Crypto.Cipher.DES.new',
+    'Cryptodome.Cipher.Blowfish.new',
+    'Cryptodome.Cipher.DES.new',
+]
+
 RESPONSE_SIGNATURES = [
     'django.http.response.HttpResponse.__init__',
 ]
