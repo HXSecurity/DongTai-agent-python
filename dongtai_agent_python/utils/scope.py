@@ -6,8 +6,7 @@ SCOPE_AGENT = 'agent'
 
 class ScopeContext(threading.local):
     def __init__(self):
-        if not hasattr(self, '_active_scopes'):
-            self._active_scopes = []
+        self._active_scopes = []
 
     @property
     def active_scopes(self):
