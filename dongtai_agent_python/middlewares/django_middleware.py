@@ -52,6 +52,8 @@ class FireMiddleware(BaseMiddleware):
             resp_header = dict(response.headers)
         else:
             # django < 3.2
-            resp_header = dict(response._headers)
+            resp_header = dict(
+                (key, value) for key, value in response._headers.values()
+            )
 
         context.extract_response(resp_header, response.status_code, http_res_body)
