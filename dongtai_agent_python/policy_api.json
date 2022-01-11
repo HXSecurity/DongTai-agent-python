@@ -297,6 +297,111 @@
       ]
     },
     {
+      "type": 4,
+      "enable": 1,
+      "value": "crypto-bad-cipher",
+      "details": [
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Crypto.Cipher._mode_cbc.CbcMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Crypto.Cipher._mode_cfb.CfbMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Crypto.Cipher._mode_ctr.CtrMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Crypto.Cipher._mode_eax.EaxMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Crypto.Cipher._mode_ecb.EcbMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Crypto.Cipher._mode_ofb.OfbMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Crypto.Cipher._mode_openpgp.OpenPgpMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Cryptodome.Cipher._mode_cbc.CbcMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Cryptodome.Cipher._mode_cfb.CfbMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Cryptodome.Cipher._mode_ctr.CtrMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Cryptodome.Cipher._mode_eax.EaxMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Cryptodome.Cipher._mode_ecb.EcbMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Cryptodome.Cipher._mode_ofb.OfbMode.encrypt",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,plaintext",
+          "track": "true",
+          "target": "",
+          "value": "Cryptodome.Cipher._mode_openpgp.OpenPgpMode.encrypt",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
       "type": 2,
       "enable": 1,
       "value": "general-rules",
@@ -712,6 +817,34 @@
           "track": "true",
           "target": "R",
           "value": "django.template.base.render_value_in_context",
+          "inherit": "false"
+        },
+        {
+          "source": "P",
+          "track": "true",
+          "target": "R",
+          "value": "Crypto.Cipher.Blowfish.new",
+          "inherit": "false"
+        },
+        {
+          "source": "P",
+          "track": "true",
+          "target": "R",
+          "value": "Crypto.Cipher.DES.new",
+          "inherit": "false"
+        },
+        {
+          "source": "P",
+          "track": "true",
+          "target": "R",
+          "value": "Cryptodome.Cipher.Blowfish.new",
+          "inherit": "false"
+        },
+        {
+          "source": "P",
+          "track": "true",
+          "target": "R",
+          "value": "Cryptodome.Cipher.DES.new",
           "inherit": "false"
         }
       ]

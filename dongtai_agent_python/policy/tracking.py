@@ -90,8 +90,15 @@ class Tracking(object):
         source_ids = recurse_tracking(source, self.node_type)
 
         if self.node_type != const.NODE_TYPE_SOURCE:
-            # if len([item for item in source_ids if item in self.context.taint_ids]) == 0:
-            if len(list(set(self.context.taint_ids) & set(source_ids))) == 0:
+            if self.signature in const.CRYPTO_BAD_CIPHER_NEW:
+                pass
+            elif (self.signature.startswith('Crypto.Cipher._mode_') or
+                  self.signature.startswith('Cryptodome.Cipher._mode_')) and \
+                    self.signature.endswith('Mode.encrypt'):
+                for sid in source_ids:
+                    if sid not in self.context.taint_ids:
+                        return
+            elif len(list(set(self.context.taint_ids) & set(source_ids))) == 0:
                 return
 
         self.get_caller(-4)
@@ -148,6 +155,20 @@ def processing_invoke_args(signature=None, come_args=None, come_kwargs=None):
         'pymongo.collection.Collection.find': {'args': [1], 'kwargs': ['filter']},
         'ldap3.core.connection.Connection.search': {'args': [2], 'kwargs': ['search_filter']},
         'ldap.ldapobject.SimpleLDAPObject.search_ext': {'args': [3], 'kwargs': ['filterstr']},
+        'Crypto.Cipher._mode_cbc.CbcMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Crypto.Cipher._mode_cfb.CfbMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Crypto.Cipher._mode_ctr.CtrMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Crypto.Cipher._mode_eax.EaxMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Crypto.Cipher._mode_ecb.EcbMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Crypto.Cipher._mode_ofb.OfbMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Crypto.Cipher._mode_openpgp.OpenPgpMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Cryptodome.Cipher._mode_cbc.CbcMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Cryptodome.Cipher._mode_cfb.CfbMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Cryptodome.Cipher._mode_ctr.CtrMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Cryptodome.Cipher._mode_eax.EaxMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Cryptodome.Cipher._mode_ecb.EcbMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Cryptodome.Cipher._mode_ofb.OfbMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        'Cryptodome.Cipher._mode_openpgp.OpenPgpMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
     }
 
     context = CONTEXT_TRACKER.current()

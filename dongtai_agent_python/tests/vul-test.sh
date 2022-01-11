@@ -120,3 +120,12 @@ if [[ "x${FRAMEWORK}" == "xflask" ]]; then
   api_get "demo/ldap3_search" "username=*&password=*"
   api_get "demo/ldap3_safe_search" "username=*&password=*"
 fi
+
+headline "crypto-bad-cipher"
+if [[ "x${FRAMEWORK}" == "xflask" ]]; then
+  api_get "demo/crypto/aes" "text=content"
+  api_get "demo/crypto/blowfish" "text=content"
+  api_get "demo/crypto/des" "text=content"
+  api_get "demo/cryptox/blowfish" "text=content"
+  api_get "demo/cryptox/des" "text=content"
+fi
