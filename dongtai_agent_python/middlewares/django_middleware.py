@@ -1,3 +1,5 @@
+import base64
+
 import django
 
 from dongtai_agent_python import CONTEXT_TRACKER
@@ -42,7 +44,7 @@ class FireMiddleware(BaseMiddleware):
     @scope.with_scope(scope.SCOPE_AGENT)
     def process_response_data(self, context, response):
         if not response.streaming and response.content and isinstance(response.content, bytes):
-            http_res_body = bytes.decode(response.content, "utf-8", errors="ignore")
+            http_res_body = base64.b64encode(response.content).decode('utf-8')
         else:
             http_res_body = ""
 

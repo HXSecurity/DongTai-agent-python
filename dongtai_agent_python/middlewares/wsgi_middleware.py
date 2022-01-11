@@ -1,3 +1,4 @@
+import base64
 from http.client import responses
 
 import webob
@@ -72,10 +73,8 @@ class WSGIRequestContext(object):
 
         body = response.body
         res_body = ''
-        if isinstance(body, bytes):
-            res_body = body.decode('utf-8', errors='ignore')
-        if isinstance(body, str):
-            res_body = body
+        if isinstance(body, (bytes, str)):
+            res_body = base64.b64encode(body).decode('utf-8')
         self.detail['resBody'] = res_body
 
         logger.info("hook response success")

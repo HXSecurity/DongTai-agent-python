@@ -215,7 +215,7 @@ class OpenAPI(Singleton):
         data = {
             'detail': detail,
             'type': 36,
-            'version': 'v1',
+            'version': 'v2',
         }
         resp = self.report(url, data)
         self.report_queue = self.report_queue - 1
