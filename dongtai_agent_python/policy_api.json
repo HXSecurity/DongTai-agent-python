@@ -958,6 +958,13 @@
           "target": "R",
           "value": "ldap3.utils.conv.escape_filter_chars",
           "inherit": "false"
+        },
+        {
+          "source": "P1,pattern",
+          "track": "true",
+          "target": "R",
+          "value": "re.escape",
+          "inherit": "false"
         }
       ]
     }
