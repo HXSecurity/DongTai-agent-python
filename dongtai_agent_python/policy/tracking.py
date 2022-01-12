@@ -4,6 +4,8 @@ import sys
 import traceback
 
 from pkg_resources import parse_version
+# from regexploit import redos
+# from regexploit.ast.sre import SreOpParser
 
 from dongtai_agent_python import CONTEXT_TRACKER
 from dongtai_agent_python.setting import const
@@ -101,6 +103,10 @@ class Tracking(object):
             elif len(list(set(self.context.taint_ids) & set(source_ids))) == 0:
                 return
 
+        if self.signature.startswith('re.'):
+            if re_is_safe(self.context.taint_ids, args, kwargs):
+                return
+
         self.get_caller(-4)
         if self.ignore_tracking:
             return
@@ -169,6 +175,14 @@ def processing_invoke_args(signature=None, come_args=None, come_kwargs=None):
         'Cryptodome.Cipher._mode_ecb.EcbMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
         'Cryptodome.Cipher._mode_ofb.OfbMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
         'Cryptodome.Cipher._mode_openpgp.OpenPgpMode.encrypt': {'args': [0, 1], 'kwargs': ['plaintext']},
+        're.match': {'args': [0, 1], 'kwargs': ['pattern', 'string']},
+        're.fullmatch': {'args': [0, 1], 'kwargs': ['pattern', 'string']},
+        're.search': {'args': [0, 1], 'kwargs': ['pattern', 'string']},
+        're.sub': {'args': [0, 2], 'kwargs': ['pattern', 'string']},
+        're.subn': {'args': [0, 2], 'kwargs': ['pattern', 'string']},
+        're.split': {'args': [0, 1], 'kwargs': ['pattern', 'string']},
+        're.findall': {'args': [0, 1], 'kwargs': ['pattern', 'string']},
+        're.finditer': {'args': [0, 1], 'kwargs': ['pattern', 'string']},
     }
 
     context = CONTEXT_TRACKER.current()
@@ -209,6 +223,7 @@ def processing_invoke_args(signature=None, come_args=None, come_kwargs=None):
     return invoke_args
 
 
+@scope.with_scope(scope.SCOPE_AGENT)
 def yaml_load_is_safe(args, kwargs=None):
     if kwargs is None:
         kwargs = {}
@@ -227,6 +242,44 @@ def yaml_load_is_safe(args, kwargs=None):
     if 'Loader' in kwargs:
         if kwargs['Loader'].__name__ == 'UnsafeLoader':
             return False
+    return True
+
+
+@scope.with_scope(scope.SCOPE_AGENT)
+def re_is_safe(taint_ids, args, kwargs=None):
+    if args is None:
+        args = ()
+    if kwargs is None:
+        kwargs = {}
+
+    if len(args) > 0:
+        pattern = args[0]
+    elif 'pattern' in kwargs:
+        pattern = kwargs['pattern']
+    else:
+        return True
+
+    if not pattern:
+        return True
+
+    if utils.get_hash(pattern) in taint_ids:
+        return False
+
+    # @TODO: static analysis
+    """
+    if isinstance(pattern, const.EMPTY_PATTERN):
+        pattern = pattern.pattern
+
+    try:
+        parsed = SreOpParser().parse_sre(pattern)
+    except re.error:
+        return True
+
+    for rd in redos.find(parsed):
+        if rd.starriness > 2:
+            return False
+    """
+
     return True
 
 
