@@ -16,11 +16,6 @@ NODE_TYPES = [
 TAINT_SOURCE = 1
 TAINT_TARGET = 2
 
-FIRST_RETURN = [
-    'builtins.list.append',
-    'builtins.list.insert',
-]
-
 C_API_PATCHES = [
     'builtins.str.fstring',
     'builtins.str.cformat',

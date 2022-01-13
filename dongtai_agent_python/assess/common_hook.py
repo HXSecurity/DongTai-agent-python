@@ -1,49 +1,39 @@
 import sys
 
-from dongtai_agent_python import CONTEXT_TRACKER
 from dongtai_agent_python.policy.deal_data import wrap_data
-from dongtai_agent_python.setting import Setting, const
-from dongtai_agent_python.utils import scope, utils
+from dongtai_agent_python.setting import const
+from dongtai_agent_python.utils import scope
 
 
 # 普通方法 hook
 class InstallFcnHook(object):
-    def __init__(self, old_cls, fcn, signature=None, node_type=None):
+    def __init__(self, origin_cls, origin_func, signature=None, node_type=None):
         self.signature = signature
-        self._fcn = fcn
-        self.__name__ = fcn.__name__
+        self.origin_func = origin_func
+        self.__name__ = origin_func.__name__
 
-        self.old_cls = old_cls
+        self.origin_cls = origin_cls
         self.node_type = node_type
 
     def __call__(self, *args, **kwargs):
         if self.node_type == const.NODE_TYPE_FILTER:
             with scope.scope(scope.SCOPE_AGENT):
-                ret_val = self._fcn(*args, **kwargs)
+                result = self.origin_func(*args, **kwargs)
         else:
-            ret_val = self._fcn(*args, **kwargs)
+            result = self.origin_func(*args, **kwargs)
 
         if scope.in_scope(scope.SCOPE_AGENT):
-            return ret_val
-
-        context = CONTEXT_TRACKER.current()
-        if not utils.needs_propagation(context, self.node_type):
-            return ret_val
-
-        with scope.scope(scope.SCOPE_AGENT):
-            setting = Setting()
-        if setting.is_agent_paused():
-            return ret_val
+            return result
 
         wrap_data(
-            ret_val, self.old_cls.__name__, self._fcn.__name__,
+            result, self.origin_cls.__name__, self.origin_func.__name__,
             signature=self.signature, node_type=self.node_type,
             come_args=args, come_kwargs=kwargs)
 
-        return ret_val
+        return result
 
 
-def build_exec_eval_patch(orig_cls, orig_func, signature, node_type):
+def build_exec_eval_patch(origin_cls, origin_func, signature, node_type):
     def exec_eval_patch(code, globs=None, locs=None):
         """
         Code ported from six module
@@ -62,27 +52,18 @@ def build_exec_eval_patch(orig_cls, orig_func, signature, node_type):
 
         try:
             with scope.scope(scope.SCOPE_AGENT):
-                ret_val = orig_func(code, globs, locs)
+                result = origin_func(code, globs, locs)
         except Exception:
-            ret_val = None
             raise
 
         if scope.in_scope(scope.SCOPE_AGENT):
-            return ret_val
-
-        context = CONTEXT_TRACKER.current()
-        if not utils.needs_propagation(context, node_type):
-            return ret_val
-
-        with scope.scope(scope.SCOPE_AGENT):
-            setting = Setting()
-        if setting.is_agent_paused():
-            return ret_val
+            return result
 
         wrap_data(
-            ret_val, orig_cls.__name__, orig_func.__name__,
+            result, origin_cls.__name__, origin_func.__name__,
             signature=signature, node_type=node_type,
             come_args=[code])
-        return ret_val
+
+        return result
 
     return exec_eval_patch
