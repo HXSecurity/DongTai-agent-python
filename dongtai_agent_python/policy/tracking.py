@@ -11,7 +11,7 @@ from dongtai_agent_python.utils import scope, utils
 
 
 class Tracking(object):
-    def __init__(self, signature, node_type, origin_cls, func_name):
+    def __init__(self, signature, node_type, class_name, func_name):
         scope.enter_scope(scope.SCOPE_AGENT)
 
         self.context = CONTEXT_TRACKER.current()
@@ -26,7 +26,7 @@ class Tracking(object):
         self.signature = signature
         self.node_type = node_type
 
-        self.class_name = origin_cls
+        self.class_name = class_name
         if signature.endswith("." + func_name):
             self.class_name = signature[:-len(func_name) - 1]
 

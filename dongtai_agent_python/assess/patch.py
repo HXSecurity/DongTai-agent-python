@@ -46,19 +46,14 @@ def enable_patches(policies):
                 continue
 
             if policy == 'builtins.eval' or policy == 'builtins.exec':
-                imp_arr = copy.deepcopy(policy_arr)
-                method_name = imp_arr[-1]
-                setting.policy[method_name] = rules['type']
-                # 存储到全局变量
-                del imp_arr[-1]
-                policy_str = ".".join(imp_arr)
-                old_module = HookLazyImport(policy_str, [method_name])
-                old_func = getattr(old_module, method_name)
-                old_cls = old_module.origin_module()
+                method_name = policy_arr[-1]
+                new_module = HookLazyImport('builtins', [method_name])
+                origin_func = getattr(new_module, method_name)
+                origin_cls = new_module.origin_module()
 
-                new_fn = build_exec_eval_patch(old_cls, old_func, policy, rules['type'])
-                after_cls = magic_get_dict(old_cls)
-                after_cls[method_name] = new_fn
+                new_fn = build_exec_eval_patch(origin_cls, origin_func, policy, rules['type'])
+                origin_cls_ptr = magic_get_dict(origin_cls)
+                origin_cls_ptr[method_name] = new_fn
                 logger.debug("------exec_eval_patch---------- " + "[" + str(rules['type']) + "]" + policy)
                 has_patched[policy] = True
                 continue
@@ -69,22 +64,20 @@ def enable_patches(policies):
             try:
                 imp_arr = copy.deepcopy(policy_arr)
                 method_name = imp_arr[-1]
-                setting.policy[method_name] = rules['type']
-                # 存储到全局变量
                 del imp_arr[-1]
                 policy_str = ".".join(imp_arr)
-                old_module = HookLazyImport(policy_str, [method_name])
-                old_func = getattr(old_module, method_name)
-                old_cls = old_module.origin_module()
-                if old_cls is None:
+                new_module = HookLazyImport(policy_str, [method_name])
+                origin_func = getattr(new_module, method_name)
+                origin_cls = new_module.origin_module()
+                if origin_cls is None:
                     imp_arr = copy.deepcopy(policy_arr)
                     method_name = imp_arr[-1]
                     class_name = imp_arr[-2]
                     del imp_arr[-1]
                     del imp_arr[-1]
                     policy_str = ".".join(imp_arr)
-                    old_module = HookLazyImport(policy_str, [class_name])
-                    old_cls = getattr(old_module, class_name)
+                    new_module = HookLazyImport(policy_str, [class_name])
+                    origin_cls = getattr(new_module, class_name)
             except Exception as e:
                 imp_arr = copy.deepcopy(policy_arr)
                 if imp_arr[0] not in sys.modules:
@@ -98,16 +91,16 @@ def enable_patches(policies):
                 policy_str = ".".join(imp_arr)
 
                 try:
-                    old_module = HookLazyImport(policy_str, [class_name])
-                    old_cls = getattr(old_module, class_name)
+                    new_module = HookLazyImport(policy_str, [class_name])
+                    origin_cls = getattr(new_module, class_name)
                 except Exception as e:
                     continue
 
-            after_cls = magic_get_dict(old_cls)
+            after_cls = magic_get_dict(origin_cls)
 
-            if isinstance(old_cls, type):
+            if isinstance(origin_cls, type):
                 hooked = new_func(
-                    old_cls,
+                    origin_cls,
                     method_name,
                     policy,
                     rules['type']
@@ -118,7 +111,7 @@ def enable_patches(policies):
                 after_cls[method_name] = hooked
             else:
                 logger.debug("------origin_cls_function------ " + "[" + str(rules['type']) + "]" + policy)
-                after_cls[method_name] = InstallFcnHook(old_cls, old_func, policy, rules['type'])
+                after_cls[method_name] = InstallFcnHook(origin_cls, origin_func, policy, rules['type'])
 
             has_patched[policy] = True
 
