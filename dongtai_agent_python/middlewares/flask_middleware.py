@@ -1,3 +1,5 @@
+import base64
+
 import flask
 from flask import request
 
@@ -46,7 +48,7 @@ class AgentMiddleware(BaseMiddleware):
         @scope.with_scope(scope.SCOPE_AGENT)
         def process_response_data(context, response):
             if not response.is_streamed and response.data and isinstance(response.data, bytes):
-                http_res_body = bytes.decode(response.data, "utf-8", errors="ignore")
+                http_res_body = base64.b64encode(response.data).decode('utf-8')
             else:
                 http_res_body = ""
 
