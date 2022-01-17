@@ -1,3 +1,5 @@
+import re
+
 CONTAINER_DJANGO = 'Django'
 CONTAINER_FLASK = 'Flask'
 
@@ -15,6 +17,8 @@ NODE_TYPES = [
 
 TAINT_SOURCE = 1
 TAINT_TARGET = 2
+
+EMPTY_PATTERN = type(re.compile(''))
 
 C_API_PATCHES = [
     'builtins.str.fstring',

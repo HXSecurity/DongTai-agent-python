@@ -402,6 +402,69 @@
       ]
     },
     {
+      "type": 4,
+      "enable": 1,
+      "value": "redos",
+      "details": [
+        {
+          "source": "P1,2,pattern,string",
+          "track": "true",
+          "target": "",
+          "value": "re.match",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,pattern,string",
+          "track": "true",
+          "target": "",
+          "value": "re.fullmatch",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,pattern,string",
+          "track": "true",
+          "target": "",
+          "value": "re.search",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,3,pattern,string",
+          "track": "true",
+          "target": "",
+          "value": "re.sub",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,3,pattern,string",
+          "track": "true",
+          "target": "",
+          "value": "re.subn",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,pattern,string",
+          "track": "true",
+          "target": "",
+          "value": "re.split",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,pattern,string",
+          "track": "true",
+          "target": "",
+          "value": "re.findall",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,2,pattern,string",
+          "track": "true",
+          "target": "",
+          "value": "re.finditer",
+          "inherit": "false"
+        }
+      ]
+    },
+    {
       "type": 2,
       "enable": 1,
       "value": "general-rules",
@@ -894,6 +957,13 @@
           "track": "true",
           "target": "R",
           "value": "ldap3.utils.conv.escape_filter_chars",
+          "inherit": "false"
+        },
+        {
+          "source": "P1,pattern",
+          "track": "true",
+          "target": "R",
+          "value": "re.escape",
           "inherit": "false"
         }
       ]
