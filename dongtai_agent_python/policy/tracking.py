@@ -65,10 +65,6 @@ class Tracking(object):
 
     @scope.scope(scope.SCOPE_AGENT)
     def apply(self, self_obj, result, args, kwargs):
-        if (self.policy_rule.signature == 'yaml.load' or self.policy_rule.signature == 'yaml.load_all') and \
-                yaml_load_is_safe(args, kwargs):
-            return
-
         source = self.policy_rule.get_source_taints(self_obj, result, args, kwargs)
         # @TODO: improve performance
         source_ids = recurse_tracking(source, self.policy_rule.node_type)
@@ -83,10 +79,6 @@ class Tracking(object):
                     if sid not in self.context.taint_ids:
                         return
             elif len(list(set(self.context.taint_ids) & set(source_ids))) == 0:
-                return
-
-        if self.policy_rule.signature.startswith('re.'):
-            if re_is_safe(self.context.taint_ids, args, kwargs):
                 return
 
         self.get_caller(-4)
@@ -131,66 +123,6 @@ class Tracking(object):
         }
 
         self.context.pool.append(pool)
-
-
-@scope.with_scope(scope.SCOPE_AGENT)
-def yaml_load_is_safe(args, kwargs=None):
-    if kwargs is None:
-        kwargs = {}
-
-    try:
-        import yaml
-        if parse_version(yaml.__version__) < parse_version('5.1'):
-            if len(args) < 2 and 'Loader' not in kwargs:
-                return False
-    except ImportError:
-        pass
-
-    if len(args) == 2:
-        if args[1].__name__ == 'UnsafeLoader':
-            return False
-    if 'Loader' in kwargs:
-        if kwargs['Loader'].__name__ == 'UnsafeLoader':
-            return False
-    return True
-
-
-@scope.with_scope(scope.SCOPE_AGENT)
-def re_is_safe(taint_ids, args, kwargs=None):
-    if args is None:
-        args = ()
-    if kwargs is None:
-        kwargs = {}
-
-    if len(args) > 0:
-        pattern = args[0]
-    elif 'pattern' in kwargs:
-        pattern = kwargs['pattern']
-    else:
-        return True
-
-    if not pattern:
-        return True
-
-    if utils.get_hash(pattern) in taint_ids:
-        return False
-
-    # @TODO: static analysis
-    """
-    if isinstance(pattern, const.EMPTY_PATTERN):
-        pattern = pattern.pattern
-
-    try:
-        parsed = SreOpParser().parse_sre(pattern)
-    except re.error:
-        return True
-
-    for rd in redos.find(parsed):
-        if rd.starriness > 2:
-            return False
-    """
-
-    return True
 
 
 @scope.with_scope(scope.SCOPE_AGENT)
