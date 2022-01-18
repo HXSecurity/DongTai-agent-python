@@ -28,45 +28,27 @@ def magic_flush_mro_cache():
 
 
 # 属性方法hook
-def new_func(origin_cls, method_name, signature=None, node_type=None, *args, **kwargs):
+def build_method_patch(origin_cls, policy_rule, *args, **kwargs):
     copy_new_class = type(origin_cls.__name__, origin_cls.__bases__, dict(origin_cls.__dict__))
-    if method_name not in copy_new_class.__dict__:
+    if policy_rule.method_name not in copy_new_class.__dict__:
         return None
-    origin_func = getattr(origin_cls, method_name)
+    origin_method = getattr(origin_cls, policy_rule.method_name)
+    policy_rule.set_origin_method(origin_method)
 
     def child_func(*args, **kwargs):
-        if node_type == const.NODE_TYPE_FILTER:
+        if policy_rule.node_type == const.NODE_TYPE_FILTER:
             with scope.scope(scope.SCOPE_AGENT):
-                result = copy_new_class.__dict__[method_name](*args, **kwargs)
+                result = copy_new_class.__dict__[policy_rule.method_name](*args, **kwargs)
         else:
-            result = copy_new_class.__dict__[method_name](*args, **kwargs)
+            result = copy_new_class.__dict__[policy_rule.method_name](*args, **kwargs)
         if scope.in_scope(scope.SCOPE_AGENT):
             return result
 
-        wrap_data(
-            result, origin_cls.__name__, origin_func.__name__,
-            signature=signature, node_type=node_type,
-            come_args=args, come_kwargs=kwargs)
+        wrap_data(policy_rule, result=result, come_args=args, come_kwargs=kwargs)
 
         return result
 
+    policy_rule.set_patched_method(child_func)
+
     return child_func
 
-
-class HookLazyImport:
-    def __init__(self, module_name, fromlist=None):
-        self.module_name = module_name
-        self.module = None
-        if fromlist:
-            self.fromlist = fromlist
-        else:
-            self.fromlist = []
-
-    def __getattr__(self, name):
-        if self.module is None:
-            self.module = __import__(self.module_name, globals(), locals(), self.fromlist, 0)
-
-        return getattr(self.module, name)
-
-    def origin_module(self):
-        return self.module
