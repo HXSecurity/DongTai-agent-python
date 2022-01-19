@@ -23,7 +23,6 @@ class Tracking(object):
         self.caller_line_number = ''
         self.caller_method = ''
 
-    @scope.scope(scope.SCOPE_AGENT)
     def get_caller(self, layer):
         tracert = traceback.extract_stack()
         tracert_arr = list(tracert[layer])
@@ -63,7 +62,6 @@ class Tracking(object):
         self.caller_line_number = tracert_arr[1]
         self.caller_method = tracert_arr[2]
 
-    @scope.scope(scope.SCOPE_AGENT)
     def apply(self, self_obj, result, args, kwargs):
         source = self.policy_rule.get_source_taints(self_obj, result, args, kwargs)
         # @TODO: improve performance
@@ -125,7 +123,6 @@ class Tracking(object):
         self.context.pool.append(pool)
 
 
-@scope.with_scope(scope.SCOPE_AGENT)
 def recurse_tracking(obj, node_type, hash_ids=None):
     if obj is None:
         return []

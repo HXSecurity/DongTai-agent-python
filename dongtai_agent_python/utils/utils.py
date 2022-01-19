@@ -31,7 +31,6 @@ def bytes_to_base64(data):
     return bytes.decode(b64_data, 'utf-8')
 
 
-@scope.with_scope(scope.SCOPE_AGENT)
 def json_to_str(json_data):
     if json_data:
         new_list = []
@@ -60,7 +59,6 @@ def needs_propagation(context, node_type):
     return True
 
 
-@scope.with_scope(scope.SCOPE_AGENT)
 def get_hash(item):
     try:
         h = hashlib.md5((str(type(item)) + ":" + str(id(item)) + ":" + str(item)).encode('utf-8')).hexdigest()
@@ -69,7 +67,6 @@ def get_hash(item):
     return h
 
 
-@scope.with_scope(scope.SCOPE_AGENT)
 def get_packages():
     packages = pkg_resources.working_set
     sca_packages = []
