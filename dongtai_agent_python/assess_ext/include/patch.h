@@ -16,6 +16,8 @@ PyObject *install(PyObject *self, PyObject *arg);
 
 void patch_string_callback(char *prop_method_name, PyObject *source, PyObject *target, PyObject *hook_args, PyObject *hook_kwargs);
 
+PyObject *str_origin(PyObject *self, PyObject *args);
+
 int apply_cformat_patch(funchook_t *funchook);
 int apply_fstring_patch(funchook_t *funchook);
 int apply_cast_patch(funchook_t *funchook);

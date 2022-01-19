@@ -38,6 +38,10 @@ int bytearray_cast_new(PyObject *self, PyObject *args, PyObject *kwargs) {
     return result;
 }
 
+PyObject *str_origin(PyObject *self, PyObject *args) {
+    return unicode_cast_origin(&PyUnicode_Type, args, NULL);
+}
+
 PyObject *unicode_cast_new(PyTypeObject *type, PyObject *args, PyObject *kwargs) {
     PyObject *result = unicode_cast_origin(type, args, kwargs);
 

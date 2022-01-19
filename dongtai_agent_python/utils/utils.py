@@ -4,6 +4,7 @@ import os
 
 import pkg_resources
 
+from dongtai_agent_python.assess_ext import c_api
 from dongtai_agent_python.setting import const
 from dongtai_agent_python.utils import scope
 
@@ -61,9 +62,10 @@ def needs_propagation(context, node_type):
 
 def get_hash(item):
     try:
-        h = hashlib.md5((str(type(item)) + ":" + str(id(item)) + ":" + str(item)).encode('utf-8')).hexdigest()
+        h = hashlib.md5((c_api.str_origin(type(item)) + ":" + c_api.str_origin(id(item)) + ":" + c_api.str_origin(item))
+                        .encode('utf-8')).hexdigest()
     except Exception:
-        h = id(item)
+        h = c_api.str_origin(type(item))
     return h
 
 
