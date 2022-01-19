@@ -64,7 +64,6 @@ class Tracking(object):
 
     def apply(self, self_obj, result, args, kwargs):
         source = self.policy_rule.get_source_taints(self_obj, result, args, kwargs)
-        # @TODO: improve performance
         source_ids = recurse_tracking(source, self.policy_rule.node_type)
 
         if self.policy_rule.node_type != const.NODE_TYPE_SOURCE:
@@ -123,6 +122,7 @@ class Tracking(object):
         self.context.pool.append(pool)
 
 
+# @TODO: improve performance
 def recurse_tracking(obj, node_type, hash_ids=None):
     if obj is None:
         return []
@@ -134,11 +134,6 @@ def recurse_tracking(obj, node_type, hash_ids=None):
         if utils.is_empty(item) or utils.is_not_allowed_type(item):
             continue
 
-        try:
-            item_type = ".".join([type(item).__module__, type(item).__name__])
-        except Exception:
-            item_type = ''
-
         hid = utils.get_hash(item)
         if hid not in hash_ids:
             hash_ids.append(hid)
@@ -147,9 +142,14 @@ def recurse_tracking(obj, node_type, hash_ids=None):
             hash_ids = recurse_tracking(item, node_type, hash_ids)
         elif isinstance(item, dict):
             hash_ids = recurse_tracking(list(item.values()), node_type, hash_ids)
-        elif item_type == 'django.template.context.RequestContext' or \
-                item_type == 'django.template.context.Context':
-            for it in item:
-                hash_ids = recurse_tracking([it], node_type, hash_ids)
+        elif not isinstance(item, (str, bytes, bytearray)):
+            try:
+                item_type = ".".join([type(item).__module__, type(item).__name__])
+                if item_type == 'django.template.context.RequestContext' or \
+                        item_type == 'django.template.context.Context':
+                    for it in item:
+                        hash_ids = recurse_tracking([it], node_type, hash_ids)
+            except Exception:
+                pass
 
     return hash_ids

@@ -60,6 +60,7 @@ def needs_propagation(context, node_type):
     return True
 
 
+# @TODO: improve performance
 def get_hash(item):
     try:
         h = hashlib.md5((c_api.str_origin(type(item)) + ":" + c_api.str_origin(id(item)) + ":" + c_api.str_origin(item))
