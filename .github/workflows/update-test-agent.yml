@@ -30,8 +30,17 @@ jobs:
           endpoint: "oss-cn-beijing.aliyuncs.com"
           access-key-id: ${{ secrets.OSS_KEY_ID }}
           access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
-
+          
+          
       - name: Publish
         run: |
           filename=$(python setup.py --fullname)
           ossutil cp -rf dist/${filename}.tar.gz oss://dongtai/agent_test/python/dongtai_agent_python.tar.gz --meta x-oss-object-acl:public-read
+          
+      - name: Trigger Openapi Workflow
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Deploy DongTai OpenAPI To AWS
+          token: ${{ secrets.BIDAYA0_PAT_FOR_OPENAPI }}
+          ref: main
+          repo: HXSecurity/DongTai-openapi
