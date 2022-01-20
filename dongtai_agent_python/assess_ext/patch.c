@@ -91,6 +91,10 @@ PyObject *install(PyObject *self, PyObject *arg) {
 }
 
 void patch_string_callback(char *prop_method_name, PyObject *source, PyObject *target, PyObject *hook_args, PyObject *hook_kwargs) {
+    if (!PyObject_HasAttrString(patch_module, prop_method_name)) {
+        return;
+    }
+
     PyObject *result;
     PyObject *prop_hook_args;
     int free_hook_args = 0;
