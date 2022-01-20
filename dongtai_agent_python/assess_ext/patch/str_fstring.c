@@ -16,19 +16,16 @@ PyObject *(*unicode_joinarray_origin)(PyObject *, joinarray_items_t, Py_ssize_t)
 
 static PyObject *unicode_joinarray_new(PyObject *sep, joinarray_items_t items, Py_ssize_t len) {
     PyObject *result = unicode_joinarray_origin(sep, items, len);
-    PyObject *item_list = process_args(items, len);
-    PyObject *args = PyTuple_Pack(1, item_list);
 
-    if (result == NULL) {
-        Py_XDECREF(args);
-        Py_XDECREF(item_list);
+    if (result == NULL || len == 0) {
         return result;
     }
+
+    PyObject *args = process_args(items, len);
 
     patch_string_callback("callback_unicode_fstring", sep, result, args, NULL);
 
     Py_XDECREF(args);
-    Py_XDECREF(item_list);
     return result;
 }
 

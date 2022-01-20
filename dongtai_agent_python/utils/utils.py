@@ -4,6 +4,7 @@ import os
 
 import pkg_resources
 
+from dongtai_agent_python.assess_ext import c_api
 from dongtai_agent_python.setting import const
 from dongtai_agent_python.utils import scope
 
@@ -31,7 +32,6 @@ def bytes_to_base64(data):
     return bytes.decode(b64_data, 'utf-8')
 
 
-@scope.with_scope(scope.SCOPE_AGENT)
 def json_to_str(json_data):
     if json_data:
         new_list = []
@@ -60,16 +60,15 @@ def needs_propagation(context, node_type):
     return True
 
 
-@scope.with_scope(scope.SCOPE_AGENT)
+# @TODO: improve performance
 def get_hash(item):
     try:
-        h = hashlib.md5((str(type(item)) + ":" + str(id(item)) + ":" + str(item)).encode('utf-8')).hexdigest()
+        h = hashlib.md5((c_api.str_origin(id(item)) + ":" + c_api.str_origin(item)).encode('utf-8')).hexdigest()
     except Exception:
         h = id(item)
     return h
 
 
-@scope.with_scope(scope.SCOPE_AGENT)
 def get_packages():
     packages = pkg_resources.working_set
     sca_packages = []

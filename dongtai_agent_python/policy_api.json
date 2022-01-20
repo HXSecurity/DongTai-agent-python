@@ -218,31 +218,24 @@
       "value": "untrusted-deserialization",
       "details": [
         {
-          "source": "P1,stream",
+          "source": "P2,stream",
           "track": "true",
           "target": "",
-          "value": "yaml.unsafe_load",
+          "value": "yaml.loader.FullLoader.__init__",
           "inherit": "false"
         },
         {
-          "source": "P1,stream",
+          "source": "P2,stream",
           "track": "true",
           "target": "",
-          "value": "yaml.load",
+          "value": "yaml.loader.UnsafeLoader.__init__",
           "inherit": "false"
         },
         {
-          "source": "P1,stream",
+            "source": "P2,stream",
           "track": "true",
           "target": "",
-          "value": "yaml.unsafe_load_all",
-          "inherit": "false"
-        },
-        {
-          "source": "P1,stream",
-          "track": "true",
-          "target": "",
-          "value": "yaml.load_all",
+          "value": "yaml.loader.Loader.__init__",
           "inherit": "false"
         },
         {
@@ -407,56 +400,56 @@
       "value": "redos",
       "details": [
         {
-          "source": "P1,2,pattern,string",
+          "source": "P1,pattern",
           "track": "true",
           "target": "",
           "value": "re.match",
           "inherit": "false"
         },
         {
-          "source": "P1,2,pattern,string",
+          "source": "P1,pattern",
           "track": "true",
           "target": "",
           "value": "re.fullmatch",
           "inherit": "false"
         },
         {
-          "source": "P1,2,pattern,string",
+          "source": "P1,pattern",
           "track": "true",
           "target": "",
           "value": "re.search",
           "inherit": "false"
         },
         {
-          "source": "P1,3,pattern,string",
+          "source": "P1,pattern",
           "track": "true",
           "target": "",
           "value": "re.sub",
           "inherit": "false"
         },
         {
-          "source": "P1,3,pattern,string",
+          "source": "P1,pattern",
           "track": "true",
           "target": "",
           "value": "re.subn",
           "inherit": "false"
         },
         {
-          "source": "P1,2,pattern,string",
+          "source": "P1,pattern",
           "track": "true",
           "target": "",
           "value": "re.split",
           "inherit": "false"
         },
         {
-          "source": "P1,2,pattern,string",
+          "source": "P1,pattern",
           "track": "true",
           "target": "",
           "value": "re.findall",
           "inherit": "false"
         },
         {
-          "source": "P1,2,pattern,string",
+          "source": "P1,pattern",
           "track": "true",
           "target": "",
           "value": "re.finditer",
@@ -610,7 +603,7 @@
           "inherit": "false"
         },
         {
-          "source": "P1",
+          "source": "P",
           "track": "true",
           "target": "R",
           "value": "builtins.str.fstring",

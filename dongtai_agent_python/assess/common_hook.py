@@ -6,34 +6,32 @@ from dongtai_agent_python.utils import scope
 
 
 # 普通方法 hook
-class InstallFcnHook(object):
-    def __init__(self, origin_cls, origin_func, signature=None, node_type=None):
-        self.signature = signature
-        self.origin_func = origin_func
-        self.__name__ = origin_func.__name__
+class BuildFuncPatch(object):
+    def __init__(self, origin_method, policy_rule):
+        self.policy_rule = policy_rule
+        self.policy_rule.set_origin_method(origin_method)
+        self.policy_rule.set_patched_method(self)
 
-        self.origin_cls = origin_cls
-        self.node_type = node_type
+        self.__name__ = origin_method.__name__
 
     def __call__(self, *args, **kwargs):
-        if self.node_type == const.NODE_TYPE_FILTER:
+        if self.policy_rule.node_type == const.NODE_TYPE_FILTER:
             with scope.scope(scope.SCOPE_AGENT):
-                result = self.origin_func(*args, **kwargs)
+                result = self.policy_rule.origin_method(*args, **kwargs)
         else:
-            result = self.origin_func(*args, **kwargs)
+            result = self.policy_rule.origin_method(*args, **kwargs)
 
         if scope.in_scope(scope.SCOPE_AGENT):
             return result
 
-        wrap_data(
-            result, self.origin_cls.__name__, self.origin_func.__name__,
-            signature=self.signature, node_type=self.node_type,
-            come_args=args, come_kwargs=kwargs)
+        wrap_data(self.policy_rule, result=result, come_args=args, come_kwargs=kwargs)
 
         return result
 
 
-def build_exec_eval_patch(origin_cls, origin_func, signature, node_type):
+def build_exec_eval_patch(origin_method, policy_rule):
+    policy_rule.set_origin_method(origin_method)
+
     def exec_eval_patch(code, globs=None, locs=None):
         """
         Code ported from six module
@@ -52,18 +50,17 @@ def build_exec_eval_patch(origin_cls, origin_func, signature, node_type):
 
         try:
             with scope.scope(scope.SCOPE_AGENT):
-                result = origin_func(code, globs, locs)
+                result = origin_method(code, globs, locs)
         except Exception:
             raise
 
         if scope.in_scope(scope.SCOPE_AGENT):
             return result
 
-        wrap_data(
-            result, origin_cls.__name__, origin_func.__name__,
-            signature=signature, node_type=node_type,
-            come_args=[code])
+        wrap_data(policy_rule, result=result, come_args=[code])
 
         return result
+
+    policy_rule.set_patched_method(exec_eval_patch)
 
     return exec_eval_patch

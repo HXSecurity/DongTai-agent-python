@@ -17,6 +17,7 @@ static PyMethodDef methods[] = {
         "Patch relevant non-method functions"
     },
     {"install", install, METH_O, "Install patches"},
+    {"str_origin", (PyCFunction)str_origin, METH_VARARGS, "Origin str cast method"},
     {NULL, NULL, 0, NULL},
 };
 
