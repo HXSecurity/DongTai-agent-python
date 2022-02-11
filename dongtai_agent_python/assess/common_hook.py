@@ -15,6 +15,9 @@ class BuildFuncPatch(object):
         self.__name__ = origin_method.__name__
 
     def __call__(self, *args, **kwargs):
+        # edit by song to add speed
+        # with scope.scope(scope.SCOPE_AGENT):
+        #     result = self.policy_rule.origin_method(*args, **kwargs)
         if self.policy_rule.node_type == const.NODE_TYPE_FILTER:
             with scope.scope(scope.SCOPE_AGENT):
                 result = self.policy_rule.origin_method(*args, **kwargs)

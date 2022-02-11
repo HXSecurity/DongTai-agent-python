@@ -3,7 +3,7 @@ from dongtai_agent_python.setting import const
 
 def new_policy_rule(rule_type, detail):
     signature = detail.get('value', '')
-    if signature == '':
+    if signature == '' or len(signature.split("."))<2:
         return None
     if rule_type not in const.NODE_TYPES:
         return None
@@ -14,7 +14,6 @@ class PolicyRule(object):
     def __init__(self, node_type, signature, source=None, target=None):
         self.node_type = node_type
         self.signature = signature
-
         splits = signature.split(".")
         self.class_name = splits[-2]
         self.method_name = splits[-1]
