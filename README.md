@@ -37,6 +37,9 @@ DongTai-agent-python
   * make (Linux/macOS)
   * cmake: >= 3.6
   * Visual Studio (Windows)
+  * bash (Alpine Linux)	
+  * libc-dev (Alpine Linux)
+  * linux-headers (Alpine Linux)
 * Web Framework
   * Django: 3.0-3.2, 4.0
   * Flask: 1.0-1.2, 2.0
