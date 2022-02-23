@@ -1,6 +1,21 @@
 # Changelog
 
-## Unreleased
+## [1.3.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.1)  - 2022-02-23
+* FEATURES
+  * Add crypto bad cipher detection  [#107](https://github.com/HXSecurity/DongTai-agent-python/pull/107)
+  * Add regular expression DOS attack detection  [#111](https://github.com/HXSecurity/DongTai-agent-python/pull/111)
+  * Compatible with v2 version taint data reporting API  [#116](https://github.com/HXSecurity/DongTai-agent-python/pull/116)
+* BUGFIXES
+  * Fix exception caused when using gevent patch [#105](https://github.com/HXSecurity/DongTai-agent-python/pull/105)
+  * Fix Django 3.1, 3.2 response header parsing error [#108](https://github.com/HXSecurity/DongTai-agent-python/pull/108)
+  * Added documentation of packages required for compiling under alpine linux [#115](https://github.com/HXSecurity/DongTai-agent-python/pull/115)
+* ENHANCEMENTS
+  * performance optimization [#116](https://github.com/HXSecurity/DongTai-agent-python/pull/116)
+  * code cleanup [#110](https://github.com/HXSecurity/DongTai-agent-python/pull/110)
+* Build
+  * When the github action runs, it automatically triggers openapi to pull the latest agent package  [#113](https://github.com/HXSecurity/DongTai-agent-python/pull/113)
+
+## [1.3.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.0)  - 2022-01-07
 
 * FEATURES
   * Add installed packages report for SCA [#100](https://github.com/HXSecurity/DongTai-agent-python/pull/100)

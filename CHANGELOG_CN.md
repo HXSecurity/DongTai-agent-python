@@ -1,6 +1,21 @@
 # 升级日志
 
-## 尚未发布
+## [1.3.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.1)  - 2022-02-23
+* 功能
+  * 增加弱加密算法漏洞检测 [#107](https://github.com/HXSecurity/DongTai-agent-python/pull/107)
+  * 增加正则表达式DOS攻击检测 [#111](https://github.com/HXSecurity/DongTai-agent-python/pull/111)
+  * 兼容 v2版本污点数据上报API [#116](https://github.com/HXSecurity/DongTai-agent-python/pull/116)
+* 修复
+  * 修复使用 gevent patch 时导致的异常 [#105](https://github.com/HXSecurity/DongTai-agent-python/pull/105)
+  * 修复 Django 3.1、3.2 响应头解析错误 [#108](https://github.com/HXSecurity/DongTai-agent-python/pull/108)
+  * 增加 alpine linux 下编译时需要的软件包文档说明 [#115](https://github.com/HXSecurity/DongTai-agent-python/pull/115)
+* 变更
+  * 性能优化 [#116](https://github.com/HXSecurity/DongTai-agent-python/pull/116)
+  * 代码清理 [#110](https://github.com/HXSecurity/DongTai-agent-python/pull/110)
+* 构建
+  * github action 运行时自动触发 openapi 拉取最新的 agent 包 [#113](https://github.com/HXSecurity/DongTai-agent-python/pull/113)
+
+## [1.3.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.0)  - 2022-01-07
 
 * 功能
   * 组件管理: 上报已安装的软件包 [#100](https://github.com/HXSecurity/DongTai-agent-python/pull/100)
