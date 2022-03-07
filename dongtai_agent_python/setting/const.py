@@ -28,6 +28,9 @@ C_API_PATCHES = [
     'builtins.str.__new__',
     'builtins.bytes.__new__',
     'builtins.bytearray.__init__',
+    'builtins.str.__add__',
+    'builtins.bytes.__add__',
+    'builtins.bytearray.__add__',
 ]
 
 CRYPTO_BAD_CIPHER_NEW = [

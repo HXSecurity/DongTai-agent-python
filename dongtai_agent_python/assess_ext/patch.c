@@ -69,6 +69,7 @@ PyObject *enable_patches(PyObject *self, PyObject *arg) {
     apply_patch(apply_cformat_patch, funchook);
     apply_patch(apply_fstring_patch, funchook);
     apply_patch(apply_cast_patch, funchook);
+    apply_patch(apply_concat_patch, funchook);
 
     Py_RETURN_NONE;
 }
@@ -90,6 +91,10 @@ PyObject *install(PyObject *self, PyObject *arg) {
 }
 
 void patch_string_callback(char *prop_method_name, PyObject *source, PyObject *target, PyObject *hook_args, PyObject *hook_kwargs) {
+    if (!PyObject_HasAttrString(patch_module, prop_method_name)) {
+        return;
+    }
+
     PyObject *result;
     PyObject *prop_hook_args;
     int free_hook_args = 0;

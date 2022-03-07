@@ -543,7 +543,7 @@
           "source": "P",
           "track": "true",
           "target": "R",
-          "value": "builtins.str.__format__",
+          "value": "builtins.str.__add__",
           "inherit": "false"
         },
         {
@@ -579,13 +579,6 @@
           "track": "true",
           "target": "R",
           "value": "builtins.str.cformat",
-          "inherit": "false"
-        },
-        {
-          "source": "P",
-          "track": "true",
-          "target": "R",
-          "value": "builtins.str.concat",
           "inherit": "false"
         },
         {
@@ -757,6 +750,13 @@
           "inherit": "false"
         },
         {
+          "source": "P",
+          "track": "true",
+          "target": "R",
+          "value": "builtins.bytes.__add__",
+          "inherit": "false"
+        },
+        {
           "source": "P1,source",
           "track": "true",
           "target": "R",
@@ -775,6 +775,13 @@
           "track": "true",
           "target": "R",
           "value": "builtins.bytes.decode",
+          "inherit": "false"
+        },
+        {
+          "source": "P",
+          "track": "true",
+          "target": "R",
+          "value": "builtins.bytearray.__add__",
           "inherit": "false"
         },
         {

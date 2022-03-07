@@ -9,6 +9,9 @@ CALLBACK_NAMES = {
     'builtins.bytes.__new__': 'callback_bytes_cast',
     'builtins.bytearray.__init__': 'callback_bytearray_cast',
     'builtins.str.__new__': 'callback_unicode_cast',
+    'builtins.bytes.__add__': 'callback_bytes_concat',
+    'builtins.bytearray.__add__': 'callback_bytearray_concat',
+    'builtins.str.__add__': 'callback_unicode_concat',
 }
 
 
