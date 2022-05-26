@@ -58,6 +58,10 @@ jobs:
         run: |
           curl --fail --retry-delay 10 --retry 30 --retry-connrefused http://127.0.0.1:8003/api/django/demo/get_open?name=Data
           cd ${{ github.workspace }}/DockerVulspace
+          docker-compose exec -T djangoweb python -V
+          docker-compose exec -T djangoweb pip list
+          docker-compose exec -T flaskweb python -V
+          docker-compose exec -T flaskweb pip list
           docker-compose logs djangoweb flaskweb
           bash ${{ github.workspace }}/DongTai-agent-python/dongtai_agent_python/tests/vul-test.sh \
             django http://127.0.0.1:8003/api/django ${{ github.run_id }}

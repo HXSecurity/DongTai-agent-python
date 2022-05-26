@@ -56,13 +56,13 @@ PyObject *unicode_cast_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
 
 int apply_cast_patch(funchook_t *funchook) {
     bytes_cast_origin = (void *)PyBytes_Type.tp_new;
-    funchook_prepare_wrapper(funchook, &bytes_cast_origin, bytes_cast_new);
+    funchook_prepare_wrapper(funchook, (PyCFunction)&bytes_cast_origin, bytes_cast_new);
 
     bytearray_cast_origin = (void *)PyByteArray_Type.tp_init;
-    funchook_prepare_wrapper(funchook, &bytearray_cast_origin, bytearray_cast_new);
+    funchook_prepare_wrapper(funchook, (PyCFunction)&bytearray_cast_origin, bytearray_cast_new);
 
     unicode_cast_origin = (void *)PyUnicode_Type.tp_new;
-    funchook_prepare_wrapper(funchook, &unicode_cast_origin, unicode_cast_new);
+    funchook_prepare_wrapper(funchook, (PyCFunction)&unicode_cast_origin, unicode_cast_new);
 
     log_debug("------c_patch------------------ cast");
 

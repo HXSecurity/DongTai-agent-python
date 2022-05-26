@@ -95,15 +95,16 @@ def get_packages():
                     if os.path.exists(package.location + os.sep + lvl):
                         module_path = package.location + os.sep + lvl
 
-        # @TODO: temporary set package signature to blank
-        # sha_1 = hashlib.sha1()
-        # sha_1.update(bytes(package.project_name.lower() + '-' + package.version, encoding='utf-8'))
-        # digest = sha_1.hexdigest()
+        package_name = 'pypi:' + package.project_name.lower() + ':' + package.version
+        sha_1 = hashlib.sha1()
+        sha_1.update(bytes(package_name, encoding='utf-8'))
+        digest = sha_1.hexdigest()
 
         sca_packages.append({
-            'packageName': package.project_name + '-' + package.version,
+            'packageName': package_name,
+            'packageVersion': package.version,
             'packagePath': module_path,
             'packageAlgorithm': 'SHA-1',
-            'packageSignature': '',
+            'packageSignature': digest,
         })
     return sca_packages
