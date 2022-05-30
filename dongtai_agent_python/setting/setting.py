@@ -1,5 +1,6 @@
 import os
 
+from dongtai_agent_python import version
 from .config import Config
 from dongtai_agent_python.utils import Singleton
 
@@ -11,6 +12,7 @@ class Setting(Singleton):
         if Setting.loaded:
             return
 
+        self.version = version.__version__
         self.paused = False
         self.manual_paused = False
         self.agent_id = 0

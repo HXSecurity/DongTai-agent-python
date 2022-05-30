@@ -19,16 +19,17 @@ class BaseMiddleware(object):
         if BaseMiddleware.loaded:
             return
 
-        logger.info("python agent init")
         start_time = time.time()
         scope.enter_scope(scope.SCOPE_AGENT)
 
+        self.init_setting()
+        logger.info("python agent init, version: " + self.setting.version)
+
+        self.setting.set_container(container)
+
         # middleware id
         self.id = id(self)
-        self.setting = None
         self.executor = ThreadPoolExecutor()
-        self.init_setting()
-        self.setting.set_container(container)
 
         self.openapi = OpenAPI(self.setting)
 
