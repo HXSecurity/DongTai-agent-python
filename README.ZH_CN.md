@@ -7,16 +7,20 @@
 
 ## 项目介绍
 
-DongTai-agent-python 是 **洞态IAST** 针对 Python 应用开发的数据采集端。在添加 iast-agent 代理的 Python 应用中，通过改写类字节码的方式采集所需数据，然后将数据发送至
-DongTai-openapi 服务，再由云端引擎处理数据判断是否存在安全漏洞。
+DongTai-agent-python 是 **洞态IAST** 针对 Python 应用开发的数据采集端。在 Python 应用中，通过改写方法和函数的方式采集所需数据，然后将数据发送至
+DongTai OpenAPI 服务，再由云端引擎处理数据判断是否存在安全漏洞。
 
 DongTai-agent-python
 
-- `dongtai_agent_python/config.json`用于配置DongTai-openapi服务地址、Token、项目名称。
-- `dongtai_agent_python/cli`控制agent版本的热更新。
-- `dongtai_agent_python/middleware/`用于接入不同的python框架，目前支持Django、Flask,均以中间件方式引入。
-- `dongtai_agent_python/assess/`根据云端策略hook python 底层方法。
-- `dongtai_agent_python/report/`将agent采集数据上报至DongTai-openapi服务。
+- `dongtai_agent_python/api/` 将 agent 采集的数据上报至 DongTai OpenAPI 服务。
+- `dongtai_agent_python/assess/` 根据云端策略 hook python 方法。
+- `dongtai_agent_python/assess_ext/` 根据云端策略 hook cpython 底层方法。
+- `dongtai_agent_python/cli/` 控制 agent 版本的热更新。
+- `dongtai_agent_python/context/` 请求上下文和上下文跟踪。
+- `dongtai_agent_python/middleware/` 用于接入不同的 python 框架，目前支持 Django、Flask, 均以中间件方式引入。
+- `dongtai_agent_python/policy/` 策略规则及污点数据处理。
+- `dongtai_agent_python/setting/` Agent 配置.
+- `dongtai_agent_python/config.json` 用于配置 DongTai OpenAPI 服务地址、Token、项目名称等。
 
 ## 应用场景
 
