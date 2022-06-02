@@ -42,6 +42,11 @@ class SharedMemoryDict:
             return
         self.mem_block.close()
 
+    def unlink(self) -> None:
+        if not hasattr(self, 'mem_block'):
+            return
+        self.mem_block.unlink()
+
     @lock
     def clear(self) -> None:
         self.save_memory({})

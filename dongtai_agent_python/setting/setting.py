@@ -45,6 +45,7 @@ class Setting(Singleton):
         if self.shm is None:
             return False
         self.shm.close()
+        self.shm.unlink()
 
     def set_container(self, container):
         if container and isinstance(container, dict):
