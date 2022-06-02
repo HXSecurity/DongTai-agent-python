@@ -26,11 +26,10 @@ class SharedMemoryDict:
 
     @lock(_lock)
     def get_or_create(self, size):
-        name = 'dongtai-shm-' + self.name
         try:
-            return SharedMemory(name=name)
+            return SharedMemory(name=self.name)
         except FileNotFoundError:
-            return SharedMemory(name=name, create=True, size=size)
+            return SharedMemory(name=self.name, create=True, size=size)
 
     def init_memory(self):
         memory_is_empty = (bytes(self.mem_block.buf).split(NULL_BYTE, 1)[0] == b'')

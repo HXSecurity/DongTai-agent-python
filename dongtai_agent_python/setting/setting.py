@@ -87,7 +87,7 @@ class Setting(Singleton):
 
     def set_shm(self, name):
         if self.shm is None:
-            self.shm = SharedMemoryDict(name)
+            self.shm = SharedMemoryDict('dongtai-shm-python-' + name)
 
     @property
     def paused(self):
