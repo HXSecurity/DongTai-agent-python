@@ -7,18 +7,20 @@
 
 ## Project Introduction
 
-Dongtai-agent-python is DongTai Iast's data acquisition tool for Python applications. In a Python application with the
-iast agent added, the required data is collected by rewriting class bytecode, and then the data is sent to
-dongtai-OpenAPI service, and then the cloud engine processes the data to determine whether there are security holes.
+DongTai-agent-python is DongTai IAST's data acquisition tool for Python applications. In a Python application, the required data is collected through patching methods and functions, sent to the DongTai OpenAPI service, and then the cloud engine processes the data to determine if there are security vulnerabilities.
 
 DongTai-agent-python
 
-- `dongtai_agent_python/config.json` For configuration DongTai-openapi Url、Token、Web-ProjectName。
-- `dongtai_agent_python/cli` Control the hot update of the agent version。
+- `dongtai_agent_python/api/` Report the collected data to the DongTai OpenAPI service.
+- `dongtai_agent_python/assess/` Hook python methods according to the cloud strategy.
+- `dongtai_agent_python/assess_ext/` Hook cpython underlying methods according to cloud strategy.
+- `dongtai_agent_python/cli/` Control the hot update of the agent version.
+- `dongtai_agent_python/context/` Request context and context tracker.
 - `dongtai_agent_python/middleware/` Used to access different python frameworks, currently supports Django and Flask,
-  both of which are introduced in the form of middleware。
-- `dongtai_agent_python/assess/` Hook the underlying method of python according to the cloud strategy。
-- `dongtai_agent_python/report/` Report the collected data of the agent to the DongTai-openapi service。
+  both of which are introduced in the form of middleware.
+- `dongtai_agent_python/policy/` Strategy rules and tainted data processing.
+- `dongtai_agent_python/setting/` Agent configuration.
+- `dongtai_agent_python/config.json` For configuration DongTai OpenAPI Url, Token, Project Name.
 
 ## Application Scenarios
 
@@ -26,7 +28,7 @@ DongTai-agent-python
 - Security test the application before it goes online
 - Third-party Component Management
 - Code audit
-- 0 Day digging
+- 0day digging
 
 ## Requirements
 
@@ -50,7 +52,7 @@ DongTai-agent-python
 
 ## Quick Start
 
-Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html).
+Please refer to the [Quick Start](https://doc.dongtai.io/).
 
 ## Quick Development
 
@@ -60,12 +62,11 @@ Please refer to the [Quick Start](https://doc.dongtai.io/en/02_start/index.html)
     ```
 2. Write code to your needs.
 3. Modify the configuration file `dongtai_agent_python/config.json`
+   * iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
+   * iast.server.url: "https://iast-test.huoxian.cn/openapi"
+   * project.name: "DemoProjectName"
 
-* iast.server.token: "3d6bb430bc3e0b20dcc2d00000000000000a"
-* iast.server.url: "https://iast-test.huoxian.cn/openapi"
-* project.name: "DemoProjectName"
-
-> URL and token from the hole state IAST-web page (eg: https://iast-test.huoxian.cn/deploy) > python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
+    > URL and token from the hole state IAST-web page (eg: https://iast-test.huoxian.cn/deploy) > python-agent deployment page,Obtained from the shell command of downloading agent，Replace the url domain name and token respectively
 
 4. The project is packaged and executed in the root directory of the agent project
     ```shell

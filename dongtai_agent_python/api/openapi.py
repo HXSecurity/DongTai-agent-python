@@ -36,7 +36,7 @@ class OpenAPI(Singleton):
         }
 
         agent_prefix = platform.system() + ' ' + platform.release() + '-' + socket.gethostname()
-        self.agent_version = self.config.get('engine', {}).get('version', 'v1.0.0')
+        self.agent_version = self.setting.version
         self.agent_name = agent_prefix + '-' + self.agent_version + '-' + self.setting.engine_name
 
         self.system_info = SystemInfo()

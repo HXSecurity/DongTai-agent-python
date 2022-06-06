@@ -1,6 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.4.0)  - 2022-06-06
+
+* CHANGES
+  * Change SCA package name format and signature [#118](https://github.com/HXSecurity/DongTai-agent-python/pull/118)
+
+## [1.3.2](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.2)  - 2022-03-09
+
+* FEATURES
+  * Add str/bytes/bytearray concat hook [#106](https://github.com/HXSecurity/DongTai-agent-python/pull/106)
+
 ## [1.3.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.1)  - 2022-02-23
+
 * FEATURES
   * Add crypto bad cipher detection  [#107](https://github.com/HXSecurity/DongTai-agent-python/pull/107)
   * Add regular expression DOS attack detection  [#111](https://github.com/HXSecurity/DongTai-agent-python/pull/111)
@@ -12,7 +23,7 @@
 * ENHANCEMENTS
   * performance optimization [#116](https://github.com/HXSecurity/DongTai-agent-python/pull/116)
   * code cleanup [#110](https://github.com/HXSecurity/DongTai-agent-python/pull/110)
-* Build
+* BUILD
   * When the github action runs, it automatically triggers openapi to pull the latest agent package  [#113](https://github.com/HXSecurity/DongTai-agent-python/pull/113)
 
 ## [1.3.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.0)  - 2022-01-07

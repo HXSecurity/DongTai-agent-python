@@ -1,6 +1,17 @@
 # 升级日志
 
+## [1.4.0](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.4.0)  - 2022-06-06
+
+* 变更
+  * 更改组件包的名称格式和签名 [#118](https://github.com/HXSecurity/DongTai-agent-python/pull/118)
+
+## [1.3.2](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.2)  - 2022-03-09
+
+* 功能
+  * 增加 str/bytes/bytearray 拼接(+) hook [#106](https://github.com/HXSecurity/DongTai-agent-python/pull/106)
+
 ## [1.3.1](https://github.com/HXSecurity/DongTai-agent-python/releases/tag/v1.3.1)  - 2022-02-23
+
 * 功能
   * 增加弱加密算法漏洞检测 [#107](https://github.com/HXSecurity/DongTai-agent-python/pull/107)
   * 增加正则表达式DOS攻击检测 [#111](https://github.com/HXSecurity/DongTai-agent-python/pull/111)
