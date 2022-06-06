@@ -6,7 +6,7 @@ from multiprocessing import Lock
 
 from dongtai_agent_python.utils.lock import lock
 
-if sys.version_info[:3] <= (3, 7):
+if sys.version_info[:3] < (3, 8):
     from shared_memory.shared_memory import SharedMemory
 else:
     from multiprocessing.shared_memory import SharedMemory
