@@ -1,8 +1,13 @@
 import os
+from multiprocessing import Lock
 
 from dongtai_agent_python import version
 from .config import Config
 from dongtai_agent_python.utils import Singleton
+from dongtai_agent_python.utils.shm import SharedMemoryDict
+from dongtai_agent_python.utils.lock import lock
+
+_lock = Lock()
 
 
 class Setting(Singleton):
@@ -13,10 +18,8 @@ class Setting(Singleton):
             return
 
         self.version = version.__version__
-        self.paused = False
-        self.manual_paused = False
         self.agent_id = 0
-        self.request_seq = 0
+        self.shm = None
 
         self.auto_create_project = 0
         self.use_local_policy = False
@@ -37,6 +40,12 @@ class Setting(Singleton):
 
         self.init_os_environ()
         Setting.loaded = True
+
+    def __del__(self):
+        if self.shm is None:
+            return False
+        self.shm.close()
+        self.shm.unlink()
 
     def set_container(self, container):
         if container and isinstance(container, dict):
@@ -76,8 +85,45 @@ class Setting(Singleton):
         for key in os_env.keys():
             self.os_env_list.append(key + '=' + str(os_env[key]))
 
-    def is_agent_paused(self):
-        return self.paused and self.manual_paused
+    def set_shm(self, name):
+        if self.shm is None:
+            self.shm = SharedMemoryDict('dongtai-shm-python-' + name)
 
+    @property
+    def paused(self):
+        if self.shm is None:
+            return False
+        return self.shm.get('paused')
+
+    @paused.setter
+    def paused(self, status):
+        if self.shm is None:
+            return
+        self.shm['paused'] = status
+
+    @property
+    def manual_paused(self):
+        if self.shm is None:
+            return False
+        return self.shm.get('manual_paused')
+
+    @manual_paused.setter
+    def manual_paused(self, status):
+        if self.shm is None:
+            return
+        self.shm['manual_paused'] = status
+
+    def is_agent_paused(self):
+        return self.paused or self.manual_paused
+
+    @property
+    def request_seq(self):
+        if self.shm is None:
+            return 0
+        return self.shm.get('request_seq', 0)
+
+    @lock(_lock)
     def incr_request_seq(self):
-        self.request_seq = self.request_seq + 1
+        if self.shm is None:
+            return
+        self.shm['request_seq'] = self.request_seq + 1

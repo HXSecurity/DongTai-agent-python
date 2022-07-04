@@ -187,6 +187,8 @@ class OpenAPI(Singleton):
             logger.error("register get agent id empty")
             return resp
 
+        self.setting.set_shm('agent-' + str(self.agent_id))
+
         if resp.get('data', {}).get('coreAutoStart', 0) != 1:
             logger.info("agent is waiting for auditing")
             self.setting.dt_manual_pause = True
